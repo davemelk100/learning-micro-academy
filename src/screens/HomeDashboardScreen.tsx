@@ -28,7 +28,6 @@ interface HomeDashboardScreenProps {
   progressUpdate: { amount: number; notes: string };
   setProgressUpdate: (update: { amount: number; notes: string }) => void;
   updateGoalProgress: (goalId: string, amount: number, notes: string) => void;
-  openGraceModal: () => void;
 }
 
 export const HomeDashboardScreen: React.FC<HomeDashboardScreenProps> = ({
@@ -49,7 +48,6 @@ export const HomeDashboardScreen: React.FC<HomeDashboardScreenProps> = ({
   progressUpdate,
   setProgressUpdate,
   updateGoalProgress,
-  openGraceModal,
 }) => {
   const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
   const [selectedAmountChange1, setSelectedAmountChange1] = useState<
@@ -75,7 +73,7 @@ export const HomeDashboardScreen: React.FC<HomeDashboardScreenProps> = ({
 
         {/* Virtue of the Week and Your Actions Row */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6 md:mb-8">
-          <VirtueOfTheWeek openGraceModal={openGraceModal} />
+          <VirtueOfTheWeek />
           <ActionsOverview
             goals={goals}
             navigateToScreen={navigateToScreen}

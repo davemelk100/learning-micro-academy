@@ -69,68 +69,109 @@ export const virtues: Virtue[] = [
   },
 ];
 
-// Learning topics for selection - can use course icons or create simple badge-style visuals
+// Learning topics for selection - using colored circles instead of images
 export const learningTopics = [
-  { id: "topic1", title: "User Experience", image: "/4-education.png" },
-  { id: "topic2", title: "Design Systems", image: "/5-Gender-Equality.png" },
+  {
+    id: "topic1",
+    title: "User Experience Design",
+    color: "bg-red-500",
+    innerColor: "bg-red-700",
+  },
+  {
+    id: "topic2",
+    title: "Design Systems",
+    color: "bg-orange-500",
+    innerColor: "bg-orange-700",
+  },
   {
     id: "topic3",
     title: "Web Development",
-    image: "/3-Good-Health.png",
+    color: "bg-yellow-500",
+    innerColor: "bg-yellow-700",
   },
-  { id: "topic4", title: "Product Strategy", image: "/4-education.png" },
-  { id: "topic5", title: "Data Analytics", image: "/5-Gender-Equality.png" },
+  {
+    id: "topic4",
+    title: "Product Strategy",
+    color: "bg-green-500",
+    innerColor: "bg-green-700",
+  },
+  {
+    id: "topic5",
+    title: "Data Analytics",
+    color: "bg-teal-500",
+    innerColor: "bg-teal-700",
+  },
   {
     id: "topic6",
     title: "Energy Efficiency",
-    image: "/Property 1=Clean Water.png",
+    color: "bg-blue-500",
+    innerColor: "bg-blue-700",
   },
   {
     id: "topic7",
     title: "Sustainability",
-    image: "/7-Affordable-and-Clean-Energy.png",
+    color: "bg-indigo-500",
+    innerColor: "bg-indigo-700",
   },
   {
     id: "topic8",
     title: "Business Skills",
-    image: "/8-Decent-Work-and-Economic-Growth.png",
+    color: "bg-purple-500",
+    innerColor: "bg-purple-700",
   },
   {
     id: "topic9",
     title: "Innovation",
-    image: "/Property 1=Variant18.png",
+    color: "bg-pink-500",
+    innerColor: "bg-pink-700",
   },
   {
     id: "topic10",
     title: "Communication",
-    image: "/Property 1=Reduced Inequalities.png",
+    color: "bg-rose-500",
+    innerColor: "bg-rose-700",
   },
   {
     id: "topic11",
     title: "Leadership",
-    image: "/11-sustainable-cities.png",
+    color: "bg-cyan-500",
+    innerColor: "bg-cyan-700",
   },
   {
     id: "topic12",
     title: "Technology",
-    image: "/12-responsible.png",
+    color: "bg-emerald-500",
+    innerColor: "bg-emerald-700",
   },
-  { id: "topic13", title: "Marketing", image: "/13-Climate-Action.png" },
+  {
+    id: "topic13",
+    title: "Marketing",
+    color: "bg-amber-500",
+    innerColor: "bg-amber-700",
+  },
   {
     id: "topic14",
     title: "Finance",
-    image: "/14-Life-Below-Water.png",
+    color: "bg-violet-500",
+    innerColor: "bg-violet-700",
   },
-  { id: "topic15", title: "Personal Growth", image: "/15-life-on-land.png" },
+  {
+    id: "topic15",
+    title: "Personal Growth",
+    color: "bg-fuchsia-500",
+    innerColor: "bg-fuchsia-700",
+  },
   {
     id: "topic16",
     title: "Career Development",
-    image: "/16-peace-justice.png",
+    color: "bg-sky-500",
+    innerColor: "bg-sky-700",
   },
   {
     id: "topic17",
     title: "Creative Skills",
-    image: "/17-partnership-for-the-goals.png",
+    color: "bg-lime-500",
+    innerColor: "bg-lime-700",
   },
 ];
 

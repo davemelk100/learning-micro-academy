@@ -1,6 +1,6 @@
 import React from "react";
 
-export interface Virtue {
+export interface LearningStyle {
   id: string;
   name: string;
   icon: React.ComponentType<any>;
@@ -11,7 +11,7 @@ export interface Virtue {
 
 export interface Goal {
   id: string;
-  virtueId: string;
+  learningStyleId: string;
   sdgIds: string[];
   title: string;
   description: string;
@@ -46,7 +46,7 @@ export interface UserPreferences {
   notifications: boolean;
   emailUpdates: boolean;
   language: string;
-  selectedVirtue: string | null;
+  selectedLearningStyle: string | null;
   selectedSDGs: string[];
   currentSelectedSDG: string;
   hasCompletedSDGSetup: boolean;
@@ -111,7 +111,7 @@ export interface AIRecommendationCardProps {
 
 export interface ActionCardProps {
   goal: Goal;
-  virtue: Virtue;
+  learningStyle: LearningStyle;
   isCompleted?: boolean;
   onEdit?: (goal: Goal) => void;
   onDelete?: (goal: Goal) => void;
@@ -125,8 +125,8 @@ export interface CompletedAction {
   originalGoalId: string;
   title: string;
   description: string;
-  virtueId: string;
-  virtueName: string;
+  learningStyleId: string;
+  learningStyleName: string;
   sdgIds: string[];
   completedAt: string;
   completionNotes?: string;

@@ -189,16 +189,18 @@ export const SDGSelectionScreen: React.FC<SDGSelectionScreenProps> = ({
                     <div className="flex items-center space-x-4 md:flex-col md:space-x-0">
                       <div className="mb-0 md:mb-2 flex justify-center flex-shrink-0 relative">
                         <div
-                          className={`w-20 h-20 md:w-32 md:h-32 rounded-full overflow-hidden flex items-center justify-center transition-all duration-300 ${
+                          className={`w-20 h-20 md:w-32 md:h-32 rounded-full flex items-center justify-center transition-all duration-300 ${
                             selectedSDGs.includes(topic.id)
-                              ? "bg-transparent md:bg-white md:shadow-lg border-0 md:border-2 ring-2 ring-selection-brown ring-offset-2"
-                              : "bg-transparent md:bg-white md:shadow-md border-0"
+                              ? `${
+                                  topic.color || "bg-slate-500"
+                                } shadow-lg ring-2 ring-selection-brown ring-offset-2`
+                              : `${topic.color || "bg-slate-500"} shadow-md`
                           }`}
                         >
-                          <img
-                            src={topic.image}
-                            alt={topic.title}
-                            className="w-18 h-18 md:w-28 md:h-28 object-cover"
+                          <div
+                            className={`w-12 h-12 md:w-20 md:h-20 rounded-full ${
+                              topic.innerColor || "bg-slate-700"
+                            }`}
                           />
                         </div>
                       </div>

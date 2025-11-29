@@ -248,7 +248,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
         <DashboardVirtueOfTheWeek
           selectedFont={selectedFont}
           getHeadingFontClass={getHeadingFontClass}
-          openGraceModal={() => {}}
         />
 
         {/* User Stats */}

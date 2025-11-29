@@ -1,32 +1,52 @@
 import React, { useState } from "react";
 import { courses, Course, CourseLesson } from "../data";
-import { BookOpen, Clock, Users, ChevronRight, Play, FileText, Target, HelpCircle } from "lucide-react";
+import {
+  BookOpen,
+  Clock,
+  Users,
+  ChevronRight,
+  Play,
+  FileText,
+  Target,
+  HelpCircle,
+} from "lucide-react";
 
 interface CourseLibraryScreenProps {
   onBack: () => void;
   selectedFont?: string;
+  Navigation?: React.ComponentType;
 }
 
 export const CourseLibraryScreen: React.FC<CourseLibraryScreenProps> = ({
   onBack,
   selectedFont = "nunito-poppins",
+  Navigation,
 }) => {
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
-  const [selectedLesson, setSelectedLesson] = useState<CourseLesson | null>(null);
+  const [selectedLesson, setSelectedLesson] = useState<CourseLesson | null>(
+    null
+  );
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [selectedLevel, setSelectedLevel] = useState<string>("All");
 
-  const categories = ["All", ...Array.from(new Set(courses.map((c) => c.category)))];
+  const categories = [
+    "All",
+    ...Array.from(new Set(courses.map((c) => c.category))),
+  ];
   const levels = ["All", "Beginner", "Intermediate", "Advanced"];
 
   const filteredCourses = courses.filter((course) => {
     const matchesSearch =
       course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       course.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      course.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()));
-    const matchesCategory = selectedCategory === "All" || course.category === selectedCategory;
-    const matchesLevel = selectedLevel === "All" || course.level === selectedLevel;
+      course.tags.some((tag) =>
+        tag.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    const matchesCategory =
+      selectedCategory === "All" || course.category === selectedCategory;
+    const matchesLevel =
+      selectedLevel === "All" || course.level === selectedLevel;
     return matchesSearch && matchesCategory && matchesLevel;
   });
 
@@ -46,6 +66,25 @@ export const CourseLibraryScreen: React.FC<CourseLibraryScreenProps> = ({
   if (selectedLesson && selectedCourse) {
     return (
       <div className="min-h-screen bg-warm-white">
+        {Navigation && (
+          <header>
+            <div className="px-4 md:px-6 py-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <button
+                    onClick={onBack}
+                    className="hover:opacity-80 transition-opacity"
+                  >
+                    <span className="text-2xl font-bold text-slate-900">
+                      MicroLearn
+                    </span>
+                  </button>
+                </div>
+                <Navigation />
+              </div>
+            </div>
+          </header>
+        )}
         <div className="max-w-4xl mx-auto px-4 py-8">
           <button
             onClick={() => setSelectedLesson(null)}
@@ -57,8 +96,12 @@ export const CourseLibraryScreen: React.FC<CourseLibraryScreenProps> = ({
 
           <div className="bg-white rounded-xl shadow-lg p-8">
             <div className="mb-6">
-              <span className="text-sm text-slate-500 mb-2 block">{selectedCourse.title}</span>
-              <h1 className="text-3xl font-bold text-slate-900 mb-4">{selectedLesson.title}</h1>
+              <span className="text-sm text-slate-500 mb-2 block">
+                {selectedCourse.title}
+              </span>
+              <h1 className="text-3xl font-bold text-slate-900 mb-4">
+                {selectedLesson.title}
+              </h1>
               <div className="flex items-center gap-4 text-sm text-slate-600">
                 <div className="flex items-center gap-1">
                   {getLessonIcon(selectedLesson.type)}
@@ -85,6 +128,25 @@ export const CourseLibraryScreen: React.FC<CourseLibraryScreenProps> = ({
   if (selectedCourse) {
     return (
       <div className="min-h-screen bg-warm-white">
+        {Navigation && (
+          <header>
+            <div className="px-4 md:px-6 py-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <button
+                    onClick={onBack}
+                    className="hover:opacity-80 transition-opacity"
+                  >
+                    <span className="text-2xl font-bold text-slate-900">
+                      MicroLearn
+                    </span>
+                  </button>
+                </div>
+                <Navigation />
+              </div>
+            </div>
+          </header>
+        )}
         <div className="max-w-6xl mx-auto px-4 py-8">
           <button
             onClick={() => setSelectedCourse(null)}
@@ -98,9 +160,15 @@ export const CourseLibraryScreen: React.FC<CourseLibraryScreenProps> = ({
             <div className="p-8 border-b border-slate-200">
               <div className="flex items-start justify-between mb-4">
                 <div>
-                  <span className="text-sm text-slate-500 mb-2 block">{selectedCourse.category}</span>
-                  <h1 className="text-3xl font-bold text-slate-900 mb-2">{selectedCourse.title}</h1>
-                  <p className="text-slate-700 mb-4">{selectedCourse.description}</p>
+                  <span className="text-sm text-slate-500 mb-2 block">
+                    {selectedCourse.category}
+                  </span>
+                  <h1 className="text-3xl font-bold text-slate-900 mb-2">
+                    {selectedCourse.title}
+                  </h1>
+                  <p className="text-slate-700 mb-4">
+                    {selectedCourse.description}
+                  </p>
                 </div>
               </div>
 
@@ -114,7 +182,9 @@ export const CourseLibraryScreen: React.FC<CourseLibraryScreenProps> = ({
                   {selectedCourse.level}
                 </div>
                 {selectedCourse.instructor && (
-                  <div className="text-slate-600">Instructor: {selectedCourse.instructor}</div>
+                  <div className="text-slate-600">
+                    Instructor: {selectedCourse.instructor}
+                  </div>
                 )}
               </div>
 
@@ -131,7 +201,9 @@ export const CourseLibraryScreen: React.FC<CourseLibraryScreenProps> = ({
             </div>
 
             <div className="p-8">
-              <h2 className="text-xl font-bold text-slate-900 mb-4">Course Lessons</h2>
+              <h2 className="text-xl font-bold text-slate-900 mb-4">
+                Course Lessons
+              </h2>
               <div className="space-y-3">
                 {selectedCourse.lessons.map((lesson, index) => (
                   <button
@@ -169,6 +241,25 @@ export const CourseLibraryScreen: React.FC<CourseLibraryScreenProps> = ({
 
   return (
     <div className="min-h-screen bg-warm-white">
+      {Navigation && (
+        <header>
+          <div className="px-4 md:px-6 py-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <button
+                  onClick={onBack}
+                  className="hover:opacity-80 transition-opacity"
+                >
+                  <span className="text-2xl font-bold text-slate-900">
+                    MicroLearn
+                  </span>
+                </button>
+              </div>
+              <Navigation />
+            </div>
+          </div>
+        </header>
+      )}
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="mb-8">
           <button
@@ -181,9 +272,12 @@ export const CourseLibraryScreen: React.FC<CourseLibraryScreenProps> = ({
 
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="text-4xl font-bold text-slate-900 mb-2">Course Library</h1>
+              <h1 className="text-4xl font-bold text-slate-900 mb-2">
+                Course Library
+              </h1>
               <p className="text-slate-600">
-                Explore our collection of bite-sized courses for continuous learning
+                Explore our collection of bite-sized courses for continuous
+                learning
               </p>
             </div>
           </div>
@@ -239,8 +333,12 @@ export const CourseLibraryScreen: React.FC<CourseLibraryScreenProps> = ({
                     {course.level}
                   </span>
                 </div>
-                <h3 className="text-xl font-bold text-slate-900 mb-2">{course.title}</h3>
-                <p className="text-sm text-slate-600 mb-4 line-clamp-2">{course.description}</p>
+                <h3 className="text-xl font-bold text-slate-900 mb-2">
+                  {course.title}
+                </h3>
+                <p className="text-sm text-slate-600 mb-4 line-clamp-2">
+                  {course.description}
+                </p>
                 <div className="flex items-center gap-4 text-xs text-slate-500 mb-4">
                   <div className="flex items-center gap-1">
                     <Clock className="w-3 h-3" />
@@ -268,7 +366,9 @@ export const CourseLibraryScreen: React.FC<CourseLibraryScreenProps> = ({
 
         {filteredCourses.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-slate-600">No courses found matching your criteria.</p>
+            <p className="text-slate-600">
+              No courses found matching your criteria.
+            </p>
             <button
               onClick={() => {
                 setSearchQuery("");
@@ -285,4 +385,3 @@ export const CourseLibraryScreen: React.FC<CourseLibraryScreenProps> = ({
     </div>
   );
 };
-

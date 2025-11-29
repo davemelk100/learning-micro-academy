@@ -4,12 +4,11 @@ import { Sparkles } from "lucide-react";
 interface DashboardVirtueOfTheWeekProps {
   selectedFont: string;
   getHeadingFontClass: (font: string) => string;
-  openGraceModal: () => void;
 }
 
 export const DashboardVirtueOfTheWeek: React.FC<
   DashboardVirtueOfTheWeekProps
-> = ({ selectedFont, getHeadingFontClass, openGraceModal }) => {
+> = ({ selectedFont, getHeadingFontClass }) => {
   return (
     <div className="bg-white p-6 rounded-xl shadow-lg border border-slate-100 mb-6">
       <h3
@@ -22,12 +21,6 @@ export const DashboardVirtueOfTheWeek: React.FC<
       <p className="text-slate-700 leading-relaxed mb-4">
         Master the fundamentals of user experience design. Learn how to create intuitive interfaces, conduct user research, and build products that people love.
       </p>
-      <button
-        onClick={() => openGraceModal()}
-        className="text-blue-600 hover:text-blue-700 font-medium text-sm underline"
-      >
-        Read more
-      </button>
     </div>
   );
 };

@@ -31,7 +31,7 @@ import {
   Globe,
 } from "lucide-react";
 
-interface Virtue {
+interface LearningStyle {
   id: string;
   name: string;
   icon: React.ComponentType<any>;
@@ -42,7 +42,7 @@ interface Virtue {
 
 interface Goal {
   id: string;
-  virtueId: string;
+  learningStyleId: string;
   sdgIds: string[];
   title: string;
   description: string;
@@ -70,7 +70,7 @@ interface Milestone {
   achievedDate?: Date;
 }
 
-const virtues: Virtue[] = [
+const learningStyles: LearningStyle[] = [
   {
     id: "intro-to-ux",
     name: "Intro to UX",
@@ -132,7 +132,8 @@ const virtues: Virtue[] = [
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState(1);
-  const [selectedVirtue, setSelectedVirtue] = useState<Virtue | null>(null);
+  const [selectedLearningStyle, setSelectedLearningStyle] =
+    useState<LearningStyle | null>(null);
   const [goals, setGoals] = useState<Goal[]>([]);
   const [newGoal, setNewGoal] = useState({
     title: "",
@@ -146,8 +147,10 @@ function App() {
   const [isLoadingAIAssistance, setIsLoadingAIAssistance] = useState(false);
   const [aiSelectedSDG, setAiSelectedSDG] = useState<string | null>(null);
   const [aiSelectionReason, setAiSelectionReason] = useState<string>("");
-  const [aiSelectedVirtue, setAiSelectedVirtue] = useState<string | null>(null);
-  const [aiVirtueSelectionReason, setAiVirtueSelectionReason] =
+  const [aiSelectedLearningStyle, setAiSelectedLearningStyle] = useState<
+    string | null
+  >(null);
+  const [aiLearningStyleSelectionReason, setAiLearningStyleSelectionReason] =
     useState<string>("");
   const [hasHoveredSDG, setHasHoveredSDG] = useState(false);
   const [showSDGPopover, setShowSDGPopover] = useState(false);
@@ -156,72 +159,112 @@ function App() {
   const [designSystemCardExpanded, setDesignSystemCardExpanded] =
     useState(true);
 
-  // SDG Goals data
+  // Learning Topics data
   const sdgGoals = [
-    { id: "sdg1", title: "No Poverty", image: "/1-no-poverty.png" },
-    { id: "sdg2", title: "Zero Hunger", image: "/15-zero-hunger.png" },
+    {
+      id: "sdg1",
+      title: "User Experience Design",
+      color: "bg-red-500",
+      innerColor: "bg-red-700",
+    },
+    {
+      id: "sdg2",
+      title: "Design Systems",
+      color: "bg-orange-500",
+      innerColor: "bg-orange-700",
+    },
     {
       id: "sdg3",
-      title: "Good Health and Well-Being",
-      image: "/3-Good-Health.png",
+      title: "Web Development",
+      color: "bg-yellow-500",
+      innerColor: "bg-yellow-700",
     },
-    { id: "sdg4", title: "Quality Education", image: "/4-education.png" },
-    { id: "sdg5", title: "Gender Equality", image: "/5-Gender-Equality.png" },
+    {
+      id: "sdg4",
+      title: "Product Strategy",
+      color: "bg-green-500",
+      innerColor: "bg-green-700",
+    },
+    {
+      id: "sdg5",
+      title: "Data Analytics",
+      color: "bg-teal-500",
+      innerColor: "bg-teal-700",
+    },
     {
       id: "sdg6",
-      title: "Clean Water and Sanitation",
-      image: "/Property 1=Clean Water.png",
+      title: "Energy Efficiency",
+      color: "bg-blue-500",
+      innerColor: "bg-blue-700",
     },
     {
       id: "sdg7",
-      title: "Affordable and Clean Energy",
-      image: "/7-Affordable-and-Clean-Energy.png",
+      title: "Sustainability",
+      color: "bg-indigo-500",
+      innerColor: "bg-indigo-700",
     },
     {
       id: "sdg8",
-      title: "Decent Work and Economic Growth",
-      image: "/8-Decent-Work-and-Economic-Growth.png",
+      title: "Business Skills",
+      color: "bg-purple-500",
+      innerColor: "bg-purple-700",
     },
     {
       id: "sdg9",
-      title: "Industry, Innovation and Infrastructure",
-      image: "/Property 1=Variant18.png",
+      title: "Innovation",
+      color: "bg-pink-500",
+      innerColor: "bg-pink-700",
     },
     {
       id: "sdg10",
-      title: "Reduced Inequalities",
-      image: "/Property 1=Reduced Inequalities.png",
+      title: "Communication",
+      color: "bg-rose-500",
+      innerColor: "bg-rose-700",
     },
     {
       id: "sdg11",
-      title: "Sustainable Cities and Communities",
-      image: "/11-sustainable-cities.png",
+      title: "Leadership",
+      color: "bg-cyan-500",
+      innerColor: "bg-cyan-700",
     },
     {
       id: "sdg12",
-      title: "Responsible Consumption and Production",
-      image: "/12-responsible.png",
+      title: "Technology",
+      color: "bg-emerald-500",
+      innerColor: "bg-emerald-700",
     },
-    { id: "sdg13", title: "Climate Action", image: "/13-Climate-Action.png" },
+    {
+      id: "sdg13",
+      title: "Marketing",
+      color: "bg-amber-500",
+      innerColor: "bg-amber-700",
+    },
     {
       id: "sdg14",
-      title: "Life Below Water",
-      image: "/14-Life-Below-Water.png",
+      title: "Finance",
+      color: "bg-violet-500",
+      innerColor: "bg-violet-700",
     },
-    { id: "sdg15", title: "Life on Land", image: "/15-life-on-land.png" },
+    {
+      id: "sdg15",
+      title: "Personal Growth",
+      color: "bg-fuchsia-500",
+      innerColor: "bg-fuchsia-700",
+    },
     {
       id: "sdg16",
-      title: "Peace, Justice and Strong Institutions",
-      image: "/16-peace-justice.png",
+      title: "Career Development",
+      color: "bg-sky-500",
+      innerColor: "bg-sky-700",
     },
     {
       id: "sdg17",
-      title: "Partnerships for the Goals",
-      image: "/17-partnership-for-the-goals.png",
+      title: "Creative Skills",
+      color: "bg-lime-500",
+      innerColor: "bg-lime-700",
     },
   ];
   const [editingGoal, setEditingGoal] = useState<Goal | null>(null);
-  const [graceModalOpen, setGraceModalOpen] = useState(false);
   const [situationToggle1, setSituationToggle1] = useState<boolean | null>(
     null
   );
@@ -343,126 +386,13 @@ function App() {
     return () => window.removeEventListener("popstate", handlePopState);
   }, [currentScreen]);
 
-  const sustainableDevelopmentGoals = [
-    {
-      id: "sdg1",
-      title: "No Poverty",
-      description:
-        "Economic growth must be inclusive to provide sustainable jobs and promote equality.",
-      image: "/1-no-poverty.png",
-    },
-    {
-      id: "sdg2",
-      title: "Zero Hunger",
-      description:
-        "The food and agriculture sector offers key solutions for development, and is central for hunger and poverty eradication.",
-      image: "/15-zero-hunger.png",
-    },
-    {
-      id: "sdg3",
-      title: "Good Health and Well-Being",
-      description:
-        "Ensuring healthy lives and promoting the well-being for all at all ages is essential to sustainable development.",
-      image: "/3-Good-Health.png",
-    },
-    {
-      id: "sdg4",
-      title: "Quality Education",
-      description:
-        "Obtaining a quality education is the foundation to improving people's lives and sustainable development.",
-      image: "/4-education.png",
-    },
-    {
-      id: "sdg5",
-      title: "Gender Equality",
-      description:
-        "Gender equality is not only a fundamental human right, but a necessary foundation for a peaceful, prosperous and sustainable world.",
-      image: "/5-Gender-Equality.png",
-    },
-    {
-      id: "sdg6",
-      title: "Clean Water and Sanitation",
-      description:
-        "Clean, accessible water for all is an essential part of the world we want to live in.",
-      image: "/Property 1=Clean Water.png",
-    },
-    {
-      id: "sdg7",
-      title: "Affordable and Clean Energy",
-      description:
-        "Energy is central to nearly every major challenge and opportunity.",
-      image: "/7-Affordable-and-Clean-Energy.png",
-    },
-    {
-      id: "sdg8",
-      title: "Decent Work and Economic Growth",
-      description:
-        "Sustainable economic growth will require societies to create the conditions that allow people to have quality jobs.",
-      image: "/8-Decent-Work-and-Economic-Growth.png",
-    },
-    {
-      id: "sdg9",
-      title: "Industry, Innovation, and Infrastructure",
-      description:
-        "Investments in infrastructure are crucial to achieving sustainable development.",
-      image: "/Property 1=Variant18.png",
-    },
-    {
-      id: "sdg10",
-      title: "Reduced Inequalities",
-      description:
-        "To reduce inequalities, policies should be universal in principle, paying attention to the needs of disadvantaged and marginalized populations.",
-      image: "/Property 1=Reduced Inequalities.png",
-    },
-    {
-      id: "sdg11",
-      title: "Sustainable Cities and Communities",
-      description:
-        "There needs to be a future in which cities provide opportunities for all, with access to basic services, energy, housing, transportation and more.",
-      image: "/11-sustainable-cities.png",
-    },
-    {
-      id: "sdg12",
-      title: "Responsible Consumption and Production",
-      description: "Responsible Production and Consumption",
-      image: "/12-responsible.png",
-    },
-    {
-      id: "sdg13",
-      title: "Climate Action",
-      description:
-        "Climate change is a global challenge that affects everyone, everywhere.",
-      image: "/13-Climate-Action.png",
-    },
-    {
-      id: "sdg14",
-      title: "Life Below Water",
-      description:
-        "Careful management of this essential global resource is a key feature of a sustainable future.",
-      image: "/14-Life-Below-Water.png",
-    },
-    {
-      id: "sdg15",
-      title: "Life on Land",
-      description:
-        "Sustainably manage forests, combat desertification, halt and reverse land degradation, halt biodiversity loss",
-      image: "/15-life-on-land.png",
-    },
-    {
-      id: "sdg16",
-      title: "Peace, Justice and Strong Institutions",
-      description:
-        "Access to justice for all, and building effective, accountable institutions at all levels.",
-      image: "/16-peace-justice.png",
-    },
-    {
-      id: "sdg17",
-      title: "Partnerships for the Goals",
-      description:
-        "Strengthen the means of implementation and revitalize the global partnership for sustainable development.",
-      image: "/17-partnership-for-the-goals.png",
-    },
-  ];
+  const sustainableDevelopmentGoals = sdgGoals.map((sdg) => ({
+    id: sdg.id,
+    title: sdg.title,
+    description: `Learn about ${sdg.title.toLowerCase()} and develop your skills in this area.`,
+    color: sdg.color,
+    innerColor: sdg.innerColor,
+  }));
 
   // Determine initial screen based on user status
   useEffect(() => {
@@ -485,7 +415,7 @@ function App() {
 
   // Simulate AI loading when entering goal creation screen
   useEffect(() => {
-    if (currentScreen === 3 && selectedVirtue) {
+    if (currentScreen === 3 && selectedLearningStyle) {
       setIsLoadingGoalSuggestions(true);
       setShowGoalSuggestions(false);
 
@@ -496,40 +426,42 @@ function App() {
 
       return () => clearTimeout(timer);
     }
-  }, [currentScreen, selectedVirtue]);
+  }, [currentScreen, selectedLearningStyle]);
 
-  // Handle Virtue AI assistance click
-  const handleVirtueAIAssistanceClick = () => {
+  // Handle Learning Style AI assistance click
+  const handleLearningStyleAIAssistanceClick = () => {
     setIsLoadingAIAssistance(true);
-    setAiSelectedVirtue(null);
-    setAiVirtueSelectionReason("");
+    setAiSelectedLearningStyle(null);
+    setAiLearningStyleSelectionReason("");
 
     // Simulate AI processing time
     setTimeout(() => {
-      // Randomly select a virtue
-      const randomIndex = Math.floor(Math.random() * virtues.length);
-      const selectedVirtue = virtues[randomIndex];
+      // Randomly select a learning style
+      const randomIndex = Math.floor(Math.random() * learningStyles.length);
+      const selectedLearningStyle = learningStyles[randomIndex];
 
       // Get the selected SDG title for context
       const selectedSDGTitle =
         sdgGoals.find((sdg) => sdg.id === selectedSDG)?.title ||
         "your selected SDG";
 
-      // Generate a reason based on the selected virtue and SDG
-      const virtueReasons = {
-        grace: `Grace perfectly complements ${selectedSDGTitle} by encouraging thoughtful decision-making that considers the impact on all stakeholders, ensuring sustainable and ethical progress.`,
-        courage: `Courage is essential for ${selectedSDGTitle} as it requires bold action to challenge existing systems and drive meaningful change, even when facing resistance or uncertainty.`,
-        justice: `Justice aligns with ${selectedSDGTitle} by ensuring that progress is fair and equitable, addressing systemic inequalities and creating opportunities for all members of society.`,
-        wisdom: `Wisdom enhances ${selectedSDGTitle} by providing the insight needed to make informed decisions, balance competing interests, and create long-term sustainable solutions.`,
-        temperance: `Temperance supports ${selectedSDGTitle} by promoting balanced approaches to development, avoiding excess and ensuring resources are used responsibly and sustainably.`,
-        transcendence: `Transcendence elevates ${selectedSDGTitle} by inspiring individuals to look beyond immediate concerns and work toward a higher purpose that benefits humanity and the planet.`,
-        humanity: `Humanity is the foundation of ${selectedSDGTitle}, emphasizing compassion, empathy, and the inherent dignity of all people in every action and decision.`,
+      // Generate a reason based on the selected learning style and SDG
+      const learningStyleReasons = {
+        "intro-to-ux": `${selectedLearningStyle.name} aligns with ${selectedSDGTitle} by helping you understand user needs and create solutions that address real-world challenges.`,
+        "design-systems": `${selectedLearningStyle.name} complements ${selectedSDGTitle} by providing structured approaches to creating scalable and sustainable solutions.`,
+        "energy-efficiency": `${selectedLearningStyle.name} directly supports ${selectedSDGTitle} by teaching practical skills for reducing environmental impact.`,
+        "web-development": `${selectedLearningStyle.name} aligns with ${selectedSDGTitle} by enabling you to build digital solutions that can scale and reach more people.`,
+        "product-strategy": `${selectedLearningStyle.name} enhances ${selectedSDGTitle} by teaching strategic thinking and planning for long-term impact.`,
+        "data-analytics": `${selectedLearningStyle.name} supports ${selectedSDGTitle} by providing tools to measure impact and make data-driven decisions.`,
+        sustainability: `${selectedLearningStyle.name} aligns with ${selectedSDGTitle} by focusing on sustainable practices and long-term thinking.`,
       };
 
-      setAiSelectedVirtue(selectedVirtue.id);
-      setAiVirtueSelectionReason(
-        virtueReasons[selectedVirtue.id as keyof typeof virtueReasons] ||
-          `This Aspect Of Life aligns with ${selectedSDGTitle} by providing the moral foundation needed for meaningful progress.`
+      setAiSelectedLearningStyle(selectedLearningStyle.id);
+      setAiLearningStyleSelectionReason(
+        learningStyleReasons[
+          selectedLearningStyle.id as keyof typeof learningStyleReasons
+        ] ||
+          `${selectedLearningStyle.name} aligns with ${selectedSDGTitle} by providing the learning foundation needed for meaningful progress.`
       );
       setIsLoadingAIAssistance(false);
     }, 2000);
@@ -592,7 +524,7 @@ function App() {
     const navItems = [
       { label: "Dashboard", action: () => navigateToScreen(0) },
       { label: "Add Action", action: () => navigateToScreen(11) },
-      { label: "Virtue Journey", action: () => navigateToScreen(17) },
+      { label: "Learning Journey", action: () => navigateToScreen(17) },
       { label: "Design System", action: () => navigateToScreen(20) },
     ];
 
@@ -621,7 +553,7 @@ function App() {
               const isActive =
                 (item.label === "Dashboard" && currentScreen === 0) ||
                 (item.label === "Add Action" && currentScreen === 8) ||
-                (item.label === "Virtue Journey" && currentScreen === 17) ||
+                (item.label === "Learning Journey" && currentScreen === 17) ||
                 (item.label === "Design System" && currentScreen === 20);
 
               return (
@@ -644,7 +576,7 @@ function App() {
                       className={`h-5 w-5 ${isActive ? "text-blue-600" : ""}`}
                     />
                   )}
-                  {item.label === "Virtue Journey" && (
+                  {item.label === "Learning Journey" && (
                     <Heart
                       className={`h-5 w-5 ${isActive ? "text-blue-600" : ""}`}
                     />
@@ -752,12 +684,11 @@ function App() {
       progressUpdate={progressUpdate}
       setProgressUpdate={setProgressUpdate}
       updateGoalProgress={updateGoalProgress}
-      openGraceModal={() => setGraceModalOpen(true)}
     />
   );
 
-  // Screen 2: Virtue Selection
-  const VirtueSelectionScreen = () => {
+  // Screen 2: Learning Style Selection
+  const LearningStyleSelectionScreen = () => {
     const [isListView, setIsListView] = useState(false);
     return (
       <div className="min-h-screen  max-w-[1200px] mx-auto">
@@ -797,7 +728,7 @@ function App() {
                       <div className="flex items-center space-x-2">
                         <Sparkles className="h-4 w-4 text-blue-500 animate-bounce transition-all duration-300 hover:scale-110 hover:drop-shadow-lg" />
                         <button
-                          onClick={handleVirtueAIAssistanceClick}
+                          onClick={handleLearningStyleAIAssistanceClick}
                           className="text-base text-slate-600 hover:text-slate-800 transition-colors cursor-pointer"
                         >
                           Let Learning Micro-Academy help
@@ -812,12 +743,12 @@ function App() {
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-slate-900 mx-auto mb-4"></div>
                     <p className="text-slate-600">
                       Learning Micro-Academy AI is analyzing your SDG selection
-                      and finding the perfect virtue match...
+                      and finding the perfect learning style match...
                     </p>
                   </div>
                 )}
 
-                {aiSelectedVirtue && aiVirtueSelectionReason && (
+                {aiSelectedLearningStyle && aiLearningStyleSelectionReason && (
                   <div className="mb-6 p-4 bg-blue-50 border border-blue-200 object-cover">
                     <div className="flex items-start space-x-3">
                       <div className="flex-shrink-0">
@@ -828,18 +759,18 @@ function App() {
                           Learning Micro-Academy AI Recommendation
                         </h4>
                         <p className="text-sm text-blue-800 mb-3">
-                          {aiVirtueSelectionReason}
+                          {aiLearningStyleSelectionReason}
                         </p>
                         <div className="flex space-x-2">
                           <button
                             onClick={() => {
-                              const virtue = virtues.find(
-                                (v) => v.id === aiSelectedVirtue
+                              const learningStyle = learningStyles.find(
+                                (v) => v.id === aiSelectedLearningStyle
                               );
-                              if (virtue) {
-                                setSelectedVirtue(virtue);
-                                setAiSelectedVirtue(null);
-                                setAiVirtueSelectionReason("");
+                              if (learningStyle) {
+                                setSelectedLearningStyle(learningStyle);
+                                setAiSelectedLearningStyle(null);
+                                setAiLearningStyleSelectionReason("");
                               }
                             }}
                             className="text-sm bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 object-cover transition-colors"
@@ -847,7 +778,7 @@ function App() {
                             Accept
                           </button>
                           <button
-                            onClick={handleVirtueAIAssistanceClick}
+                            onClick={handleLearningStyleAIAssistanceClick}
                             className="text-sm bg-slate-200 hover:bg-slate-300 text-slate-700 px-3 py-2 object-cover transition-colors flex items-center space-x-1"
                           >
                             <RefreshCw className="h-4 w-4" />
@@ -863,7 +794,7 @@ function App() {
                   <div className="mb-4 p-3 bg-amber-50 border border-amber-200 object-cover">
                     <p className="text-sm text-amber-800">
                       Please select a Sustainable Development Goal first to
-                      enable virtue selection.
+                      enable learning style selection.
                     </p>
                   </div>
                 )}
@@ -874,9 +805,9 @@ function App() {
                     currentStep={2}
                     totalSteps={7}
                     onPrevious={() => navigateToScreen(11)}
-                    onNext={() => selectedVirtue && navigateToScreen(3)}
+                    onNext={() => selectedLearningStyle && navigateToScreen(3)}
                     canGoPrevious={true}
-                    canGoNext={!!selectedVirtue}
+                    canGoNext={!!selectedLearningStyle}
                     previousLabel="Back"
                     nextLabel="Next"
                   />
@@ -889,12 +820,14 @@ function App() {
                       : "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6"
                   } mb-8`}
                 >
-                  {virtues.map((virtue) => {
-                    const IconComponent = virtue.icon;
+                  {learningStyles.map((learningStyle) => {
+                    const IconComponent = learningStyle.icon;
                     return (
                       <button
-                        key={virtue.id}
-                        onClick={() => selectedSDG && setSelectedVirtue(virtue)}
+                        key={learningStyle.id}
+                        onClick={() =>
+                          selectedSDG && setSelectedLearningStyle(learningStyle)
+                        }
                         disabled={!selectedSDG}
                         className={`${
                           isListView
@@ -917,11 +850,12 @@ function App() {
                             className={`${
                               isListView ? "w-10 h-10" : "w-20 h-20"
                             } rounded-full overflow-hidden flex items-center justify-center relative shadow-md ${
-                              selectedVirtue?.id === virtue.id && selectedSDG
+                              selectedLearningStyle?.id === learningStyle.id &&
+                              selectedSDG
                                 ? "bg-blue-50 border-2 border-blue-500 ring-2 ring-blue-200 ring-offset-2"
-                                : aiSelectedVirtue === virtue.id
+                                : aiSelectedLearningStyle === learningStyle.id
                                 ? "bg-green-50 border-2 border-green-500 ring-2 ring-green-200 ring-offset-2"
-                                : `bg-white border-2 ${virtue.color.replace(
+                                : `bg-white border-2 ${learningStyle.color.replace(
                                     "bg-",
                                     "border-"
                                   )}`
@@ -930,16 +864,16 @@ function App() {
                             <IconComponent
                               className={`${
                                 isListView ? "h-5 w-5" : "h-12 w-12"
-                              } ${virtue.iconColor}`}
+                              } ${learningStyle.iconColor}`}
                             />
                           </div>
-                          {selectedVirtue?.id === virtue.id && (
+                          {selectedLearningStyle?.id === learningStyle.id && (
                             <div className="absolute -top-2 -right-2 w-7 h-7 bg-blue-500 rounded-full flex items-center justify-center shadow-lg z-10">
                               <Check className="w-4 h-4 text-white" />
                             </div>
                           )}
-                          {aiSelectedVirtue === virtue.id &&
-                            selectedVirtue?.id !== virtue.id && (
+                          {aiSelectedLearningStyle === learningStyle.id &&
+                            selectedLearningStyle?.id !== learningStyle.id && (
                               <div className="absolute -top-2 -right-2 w-7 h-7 bg-green-500 rounded-full flex items-center justify-center shadow-lg z-10">
                                 <Sparkles className="w-4 h-4 text-white" />
                               </div>
@@ -957,15 +891,15 @@ function App() {
                                 : "text-sm font-medium text-slate-800 leading-tight"
                             }`}
                           >
-                            {virtue.name}
+                            {learningStyle.name}
                           </p>
                           {isListView && (
                             <p className="text-xs text-slate-600 mt-1 text-left">
                               Click to{" "}
-                              {selectedVirtue?.id === virtue.id
+                              {selectedLearningStyle?.id === learningStyle.id
                                 ? "deselect"
                                 : "select"}{" "}
-                              this virtue
+                              this learning style
                             </p>
                           )}
                         </div>
@@ -1039,7 +973,7 @@ function App() {
                       if (newGoal.title && newGoal.description) {
                         const goal: Goal = {
                           id: Date.now().toString(),
-                          virtueId: selectedVirtue!.id,
+                          learningStyleId: selectedLearningStyle!.id,
                           sdgIds: selectedSDG ? selectedSDG.split(",") : [],
                           title: newGoal.title,
                           description: newGoal.description,
@@ -1106,7 +1040,7 @@ function App() {
 
                         const goal: Goal = {
                           id: Date.now().toString(),
-                          virtueId: selectedVirtue!.id,
+                          learningStyleId: selectedLearningStyle!.id,
                           sdgIds: selectedSDG ? selectedSDG.split(",") : [],
                           title:
                             aiActionTitles[
@@ -1469,18 +1403,12 @@ function App() {
                       {selectedSDG && (
                         <>
                           <div className="w-20 h-20 rounded-full overflow-hidden mb-2 overflow-hidden flex items-center justify-center bg-white">
-                            <img
-                              src={
+                            <div
+                              className={`w-12 h-12 rounded-full ${
                                 sustainableDevelopmentGoals.find(
                                   (s) => s.id === selectedSDG.split(",")[0]
-                                )?.image
-                              }
-                              alt={
-                                sustainableDevelopmentGoals.find(
-                                  (s) => s.id === selectedSDG.split(",")[0]
-                                )?.title
-                              }
-                              className="w-16 h-16 object-cover"
+                                )?.innerColor || "bg-slate-700"
+                              }`}
                             />
                           </div>
                           <span className="text-sm font-medium text-slate-800 leading-tight">
@@ -1503,15 +1431,15 @@ function App() {
                   {/* Virtue Circle */}
                   <div className="text-center flex flex-col items-center">
                     <div className="bg-white border-2 border-slate-200 rounded-full p-4 w-28 h-28 flex flex-col items-center justify-center shadow-md">
-                      {selectedVirtue && (
+                      {selectedLearningStyle && (
                         <>
                           <div className="w-20 h-20 rounded-full overflow-hidden mb-2 overflow-hidden flex items-center justify-center bg-white">
-                            {React.createElement(selectedVirtue.icon, {
-                              className: `h-12 w-12 ${selectedVirtue.iconColor}`,
+                            {React.createElement(selectedLearningStyle.icon, {
+                              className: `h-12 w-12 ${selectedLearningStyle.iconColor}`,
                             })}
                           </div>
                           <span className="text-sm font-medium text-slate-800 leading-tight">
-                            {selectedVirtue?.name}
+                            {selectedLearningStyle?.name}
                           </span>
                         </>
                       )}
@@ -2064,14 +1992,14 @@ function App() {
           <div className="max-w-md mx-auto md:max-w-[calc(42rem+400px)] lg:max-w-[calc(42rem+400px)]">
             <div className="bg-white rounded-xl shadow-xl overflow-hidden">
               <div className="bg-slate-900 p-6 text-white">
-                <h2 className="text-2xl font-bold">Select SDGs</h2>
+                <h2 className="text-2xl font-bold">Selects</h2>
               </div>
 
               <div className="p-6">
                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-4">
                   <div className="flex flex-col mb-4 lg:mb-0">
                     <h3 className="text-xl font-semibold text-slate-800 mb-3">
-                      Select SDGs
+                      Learning Profile
                     </h3>
                     {/* AI assistance prompt on its own row */}
                     <div className="flex items-center space-x-2">
@@ -2169,18 +2097,22 @@ function App() {
                     >
                       <div className="mb-2 flex justify-center relative">
                         <div
-                          className={`w-20 h-20 rounded-full overflow-hidden overflow-hidden flex items-center justify-center shadow-md ${
+                          className={`w-20 h-20 rounded-full flex items-center justify-center shadow-md ${
                             selectedSDG === sdg.id
-                              ? "bg-blue-50 border-2 border-blue-500 ring-2 ring-blue-200 ring-offset-2"
+                              ? `${
+                                  sdg.color || "bg-slate-500"
+                                } border-2 border-blue-500 ring-2 ring-blue-200 ring-offset-2`
                               : aiSelectedSDG === sdg.id
-                              ? "bg-green-50 border-2 border-green-500 ring-2 ring-green-200 ring-offset-2"
-                              : "bg-white"
+                              ? `${
+                                  sdg.color || "bg-slate-500"
+                                } border-2 border-green-500 ring-2 ring-green-200 ring-offset-2`
+                              : sdg.color || "bg-slate-500"
                           }`}
                         >
-                          <img
-                            src={sdg.image}
-                            alt={sdg.title}
-                            className="w-16 h-16 object-cover"
+                          <div
+                            className={`w-12 h-12 rounded-full ${
+                              sdg.innerColor || "bg-slate-700"
+                            }`}
                           />
                         </div>
                         {selectedSDG === sdg.id && (
@@ -2283,6 +2215,23 @@ function App() {
   const UserResearchScreen = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+        <header>
+          <div className="px-4 md:px-6 py-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <button
+                  onClick={() => navigateToScreen(1)}
+                  className="hover:opacity-80 transition-opacity"
+                >
+                  <span className="text-2xl font-bold text-slate-900">
+                    MicroLearn
+                  </span>
+                </button>
+              </div>
+              <Navigation />
+            </div>
+          </div>
+        </header>
         <div className="max-w-6xl mx-auto px-4 py-8">
           <div className="bg-white rounded-2xl shadow-xl p-8">
             <div className="text-center mb-8">
@@ -4144,8 +4093,9 @@ function App() {
                               <div className="flex items-start justify-between mb-4">
                                 <div className="flex-1">
                                   <h3 className="font-semibold text-slate-900 text-lg mb-2">
-                                    {virtues.find((v) => v.id === goal.virtueId)
-                                      ?.name || "Unknown"}
+                                    {learningStyles.find(
+                                      (v) => v.id === goal.learningStyleId
+                                    )?.name || "Unknown"}
                                   </h3>
                                   <p className="text-sm text-slate-600 mb-1">
                                     {goal.title}
@@ -4275,11 +4225,11 @@ function App() {
                                   <div className="mt-4 pt-3 border-t border-slate-100 space-y-2 text-sm text-slate-600">
                                     <div className="flex items-center space-x-2">
                                       <span className="font-medium">
-                                        Virtue:
+                                        Learning Style:
                                       </span>
                                       <span>
-                                        {virtues.find(
-                                          (v) => v.id === goal.virtueId
+                                        {learningStyles.find(
+                                          (v) => v.id === goal.learningStyleId
                                         )?.name || "Unknown"}
                                       </span>
                                     </div>
@@ -4315,27 +4265,29 @@ function App() {
                     </div>
                   )}
 
-                  {/* Completed Actions grouped by Virtue */}
+                  {/* Completed Actions grouped by Learning Style */}
                   {goals.filter((goal) => goal.completed).length > 0 && (
                     <div>
                       <h3 className="text-lg font-semibold text-slate-900 mb-4">
                         Completed Actions
                       </h3>
-                      {virtues.map((virtue) => {
-                        const completedGoalsForVirtue = goals.filter(
+                      {learningStyles.map((learningStyle) => {
+                        const completedGoalsForLearningStyle = goals.filter(
                           (goal) =>
-                            goal.completed && goal.virtueId === virtue.id
+                            goal.completed &&
+                            goal.learningStyleId === learningStyle.id
                         );
 
-                        if (completedGoalsForVirtue.length === 0) return null;
+                        if (completedGoalsForLearningStyle.length === 0)
+                          return null;
 
                         return (
-                          <div key={virtue.id} className="mb-6">
+                          <div key={learningStyle.id} className="mb-6">
                             <h4 className="text-lg font-semibold text-slate-700 mb-3">
-                              {virtue.name}
+                              {learningStyle.name}
                             </h4>
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                              {completedGoalsForVirtue.map((goal) => (
+                              {completedGoalsForLearningStyle.map((goal) => (
                                 <div
                                   key={goal.id}
                                   className="bg-white p-4 rounded-xl shadow-md border border-slate-100 hover:shadow-md transition-shadow"
@@ -4343,7 +4295,7 @@ function App() {
                                   <div className="flex items-start justify-between mb-3">
                                     <div className="flex-1">
                                       <h5 className="font-medium text-slate-900 mb-1">
-                                        {virtue.name}
+                                        {learningStyle.name}
                                       </h5>
                                       <p className="text-xs text-slate-600 mb-2">
                                         {goal.title}
@@ -5538,32 +5490,6 @@ function App() {
                         )}
                       </div>
 
-                      {/* Video Player */}
-                      <div className="mt-4">
-                        <div className="relative w-full h-48 bg-slate-200 object-cover overflow-hidden max-w-full">
-                          <video
-                            key="main-video"
-                            className="w-full h-full object-cover max-w-full max-h-full"
-                            autoPlay
-                            muted
-                            loop
-                            playsInline
-                            webkit-playsinline="true"
-                            poster="/drone-water.jpg"
-                            style={{ maxWidth: "100%", maxHeight: "100%" }}
-                          >
-                            <source src="/drone-water.mp4" type="video/mp4" />
-                            Your browser does not support the video tag.
-                          </video>
-                          {showCodeLabels && (
-                            <div className="text-xs text-slate-500 mt-2">
-                              &lt;video&gt; - Media element with auto-play and
-                              loop
-                            </div>
-                          )}
-                        </div>
-                      </div>
-
                       {/* Read More Button */}
                       <div className="mt-4">
                         <button
@@ -5837,7 +5763,7 @@ function App() {
           }}
         />
       )}
-      {currentScreen === 2 && <VirtueSelectionScreen />}
+      {currentScreen === 2 && <LearningStyleSelectionScreen />}
       {currentScreen === 3 && <GoalCreationScreen />}
       {currentScreen === 4 && <GoalConfirmationScreen />}
       {currentScreen === 5 && <DescribeSituationScreen />}
@@ -5852,96 +5778,10 @@ function App() {
       {currentScreen === 17 && <ActionJourneyScreen />}
       {currentScreen === 20 && <DesignSystemScreen />}
       {currentScreen === 21 && (
-        <CourseLibraryScreen onBack={() => navigateToScreen(1)} />
-      )}
-
-      {/* Grace Modal */}
-      {graceModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 overflow-hidden flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-2xl font-bold text-slate-900">
-                  Grace - Extended Definition
-                </h3>
-                <button
-                  onClick={() => setGraceModalOpen(false)}
-                  className="text-slate-400 hover:text-slate-600 transition-colors"
-                >
-                  <svg
-                    className="w-6 h-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </button>
-              </div>
-              <div className="space-y-6">
-                <div>
-                  <h4 className="text-lg font-semibold text-slate-900 mb-3">
-                    Grace Affirmations
-                  </h4>
-                  <ul className="space-y-2 text-slate-700">
-                    <li className="flex items-start">
-                      <span className="text-blue-600 mr-2">•</span>I trust that
-                      grace will guide me through challenges.
-                    </li>
-                    <li className="flex items-start">
-                      <span className="text-blue-600 mr-2">•</span>I remain open
-                      to the abundance life offers.
-                    </li>
-                    <li className="flex items-start">
-                      <span className="text-blue-600 mr-2">•</span>I show
-                      compassion and kindness to others.
-                    </li>
-                    <li className="flex items-start">
-                      <span className="text-blue-600 mr-2">•</span>I approach
-                      life with grace and courtesy.
-                    </li>
-                    <li className="flex items-start">
-                      <span className="text-blue-600 mr-2">•</span>I embrace
-                      forgiveness.
-                    </li>
-                    <li className="flex items-start">
-                      <span className="text-blue-600 mr-2">•</span>I communicate
-                      and act with gentleness and respect.
-                    </li>
-                  </ul>
-                </div>
-
-                <div className="bg-blue-50 p-4 rounded-lg">
-                  <p className="text-slate-700 italic mb-2">
-                    "I am grateful for the gift of Grace. It supports and
-                    enriches my life."
-                  </p>
-                </div>
-
-                <div className="bg-slate-50 p-4 rounded-lg border-l-4 border-blue-500">
-                  <p className="text-slate-700 italic">
-                    "Grace is not part of consciousness; it is the amount of
-                    light in our souls, not knowledge nor reason"
-                  </p>
-                  <p className="text-slate-600 text-sm mt-2">~ Pope Francis</p>
-                </div>
-              </div>
-              <div className="mt-6 pt-4 border-t border-slate-200">
-                <button
-                  onClick={() => setGraceModalOpen(false)}
-                  className="w-full bg-slate-900 hover:bg-slate-800 text-white py-3 px-6 rounded-full font-medium transition-colors"
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <CourseLibraryScreen
+          onBack={() => navigateToScreen(1)}
+          Navigation={Navigation}
+        />
       )}
     </div>
   );

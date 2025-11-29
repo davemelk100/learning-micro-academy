@@ -264,7 +264,7 @@ export const VirtueSelectionScreen: React.FC<VirtueSelectionScreenProps> = ({
                       onClick={() => navigateToScreen(8)}
                       className="text-blue-600 hover:text-blue-800 underline font-medium"
                     >
-                      Select SDG
+                      Select
                     </button>
                   </p>
                 </div>

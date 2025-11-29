@@ -61,7 +61,7 @@ The Learning Micro-Academy application has been refactored from a single large `
 ### SDGSelectionScreen Component
 
 - **Props**: 8 props for SDG selection functionality
-- **Features**: Multi-select SDG interface, navigation
+- **Features**: Multi-Select interface, navigation
 - **Size**: ~200 lines (vs 300+ lines in original)
 
 ### VirtueSelectionScreen Component
