@@ -1,8 +1,8 @@
-# SOULCHI Haven Refactoring Summary
+# Learning Micro-Academy Refactoring Summary
 
 ## Overview
 
-The SOULCHI Haven application has been refactored from a single large `App.tsx` file (8,983 lines) into a modular component-based architecture. This refactoring improves maintainability, reusability, and code organization.
+The Learning Micro-Academy application has been refactored from a single large `App.tsx` file (8,983 lines) into a modular component-based architecture. This refactoring improves maintainability, reusability, and code organization.
 
 ## New File Structure
 
@@ -17,7 +17,7 @@ The SOULCHI Haven application has been refactored from a single large `App.tsx` 
 ### Component Directory (`src/components/`)
 
 - `FontSelector.tsx` - Font selection dropdown component
-- `SoulchiHelpButton.tsx` - Reusable help button component
+- `HelpButton.tsx` - Reusable help button component
 - `AIInput.tsx` - AI input field component
 - `Dashboard.tsx` - Main dashboard screen component
 - `SDGSelectionScreen.tsx` - SDG selection screen component

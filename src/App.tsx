@@ -850,32 +850,16 @@ function App() {
               Learning Micro-Academy
             </h1>
             <p className="text-base text-slate-700 mb-6">
-              Bite-sized courses for continuous learning. Join our cohort,
-              subscribe to our newsletter, or explore our course library.
+              Bite-sized courses for continuous learning. Explore our comprehensive course library.
             </p>
           </div>
 
           <div className="flex flex-col md:flex-row justify-center items-center gap-4 md:gap-8">
             <button
               onClick={() => {
-                // Sign up for cohort/newsletter - you can customize this action
-                const email = prompt(
-                  "Enter your email to join our cohort and get access to our course library:"
-                );
-                if (email) {
-                  alert(`Thanks! We'll send course updates to ${email}`);
-                  navigateToScreen(0);
-                }
-              }}
-              className="w-full md:w-auto py-4 px-8 bg-slate-900 hover:bg-slate-800 text-white rounded-full transition-all duration-200 font-medium shadow-lg hover:shadow-xl text-lg"
-            >
-              Join Cohort & Newsletter
-            </button>
-            <button
-              onClick={() => {
                 navigateToScreen(21);
               }}
-              className="w-full md:w-auto py-4 px-8 bg-white hover:bg-slate-100 text-slate-900 border-2 border-slate-900 rounded-full transition-all duration-200 font-medium shadow-lg hover:shadow-xl text-lg"
+              className="w-full md:w-auto py-4 px-8 bg-slate-900 hover:bg-slate-800 text-white rounded-full transition-all duration-200 font-medium shadow-lg hover:shadow-xl text-lg"
             >
               Explore Course Library
             </button>

@@ -22,7 +22,7 @@ import {
 
 // Import components
 import { FontSelector } from "./components/FontSelector";
-import { SoulchiHelpButton as HelpButton } from "./components/SoulchiHelpButton";
+import { HelpButton } from "./components/HelpButton";
 import { AIInput } from "./components/AIInput";
 import { Dashboard } from "./components/Dashboard";
 import { SDGSelectionScreen } from "./components/SDGSelectionScreen";

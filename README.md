@@ -1,6 +1,6 @@
 # Learning Micro-Academy
 
-A learning platform for bite-sized courses and continuous learning. Join cohorts, subscribe to newsletters, or explore our comprehensive course library.
+A learning platform for bite-sized courses and continuous learning. Explore our comprehensive course library.
 
 ## Overview
 

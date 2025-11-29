@@ -1,4 +1,4 @@
-# 🚀 SOULCHI Haven - Capacitor Mobile Setup
+# 🚀 Learning Micro-Academy - Capacitor Mobile Setup
 
 ## ✅ Setup Complete!
 
@@ -77,8 +77,8 @@ npm run mobile:dev
 
 ## 📦 App Configuration
 
-- **App Name**: SOULCHI Haven
-- **Bundle ID**: com.soulchi.haven
+- **App Name**: Learning Micro-Academy
+- **Bundle ID**: com.learningmicroacademy.app
 - **Web Directory**: dist/ (auto-built from your React app)
 
 ## 🎯 What You Can Do Now:
@@ -97,4 +97,4 @@ npm run mobile:dev
 
 ## 🎉 You're Ready!
 
-Your SOULCHI Haven app is now a native mobile app! Start by running `npm run cap:ios` or `npm run cap:android` to see it in action.
+Your Learning Micro-Academy app is now a native mobile app! Start by running `npm run cap:ios` or `npm run cap:android` to see it in action.

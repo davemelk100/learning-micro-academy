@@ -5,7 +5,7 @@ import { Virtue, Goal, UserState } from "../types";
 import { virtues, sdgGoals } from "../data";
 import { getHeadingFontClass, clearGoalCreationState } from "../utils";
 import { AIInput } from "./AIInput";
-import { SoulchiHelpButton } from "./SoulchiHelpButton";
+import { HelpButton } from "./HelpButton";
 import { AddActionButton } from "./AddActionButton";
 import { ActionCard } from "./ActionCard";
 import { SaveCompletedActionModal } from "./SaveCompletedActionModal";
