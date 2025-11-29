@@ -108,7 +108,9 @@ export const VirtueSelectionScreen: React.FC<VirtueSelectionScreenProps> = ({
                     </clipPath>
                   </defs>
                 </svg>
-                <img src="/soulchi-logo.png" alt="Learning Micro-Academy" className="h-8" />
+                <span className="text-2xl font-bold text-slate-900">
+                  MicroLearn
+                </span>
               </Link>
             </div>
             {/* Navigation component would go here */}

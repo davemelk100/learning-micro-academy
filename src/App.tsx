@@ -831,11 +831,9 @@ function App() {
                 onClick={() => navigateToScreen(1)}
                 className="hover:opacity-80 transition-opacity"
               >
-                <img
-                  src="/soulchi-logo.png"
-                  alt="Learning Micro-Academy"
-                  className="h-8"
-                />
+                <span className="text-2xl font-bold text-slate-900">
+                  MicroLearn
+                </span>
               </button>
             </div>
             <Navigation />
@@ -850,7 +848,8 @@ function App() {
               Learning Micro-Academy
             </h1>
             <p className="text-base text-slate-700 mb-6">
-              Bite-sized courses for continuous learning. Explore our comprehensive course library.
+              Bite-sized courses for continuous learning. Explore our
+              comprehensive course library.
             </p>
           </div>
 
@@ -909,11 +908,9 @@ function App() {
                   onClick={() => navigateToScreen(1)}
                   className="hover:opacity-80 transition-opacity"
                 >
-                  <img
-                    src="/soulchi-logo.png"
-                    alt="Learning Micro-Academy"
-                    className="h-8"
-                  />
+                  <span className="text-2xl font-bold text-slate-900">
+                    MicroLearn
+                  </span>
                 </button>
               </div>
               <Navigation />
@@ -1135,11 +1132,9 @@ function App() {
                   onClick={() => navigateToScreen(1)}
                   className="hover:opacity-80 transition-opacity"
                 >
-                  <img
-                    src="/soulchi-logo.png"
-                    alt="Learning Micro-Academy"
-                    className="h-8"
-                  />
+                  <span className="text-2xl font-bold text-slate-900">
+                    MicroLearn
+                  </span>
                 </button>
               </div>
               <Navigation />
@@ -1572,11 +1567,9 @@ function App() {
                 onClick={() => navigateToScreen(1)}
                 className="hover:opacity-80 transition-opacity"
               >
-                <img
-                  src="/soulchi-logo.png"
-                  alt="Learning Micro-Academy"
-                  className="h-8"
-                />
+                <span className="text-2xl font-bold text-slate-900">
+                  MicroLearn
+                </span>
               </button>
             </div>
             <Navigation />
@@ -1738,11 +1731,9 @@ function App() {
                   onClick={() => navigateToScreen(1)}
                   className="hover:opacity-80 transition-opacity"
                 >
-                  <img
-                    src="/soulchi-logo.png"
-                    alt="Learning Micro-Academy"
-                    className="h-8"
-                  />
+                  <span className="text-2xl font-bold text-slate-900">
+                    MicroLearn
+                  </span>
                 </button>
               </div>
               <Navigation />
@@ -1859,11 +1850,9 @@ function App() {
                   onClick={() => navigateToScreen(1)}
                   className="hover:opacity-80 transition-opacity"
                 >
-                  <img
-                    src="/soulchi-logo.png"
-                    alt="Learning Micro-Academy"
-                    className="h-8"
-                  />
+                  <span className="text-2xl font-bold text-slate-900">
+                    MicroLearn
+                  </span>
                 </button>
               </div>
               <Navigation />
@@ -1983,11 +1972,9 @@ function App() {
                   onClick={() => navigateToScreen(1)}
                   className="hover:opacity-80 transition-opacity"
                 >
-                  <img
-                    src="/soulchi-logo.png"
-                    alt="Learning Micro-Academy"
-                    className="h-8"
-                  />
+                  <span className="text-2xl font-bold text-slate-900">
+                    MicroLearn
+                  </span>
                 </button>
               </div>
               <Navigation />
@@ -2096,11 +2083,9 @@ function App() {
                   onClick={() => navigateToScreen(1)}
                   className="hover:opacity-80 transition-opacity"
                 >
-                  <img
-                    src="/soulchi-logo.png"
-                    alt="Learning Micro-Academy"
-                    className="h-8"
-                  />
+                  <span className="text-2xl font-bold text-slate-900">
+                    MicroLearn
+                  </span>
                 </button>
               </div>
               <Navigation />
@@ -2219,11 +2204,9 @@ function App() {
                   onClick={() => navigateToScreen(1)}
                   className="hover:opacity-80 transition-opacity"
                 >
-                  <img
-                    src="/soulchi-logo.png"
-                    alt="Learning Micro-Academy"
-                    className="h-8"
-                  />
+                  <span className="text-2xl font-bold text-slate-900">
+                    MicroLearn
+                  </span>
                 </button>
               </div>
               <Navigation />
@@ -3969,11 +3952,9 @@ function App() {
                   onClick={() => navigateToScreen(1)}
                   className="hover:opacity-80 transition-opacity"
                 >
-                  <img
-                    src="/soulchi-logo.png"
-                    alt="Learning Micro-Academy"
-                    className="h-8"
-                  />
+                  <span className="text-2xl font-bold text-slate-900">
+                    MicroLearn
+                  </span>
                 </button>
               </div>
               <Navigation />
@@ -4150,11 +4131,9 @@ function App() {
                 onClick={() => navigateToScreen(1)}
                 className="hover:opacity-80 transition-opacity"
               >
-                <img
-                  src="/soulchi-logo.png"
-                  alt="Learning Micro-Academy"
-                  className="h-8"
-                />
+                <span className="text-2xl font-bold text-slate-900">
+                  MicroLearn
+                </span>
               </button>
             </div>
             <Navigation />
@@ -4178,11 +4157,9 @@ function App() {
                 onClick={() => navigateToScreen(1)}
                 className="hover:opacity-80 transition-opacity"
               >
-                <img
-                  src="/soulchi-logo.png"
-                  alt="Learning Micro-Academy"
-                  className="h-8"
-                />
+                <span className="text-2xl font-bold text-slate-900">
+                  MicroLearn
+                </span>
               </button>
             </div>
             <Navigation />
@@ -4228,11 +4205,9 @@ function App() {
                   onClick={() => navigateToScreen(0)}
                   className="hover:opacity-80 transition-opacity"
                 >
-                  <img
-                    src="/soulchi-logo.png"
-                    alt="Learning Micro-Academy"
-                    className="h-8"
-                  />
+                  <span className="text-2xl font-bold text-slate-900">
+                    MicroLearn
+                  </span>
                 </button>
               </div>
               <Navigation />
@@ -4644,11 +4619,9 @@ function App() {
                   onClick={() => navigateToScreen(1)}
                   className="hover:opacity-80 transition-opacity"
                 >
-                  <img
-                    src="/soulchi-logo.png"
-                    alt="Learning Micro-Academy"
-                    className="h-8"
-                  />
+                  <span className="text-2xl font-bold text-slate-900">
+                    MicroLearn
+                  </span>
                 </button>
               </div>
               <div className="flex items-center space-x-4">
@@ -5970,7 +5943,9 @@ function App() {
       {currentScreen === 13 && <UserResearchScreen />}
       {currentScreen === 17 && <ActionJourneyScreen />}
       {currentScreen === 20 && <DesignSystemScreen />}
-      {currentScreen === 21 && <CourseLibraryScreen onBack={() => navigateToScreen(1)} />}
+      {currentScreen === 21 && (
+        <CourseLibraryScreen onBack={() => navigateToScreen(1)} />
+      )}
 
       {/* Grace Modal */}
       {graceModalOpen && (
