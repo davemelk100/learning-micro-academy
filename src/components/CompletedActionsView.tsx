@@ -33,6 +33,7 @@ export const CompletedActionsView: React.FC<CompletedActionsViewProps> = ({
 
   useEffect(() => {
     filterAndSortActions();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [completedActions, searchTerm, selectedVirtue, sortBy]);
 
   const loadCompletedActions = async () => {

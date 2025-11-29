@@ -7,8 +7,16 @@ import React, {
 } from "react";
 import { apiService } from "../services/apiService";
 
+interface UserData {
+  id?: string;
+  email?: string;
+  name?: string;
+  preferences?: Record<string, unknown>;
+  isNewUser?: boolean;
+}
+
 interface AuthContextType {
-  user: any | null;
+  user: UserData | null;
   isAuthenticated: boolean;
   loading: boolean;
   login: (email: string, password: string) => Promise<boolean>;
@@ -32,7 +40,7 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [user, setUser] = useState<any | null>(null);
+  const [user, setUser] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -47,7 +55,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             // Token might be invalid, clear it
             apiService.logout();
           }
-        } catch (error) {
+        } catch {
           apiService.logout();
         }
       }
@@ -65,7 +73,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         return true;
       }
       return false;
-    } catch (error) {
+    } catch {
       return false;
     }
   };
@@ -82,7 +90,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         return true;
       }
       return false;
-    } catch (error) {
+    } catch {
       return false;
     }
   };
@@ -100,6 +108,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
     } catch (error) {
       console.error("Error refreshing user:", error);
+      // Error is used in console.error, so it's fine
     }
   };
 

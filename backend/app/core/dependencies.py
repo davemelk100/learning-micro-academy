@@ -3,9 +3,8 @@ Dependency injection for authentication and database access
 """
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from app.database.supabase_client import get_supabase_client
+from app.database.database_adapter import db
 from app.core.security import decode_access_token
-from supabase import Client
 
 security = HTTPBearer()
 
@@ -30,25 +29,19 @@ async def get_current_user(
             detail="Invalid token payload"
         )
     
-    # Get user from Supabase
-    supabase = get_supabase_client()
+    # Get user from database adapter
     try:
-        response = supabase.table("users").select("*").eq("id", user_id).single().execute()
-        if not response.data:
+        user = db.get_user_by_id(user_id)
+        if not user:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="User not found"
             )
-        return response.data
+        return user
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error fetching user: {str(e)}"
         )
-
-async def get_supabase(
-    current_user: dict = Depends(get_current_user)
-) -> Client:
-    """Get Supabase client for authenticated requests"""
-    return get_supabase_client()
-

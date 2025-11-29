@@ -4,8 +4,8 @@ User profile management routes
 from fastapi import APIRouter, HTTPException, status, Depends
 from pydantic import BaseModel
 from typing import Optional, Dict, Any
-from app.core.dependencies import get_current_user, get_supabase
-from app.database.supabase_client import Client
+from app.core.dependencies import get_current_user
+from app.database.database_adapter import db
 
 router = APIRouter()
 
@@ -18,13 +18,19 @@ class UserProfileUpdate(BaseModel):
 
 @router.get("/me")
 async def get_current_user_profile(
-    current_user: dict = Depends(get_current_user),
-    supabase: Client = Depends(get_supabase)
+    current_user: dict = Depends(get_current_user)
 ):
     """Get current user's profile"""
     try:
-        response = supabase.table("users").select("*").eq("id", current_user["id"]).single().execute()
-        return response.data
+        user = db.get_user_by_id(current_user["id"])
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="User not found"
+            )
+        return user
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -34,8 +40,7 @@ async def get_current_user_profile(
 @router.put("/me")
 async def update_user_profile(
     profile_update: UserProfileUpdate,
-    current_user: dict = Depends(get_current_user),
-    supabase: Client = Depends(get_supabase)
+    current_user: dict = Depends(get_current_user)
 ):
     """Update user profile"""
     try:
@@ -44,13 +49,20 @@ async def update_user_profile(
             update_data["name"] = profile_update.name
         if profile_update.preferences:
             # Merge preferences with existing ones
-            existing = supabase.table("users").select("preferences").eq("id", current_user["id"]).single().execute()
-            existing_prefs = existing.data.get("preferences", {}) if existing.data else {}
+            existing_user = db.get_user_by_id(current_user["id"])
+            existing_prefs = existing_user.get("preferences", {}) if existing_user else {}
             existing_prefs.update(profile_update.preferences)
             update_data["preferences"] = existing_prefs
         
-        response = supabase.table("users").update(update_data).eq("id", current_user["id"]).execute()
-        return response.data[0] if response.data else None
+        updated_user = db.update_user(current_user["id"], update_data)
+        if not updated_user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="User not found"
+            )
+        return updated_user
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -60,15 +72,21 @@ async def update_user_profile(
 @router.put("/me/preferences")
 async def update_user_preferences(
     preferences_update: UserPreferencesUpdate,
-    current_user: dict = Depends(get_current_user),
-    supabase: Client = Depends(get_supabase)
+    current_user: dict = Depends(get_current_user)
 ):
     """Update user preferences"""
     try:
-        response = supabase.table("users").update({
+        updated_user = db.update_user(current_user["id"], {
             "preferences": preferences_update.preferences
-        }).eq("id", current_user["id"]).execute()
-        return response.data[0] if response.data else None
+        })
+        if not updated_user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="User not found"
+            )
+        return updated_user
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -77,13 +95,19 @@ async def update_user_preferences(
 
 @router.get("/me/goals")
 async def get_user_goals(
-    current_user: dict = Depends(get_current_user),
-    supabase: Client = Depends(get_supabase)
+    current_user: dict = Depends(get_current_user)
 ):
     """Get user's goals"""
     try:
-        response = supabase.table("users").select("goals").eq("id", current_user["id"]).single().execute()
-        return response.data.get("goals", []) if response.data else []
+        user = db.get_user_by_id(current_user["id"])
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="User not found"
+            )
+        return user.get("goals", [])
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -93,18 +117,23 @@ async def get_user_goals(
 @router.put("/me/goals")
 async def update_user_goals(
     goals: list,
-    current_user: dict = Depends(get_current_user),
-    supabase: Client = Depends(get_supabase)
+    current_user: dict = Depends(get_current_user)
 ):
     """Update user's goals"""
     try:
-        response = supabase.table("users").update({
+        updated_user = db.update_user(current_user["id"], {
             "goals": goals
-        }).eq("id", current_user["id"]).execute()
-        return response.data[0] if response.data else None
+        })
+        if not updated_user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="User not found"
+            )
+        return updated_user
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error updating goals: {str(e)}"
         )
-

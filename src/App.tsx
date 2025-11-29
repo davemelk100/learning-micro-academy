@@ -45,6 +45,7 @@ import {
 interface LearningStyle {
   id: string;
   name: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   icon: React.ComponentType<any>;
   color: string;
   iconColor: string;
@@ -173,7 +174,6 @@ function App() {
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [loadingUserState, setLoadingUserState] = useState(true);
 
-  // Load user state on mount
   useEffect(() => {
     const loadUserState = async () => {
       setLoadingUserState(true);
@@ -189,7 +189,6 @@ function App() {
     loadUserState();
   }, [isAuthenticated]);
 
-  // Save user state whenever it changes
   useEffect(() => {
     if (!loadingUserState) {
       saveUserState(userState).catch(console.error);
@@ -228,7 +227,6 @@ function App() {
     title: "",
     description: "",
   });
-  // Use auth context user, fallback to default
   const displayUser = user || { name: "Guest", isNewUser: true };
   const [onboardingStep, setOnboardingStep] = useState<number | null>(null); // null = not in onboarding, 1-4 = onboarding steps
   const [isLoadingGoalSuggestions, setIsLoadingGoalSuggestions] =
@@ -249,7 +247,6 @@ function App() {
   const [designSystemCardExpanded, setDesignSystemCardExpanded] =
     useState(true);
 
-  // Learning Topics data
   const sdgGoals = [
     {
       id: "sdg1",
@@ -365,7 +362,7 @@ function App() {
     },
   ];
   const [editingGoal, setEditingGoal] = useState<Goal | null>(null);
-  const [step7AmountChange, setStep7AmountChange] = useState(0);
+  const [_step7AmountChange, _setStep7AmountChange] = useState(0);
   const [selectedSDG, setSelectedSDG] = useState<string>("");
 
   // AI Suggested Courses selection state
@@ -379,15 +376,11 @@ function App() {
     notes: "",
   });
 
-  // Browser back button functionality
   const navigateToScreen = useCallback((screen: number) => {
     setCurrentScreen(screen);
-
-    // Update browser history
     window.history.pushState({ screen }, "", `#screen-${screen}`);
   }, []);
 
-  // Progress tracking functions
   const updateGoalProgress = (
     goalId: string,
     amount: number,
@@ -399,7 +392,6 @@ function App() {
           const newProgress = Math.min(100, goal.progress + amount);
           const completed = newProgress >= 100;
 
-          // Check for milestone achievements
           const updatedMilestones =
             goal.milestones?.map((milestone) => {
               if (
@@ -445,7 +437,6 @@ function App() {
       }
     };
 
-    // Initialize history with current screen
     window.history.replaceState(
       { screen: currentScreen },
       "",
@@ -473,30 +464,24 @@ function App() {
     }
   }, [displayUser.isNewUser, navigateToScreen]);
 
-  // Reset to correct screen if somehow on wrong screen
   useEffect(() => {
-    // Only redirect from screen 10 (ProgressSubmissionScreen) if needed
-    // Screen 8 is Step7Screen and should work normally
     if (currentScreen === 10) {
-      // If somehow on ProgressSubmissionScreen without proper state, redirect to Welcome
       navigateToScreen(1);
     }
   }, [currentScreen, navigateToScreen]);
 
-  // Function to get suggested courses based on selections
   const getSuggestedCourses = () => {
     if (!selectedSDG || !selectedLearningStyle) {
-      return courses.slice(0, 3); // Return first 3 courses as default
+      return courses.slice(0, 3);
     }
 
-    // Map SDG IDs to course categories/tags
     const sdgToCourseMap: { [key: string]: string[] } = {
-      sdg1: ["Design", "UX", "Product"], // No Poverty - design solutions
-      sdg2: ["Design", "Product", "Strategy"], // Zero Hunger - product strategy
-      sdg3: ["Development", "Web", "Analytics"], // Good Health - health tech
-      sdg4: ["Design", "UX", "Product"], // Quality Education - educational design
-      sdg5: ["Product", "Strategy", "Analytics"], // Gender Equality - inclusive products
-      sdg7: ["Sustainability", "Energy", "Environment"], // Affordable Energy
+      sdg1: ["Design", "UX", "Product"],
+      sdg2: ["Design", "Product", "Strategy"],
+      sdg3: ["Development", "Web", "Analytics"],
+      sdg4: ["Design", "UX", "Product"],
+      sdg5: ["Product", "Strategy", "Analytics"],
+      sdg7: ["Sustainability", "Energy", "Environment"],
       sdg8: ["Product", "Strategy", "Analytics"], // Decent Work - business strategy
       sdg9: ["Development", "Design", "Product"], // Industry Innovation - tech innovation
       sdg10: ["Product", "Strategy", "Analytics"], // Reduced Inequalities - inclusive design
@@ -537,21 +522,18 @@ function App() {
       const timer = setTimeout(() => {
         setIsLoadingGoalSuggestions(false);
         setShowGoalSuggestions(true);
-      }, 2000); // 2 seconds loading time
+      }, 2000);
 
       return () => clearTimeout(timer);
     }
   }, [currentScreen, selectedLearningStyle]);
 
-  // Handle Learning Style AI assistance click
   const handleLearningStyleAIAssistanceClick = () => {
     setIsLoadingAIAssistance(true);
     setAiSelectedLearningStyle(null);
     setAiLearningStyleSelectionReason("");
 
-    // Simulate AI processing time
     setTimeout(() => {
-      // Randomly select a learning style
       const randomIndex = Math.floor(Math.random() * learningStyles.length);
       const selectedLearningStyle = learningStyles[randomIndex];
 
@@ -644,7 +626,6 @@ function App() {
 
     return (
       <>
-        {/* Desktop Navigation */}
         <div className="hidden md:flex items-center space-x-6">
           {navItems.map((item, index) => (
             <button
@@ -657,6 +638,37 @@ function App() {
               {item.label}
             </button>
           ))}
+          {/* Auth/Profile Buttons */}
+          <div className="flex items-center gap-2 ml-4">
+            {isAuthenticated ? (
+              <>
+                <button
+                  onClick={() => setShowProfileModal(true)}
+                  className="bg-white rounded-full p-2 shadow-md hover:bg-slate-100 transition-colors border border-slate-200"
+                  title="Profile"
+                >
+                  <UserIcon className="w-5 h-5 text-slate-700" />
+                </button>
+                <button
+                  onClick={() => {
+                    logout();
+                    getUserState().then(setUserState).catch(console.error);
+                  }}
+                  className="bg-white rounded-full p-2 shadow-md hover:bg-slate-100 transition-colors border border-slate-200"
+                  title="Logout"
+                >
+                  <LogOut className="w-5 h-5 text-slate-700" />
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={() => setShowAuthModal(true)}
+                className="bg-slate-900 text-white rounded-full px-4 py-2 shadow-md hover:bg-slate-800 transition-colors text-sm font-medium"
+              >
+                Login
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Mobile Bottom Tray Menu */}
@@ -710,6 +722,27 @@ function App() {
                 </button>
               );
             })}
+            {/* Mobile Auth Button */}
+            <div className="flex items-center">
+              {isAuthenticated ? (
+                <button
+                  onClick={() => setShowProfileModal(true)}
+                  className="flex flex-col items-center space-y-1 p-2 text-slate-600 hover:text-slate-900"
+                  title="Profile"
+                >
+                  <UserIcon className="h-5 w-5" />
+                  <span className="text-xs font-medium">Profile</span>
+                </button>
+              ) : (
+                <button
+                  onClick={() => setShowAuthModal(true)}
+                  className="flex flex-col items-center space-y-1 p-2 text-slate-600 hover:text-slate-900"
+                >
+                  <UserIcon className="h-5 w-5" />
+                  <span className="text-xs font-medium">Login</span>
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </>
@@ -781,7 +814,10 @@ function App() {
   // Home Dashboard Screen - now using extracted component
   const HomeDashboardScreenComponent = () => (
     <HomeDashboardScreen
-      user={displayUser}
+      user={{
+        name: displayUser.name || "Guest",
+        isNewUser: displayUser.isNewUser ?? true,
+      }}
       goals={goals}
       userStats={userStats}
       navigateToScreen={navigateToScreen}
@@ -1449,7 +1485,7 @@ function App() {
 
   // Screen 8: Step 7 - Rate Learning Progress
   const Step7Screen = () => {
-    const amountChangeOptions = [
+    const _amountChangeOptions = [
       { value: 0, label: "None" },
       { value: 1, label: "Slight" },
       { value: 2, label: "Moderate" },
@@ -3563,7 +3599,7 @@ function App() {
   // Screen 17: Action Journey Archive
   const ActionJourneyScreen = () => {
     const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
-    const [selectedAmountChange, setSelectedAmountChange] = useState<{
+    const [_selectedAmountChange, _setSelectedAmountChange] = useState<{
       [key: string]: string | null;
     }>({});
 
@@ -5338,38 +5374,6 @@ function App() {
           />
         </div>
       )}
-
-      {/* Auth/Profile Button */}
-      <div className="fixed top-4 right-4 z-40 flex gap-2">
-        {isAuthenticated ? (
-          <>
-            <button
-              onClick={() => setShowProfileModal(true)}
-              className="bg-white rounded-full p-2 shadow-lg hover:bg-slate-100 transition-colors border border-slate-200"
-              title="Profile"
-            >
-              <UserIcon className="w-5 h-5 text-slate-700" />
-            </button>
-            <button
-              onClick={() => {
-                logout();
-                getUserState().then(setUserState).catch(console.error);
-              }}
-              className="bg-white rounded-full p-2 shadow-lg hover:bg-slate-100 transition-colors border border-slate-200"
-              title="Logout"
-            >
-              <LogOut className="w-5 h-5 text-slate-700" />
-            </button>
-          </>
-        ) : (
-          <button
-            onClick={() => setShowAuthModal(true)}
-            className="bg-slate-900 text-white rounded-full px-4 py-2 shadow-lg hover:bg-slate-800 transition-colors text-sm font-medium"
-          >
-            Login
-          </button>
-        )}
-      </div>
 
       {currentScreen === 0 && <HomeDashboardScreenComponent />}
       {currentScreen === 1 && (

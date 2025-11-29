@@ -3,8 +3,6 @@ import { AppHeader } from "../components/AppHeader";
 import { WelcomeSection } from "../components/WelcomeSection";
 import { VirtueOfTheWeek } from "../components/VirtueOfTheWeek";
 import { ActionsOverview } from "../components/ActionsOverview";
-import { VirtueProgress } from "../components/VirtueProgress";
-import { StatsOverview } from "../components/StatsOverview";
 import { Goal } from "../types";
 
 interface HomeDashboardScreenProps {
@@ -20,8 +18,8 @@ interface HomeDashboardScreenProps {
   // Additional props for modals and editing functionality
   editingGoal: Goal | null;
   setEditingGoal: (_goal: Goal | null) => void;
-  newGoal: any;
-  setNewGoal: (_goal: any) => void;
+  newGoal: { title: string; description: string };
+  setNewGoal: (_goal: { title: string; description: string }) => void;
   setGoals: (_goals: Goal[]) => void;
   progressModalOpen: boolean;
   setProgressModalOpen: (_open: boolean) => void;
@@ -74,11 +72,9 @@ export const HomeDashboardScreen: React.FC<HomeDashboardScreenProps> = ({
             toggleCardExpansion={toggleCardExpansion}
             onNavigateToCourse={onNavigateToCourse}
             completedCourses={completedCourses}
+            userStats={userStats}
           />
         </div>
-
-        <VirtueProgress navigateToScreen={navigateToScreen} />
-        <StatsOverview userStats={userStats} />
       </div>
     </div>
   );

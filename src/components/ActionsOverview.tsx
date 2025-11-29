@@ -1,7 +1,8 @@
 import React from "react";
-import { Target } from "lucide-react";
+import { Target, Flame, Check } from "lucide-react";
 import { Goal } from "../types";
 import { courses } from "../data";
+import { VirtueProgress } from "./VirtueProgress";
 
 interface ActionsOverviewProps {
   goals: Goal[];
@@ -10,6 +11,11 @@ interface ActionsOverviewProps {
   toggleCardExpansion: (_cardId: string) => void;
   onNavigateToCourse?: (_courseId: string) => void;
   completedCourses?: string[];
+  userStats?: {
+    currentStreak: number;
+    totalGoals?: number;
+    completedGoals?: number;
+  };
 }
 
 export const ActionsOverview: React.FC<ActionsOverviewProps> = ({
@@ -19,7 +25,12 @@ export const ActionsOverview: React.FC<ActionsOverviewProps> = ({
   toggleCardExpansion,
   onNavigateToCourse,
   completedCourses = [],
+  userStats,
 }) => {
+  const totalGoals = userStats?.totalGoals ?? goals.length;
+  const thisWeekActions = userStats?.completedGoals ?? 2;
+  const streak = userStats?.currentStreak ?? 0;
+
   return (
     <div className="bg-slate-50 object-cover p-4 border border-slate-100">
       <div className="flex items-center justify-between mb-4">
@@ -27,12 +38,45 @@ export const ActionsOverview: React.FC<ActionsOverviewProps> = ({
           onClick={() => navigateToScreen(17)}
           className="text-lg md:text-xl font-semibold text-slate-900 hover:text-blue-600 transition-colors text-left"
         >
-          Active Courses
+          Learning Activity
         </button>
       </div>
 
+      <div className="mb-6">
+        <VirtueProgress navigateToScreen={navigateToScreen} />
+      </div>
+
+      <div className="grid grid-cols-3 gap-3 mb-6">
+        <div className="bg-white p-3 rounded-xl shadow-md border border-slate-100">
+          <div className="flex items-center space-x-2 mb-1">
+            <Target className="h-4 w-4 text-slate-600" />
+            <span className="text-xs font-medium text-slate-600">
+              Actions - Total
+            </span>
+          </div>
+          <p className="text-xl font-bold text-slate-900">{totalGoals}</p>
+        </div>
+
+        <div className="bg-white p-3 rounded-xl shadow-md border border-slate-100">
+          <div className="flex items-center space-x-2 mb-1">
+            <Flame className="h-4 w-4 text-orange-500" />
+            <span className="text-xs font-medium text-slate-600">Streak</span>
+          </div>
+          <p className="text-xl font-bold text-slate-900">{streak}</p>
+        </div>
+
+        <div className="bg-white p-3 rounded-xl shadow-md border border-slate-100">
+          <div className="flex items-center space-x-2 mb-1">
+            <Check className="h-4 w-4 text-blue-500" />
+            <span className="text-xs font-medium text-slate-600">
+              Actions - This Week
+            </span>
+          </div>
+          <p className="text-xl font-bold text-slate-900">{thisWeekActions}</p>
+        </div>
+      </div>
+
       <div className="space-y-3">
-        {/* Sample goal - always shown when no real goals exist */}
         {goals.length === 0 && (
           <div className="bg-white p-4 rounded-2xl shadow-md border border-slate-100">
             <button
@@ -108,7 +152,6 @@ export const ActionsOverview: React.FC<ActionsOverviewProps> = ({
                   </button>
                 )}
 
-                {/* Course Completeness */}
                 <div className="mt-4 pt-3 border-t border-slate-100">
                   {(() => {
                     const sampleCourse = courses.find(
@@ -143,7 +186,6 @@ export const ActionsOverview: React.FC<ActionsOverviewProps> = ({
           </div>
         )}
 
-        {/* User's actual goals */}
         {goals.map((goal) => {
           return (
             <div

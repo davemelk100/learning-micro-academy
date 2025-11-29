@@ -5,13 +5,16 @@ from pydantic_settings import BaseSettings
 from typing import List
 
 class Settings(BaseSettings):
-    # Supabase
-    SUPABASE_URL: str
-    SUPABASE_KEY: str
-    SUPABASE_SERVICE_ROLE_KEY: str
+    # Database mode: "supabase" or "sqlite"
+    DATABASE_MODE: str = "supabase"
+    
+    # Supabase (required if DATABASE_MODE is "supabase")
+    SUPABASE_URL: str = ""
+    SUPABASE_KEY: str = ""
+    SUPABASE_SERVICE_ROLE_KEY: str = ""
     
     # JWT
-    JWT_SECRET_KEY: str
+    JWT_SECRET_KEY: str = "dev-secret-key-change-in-production"
     JWT_ALGORITHM: str = "HS256"
     JWT_EXPIRATION_HOURS: int = 24
     

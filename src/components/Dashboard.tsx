@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Award, Target, Heart, Edit3, X, Sparkles, Star } from "lucide-react";
+import { Edit3, X, Sparkles, Star } from "lucide-react";
 import { Virtue, Goal, UserState } from "../types";
 import { virtues, sdgGoals } from "../data";
 import { getHeadingFontClass, clearGoalCreationState } from "../utils";
 import { AIInput } from "./AIInput";
-import { HelpButton } from "./HelpButton";
 import { AddActionButton } from "./AddActionButton";
 import { ActionCard } from "./ActionCard";
 import { SaveCompletedActionModal } from "./SaveCompletedActionModal";
@@ -13,11 +12,8 @@ import { CompletedActionsView } from "./CompletedActionsView";
 import { SavedActionCard } from "./SavedActionCard";
 import { UserStats } from "./UserStats";
 import { DashboardVirtueOfTheWeek } from "./DashboardVirtueOfTheWeek";
-import { DashboardActions } from "./DashboardActions";
-import { SavedActionsSection } from "./SavedActionsSection";
 import {
-  databaseService,
-  createCompletedActionFromGoal,
+  databaseService
 } from "../services/databaseService";
 import { CompletedAction } from "../types";
 
@@ -56,7 +52,7 @@ interface DashboardProps {
   progressModalOpen: boolean;
   selectedGoalForProgress: Goal | null;
   progressUpdate: { amount: number; notes: string };
-  setProgressUpdate: (update: any) => void;
+  setProgressUpdate: (update: { amount: number; notes: string }) => void;
   updateGoalProgress: (goalId: string, amount: number, notes: string) => void;
   setSelectedGoalForProgress: (goal: Goal | null) => void;
 }
@@ -257,11 +253,11 @@ export const Dashboard: React.FC<DashboardProps> = ({
           getHeadingFontClass={getHeadingFontClass}
         />
 
-          {/* Goals Overview */}
-          <div
-            className="bg-white rounded-lg border border-slate-100"
-            style={{ minHeight: "320px" }}
-          >
+        {/* Goals Overview */}
+        <div
+          className="bg-white rounded-lg border border-slate-100"
+          style={{ minHeight: "320px" }}
+        >
             <div className="flex items-center justify-between mb-4">
               <h3
                 className={`text-lg font-semibold text-slate-900 ${getHeadingFontClass(

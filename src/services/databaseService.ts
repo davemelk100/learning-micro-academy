@@ -83,7 +83,7 @@ export const databaseService = new LocalDatabaseService();
 
 // Helper function to create a CompletedAction from a Goal
 export const createCompletedActionFromGoal = (
-  goal: any,
+  goal: Record<string, unknown>,
   virtueName: string,
   additionalData?: {
     completionNotes?: string;

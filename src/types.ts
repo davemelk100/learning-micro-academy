@@ -3,6 +3,7 @@ import React from "react";
 export interface LearningStyle {
   id: string;
   name: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   icon: React.ComponentType<any>;
   color: string;
   iconColor: string;

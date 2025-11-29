@@ -16,47 +16,37 @@ export const VirtueProgress: React.FC<VirtueProgressProps> = ({
   ].filter((item) => item.virtue);
 
   return (
-    <div className="mb-6 md:mb-8">
-      <div className="flex items-center justify-between mb-4">
-        <button
-          onClick={() => navigateToScreen(17)}
-          className="text-xl font-semibold text-slate-900 hover:text-blue-600 transition-colors text-left"
-        >
+    <div className="mb-4">
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="text-base font-semibold text-slate-700">
           Learning Metrics
-        </button>
+        </h3>
         <button
           onClick={() => navigateToScreen(17)}
-          className="text-slate-600 hover:text-slate-900 text-sm font-medium transition-colors"
+          className="text-slate-600 hover:text-slate-900 text-xs font-medium transition-colors"
         >
           View All
         </button>
       </div>
-      <p className="text-slate-600 text-sm mb-6">Track your progress</p>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
         {progressData.map((item, index) => {
           const virtue = item.virtue!;
           const progress = item.progress;
 
-          // Test with hardcoded icons to verify rendering
           const testIcons = [Heart, Bot, Target];
           const IconComponent = testIcons[index] || Heart;
 
-          // Use consistent color scheme matching the app's design system
-          const colorClasses = [
-            "bg-blue-100", // Community background
-            "bg-purple-100", // Wisdom background
-            "bg-green-100", // Self background
-          ];
+          const colorClasses = ["bg-blue-100", "bg-purple-100", "bg-green-100"];
           const iconColorClasses = [
-            "text-blue-600", // Community icon
-            "text-purple-600", // Wisdom icon
-            "text-green-600", // Self icon
+            "text-blue-600",
+            "text-purple-600",
+            "text-green-600",
           ];
           const progressColorClasses = [
-            "bg-blue-600", // Community progress
-            "bg-purple-600", // Wisdom progress
-            "bg-green-600", // Self progress
+            "bg-blue-600",
+            "bg-purple-600",
+            "bg-green-600",
           ];
 
           const bgColorClass = colorClasses[index] || "bg-gray-100";

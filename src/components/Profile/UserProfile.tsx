@@ -7,28 +7,37 @@ interface UserProfileProps {
 }
 
 export const UserProfile: React.FC<UserProfileProps> = ({ onClose }) => {
-  const [user, setUser] = useState<any>(null);
+  interface UserData {
+    id?: string;
+    email?: string;
+    name?: string;
+    preferences?: Record<string, unknown>;
+  }
+
+  const [user, setUser] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [name, setName] = useState("");
-  const [preferences, setPreferences] = useState<any>({});
+  const [preferences, setPreferences] = useState<Record<string, unknown>>({});
   const [error, setError] = useState("");
 
   useEffect(() => {
     loadUserProfile();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const loadUserProfile = async () => {
     try {
       const response = await apiService.getCurrentUser();
       if (response.data) {
-        setUser(response.data);
-        setName(response.data.name || "");
-        setPreferences(response.data.preferences || {});
+        const userData = response.data as UserData;
+        setUser(userData);
+        setName(userData.name || "");
+        setPreferences((userData.preferences as Record<string, unknown>) || {});
       } else {
         setError("Failed to load profile");
       }
-    } catch (err) {
+    } catch {
       setError("Error loading profile");
     } finally {
       setLoading(false);
@@ -46,20 +55,21 @@ export const UserProfile: React.FC<UserProfileProps> = ({ onClose }) => {
       });
 
       if (response.data) {
-        setUser(response.data);
+        const userData = response.data as UserData;
+        setUser(userData);
         if (onClose) onClose();
       } else {
         setError(response.error || "Failed to save profile");
       }
-    } catch (err) {
+    } catch {
       setError("Error saving profile");
     } finally {
       setSaving(false);
     }
   };
 
-  const updatePreference = (key: string, value: any) => {
-    setPreferences((prev: any) => ({
+  const updatePreference = (key: string, value: unknown) => {
+    setPreferences((prev: Record<string, unknown>) => ({
       ...prev,
       [key]: value,
     }));
@@ -116,7 +126,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ onClose }) => {
             <label className="flex items-center gap-2">
               <input
                 type="checkbox"
-                checked={preferences.notifications || false}
+                checked={(preferences.notifications as boolean) || false}
                 onChange={(e) =>
                   updatePreference("notifications", e.target.checked)
                 }
@@ -132,7 +142,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ onClose }) => {
             <label className="flex items-center gap-2">
               <input
                 type="checkbox"
-                checked={preferences.emailUpdates || false}
+                checked={(preferences.emailUpdates as boolean) || false}
                 onChange={(e) =>
                   updatePreference("emailUpdates", e.target.checked)
                 }
@@ -146,7 +156,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ onClose }) => {
             <label className="flex items-center gap-2">
               <input
                 type="checkbox"
-                checked={preferences.darkMode || false}
+                checked={(preferences.darkMode as boolean) || false}
                 onChange={(e) => updatePreference("darkMode", e.target.checked)}
                 className="w-4 h-4 text-slate-900 border-slate-300 rounded focus:ring-slate-900"
               />
@@ -159,7 +169,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ onClose }) => {
               Theme
             </label>
             <select
-              value={preferences.theme || "light"}
+              value={(preferences.theme as string) || "light"}
               onChange={(e) => updatePreference("theme", e.target.value)}
               className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent"
             >
@@ -174,7 +184,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ onClose }) => {
               Language
             </label>
             <select
-              value={preferences.language || "en"}
+              value={(preferences.language as string) || "en"}
               onChange={(e) => updatePreference("language", e.target.value)}
               className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent"
             >
@@ -192,14 +202,14 @@ export const UserProfile: React.FC<UserProfileProps> = ({ onClose }) => {
               type="range"
               min="1"
               max="10"
-              value={preferences.progressIntensity || 5}
+              value={(preferences.progressIntensity as number) || 5}
               onChange={(e) =>
                 updatePreference("progressIntensity", parseInt(e.target.value))
               }
               className="w-full"
             />
             <div className="text-sm text-slate-600 mt-1">
-              {preferences.progressIntensity || 5}/10
+              {(preferences.progressIntensity as number) || 5}/10
             </div>
           </div>
         </div>

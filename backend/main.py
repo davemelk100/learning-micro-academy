@@ -62,13 +62,25 @@ async def root():
 async def health_check():
     """Detailed health check"""
     try:
-        supabase = get_supabase_client()
+        from app.database.database_adapter import db
         # Test database connection
-        return {
-            "status": "healthy",
-            "database": "connected",
-            "service": "Learning Micro-Academy API"
-        }
+        if db.use_sqlite:
+            # Test SQLite connection
+            if db.conn:
+                db.conn.execute("SELECT 1")
+            return {
+                "status": "healthy",
+                "database": "sqlite",
+                "service": "Learning Micro-Academy API"
+            }
+        else:
+            # Test Supabase connection
+            supabase = get_supabase_client()
+            return {
+                "status": "healthy",
+                "database": "supabase",
+                "service": "Learning Micro-Academy API"
+            }
     except Exception as e:
         return {
             "status": "unhealthy",

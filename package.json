@@ -14,7 +14,9 @@
     "cap:build": "npm run build && npx cap sync",
     "cap:ios": "npx cap open ios",
     "cap:android": "npx cap open android",
-    "cap:sync": "npx cap sync"
+    "cap:sync": "npx cap sync",
+    "backend:dev": "cd backend && bash start.sh",
+    "backend:install": "cd backend && python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt"
   },
   "dependencies": {
     "@capacitor/android": "^7.4.3",
