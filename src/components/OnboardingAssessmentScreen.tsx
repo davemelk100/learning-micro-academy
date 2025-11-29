@@ -7,7 +7,6 @@ interface OnboardingAssessmentScreenProps {
   onComplete: (data: {
     subjects: string[];
     proficiencyLevel: string;
-    learningGoals: string;
   }) => void;
 }
 
@@ -18,7 +17,6 @@ export const OnboardingAssessmentScreen: React.FC<OnboardingAssessmentScreenProp
 }) => {
   const [subjects, setSubjects] = useState<string[]>([]);
   const [proficiencyLevel, setProficiencyLevel] = useState<string>("");
-  const [learningGoals, setLearningGoals] = useState<string>("");
 
   const subjectOptions = [
     "Web Development",
@@ -49,11 +47,10 @@ export const OnboardingAssessmentScreen: React.FC<OnboardingAssessmentScreenProp
   };
 
   const handleNext = () => {
-    if (subjects.length > 0 && proficiencyLevel && learningGoals.trim()) {
+    if (subjects.length > 0 && proficiencyLevel) {
       onComplete({
         subjects,
         proficiencyLevel,
-        learningGoals,
       });
       onNext();
     }
@@ -117,19 +114,6 @@ export const OnboardingAssessmentScreen: React.FC<OnboardingAssessmentScreenProp
             </div>
           </div>
 
-          {/* Question 3: Learning Goals */}
-          <div>
-            <label className="block text-lg font-semibold text-slate-900 mb-3">
-              What are your learning goals for the next 3-6 months?
-            </label>
-            <textarea
-              value={learningGoals}
-              onChange={(e) => setLearningGoals(e.target.value)}
-              placeholder="Describe your learning objectives and what you hope to achieve..."
-              className="w-full px-4 py-3 border-2 border-slate-300 rounded-lg focus:outline-none focus:border-slate-900 resize-none"
-              rows={4}
-            />
-          </div>
         </div>
 
         <div className="flex justify-between mt-8">
@@ -143,7 +127,7 @@ export const OnboardingAssessmentScreen: React.FC<OnboardingAssessmentScreenProp
           <button
             onClick={handleNext}
             disabled={
-              subjects.length === 0 || !proficiencyLevel || !learningGoals.trim()
+              subjects.length === 0 || !proficiencyLevel
             }
             className="px-6 py-3 bg-slate-900 text-white rounded-full hover:bg-slate-800 transition-colors font-medium disabled:bg-slate-300 disabled:cursor-not-allowed flex items-center gap-2"
           >

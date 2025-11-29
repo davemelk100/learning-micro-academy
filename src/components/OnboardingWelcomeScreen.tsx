@@ -5,16 +5,16 @@ interface OnboardingWelcomeScreenProps {
   onNext: () => void;
 }
 
-export const OnboardingWelcomeScreen: React.FC<OnboardingWelcomeScreenProps> = ({
-  onNext,
-}) => {
+export const OnboardingWelcomeScreen: React.FC<
+  OnboardingWelcomeScreenProps
+> = ({ onNext }) => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-warm-white px-4">
       <div className="max-w-2xl w-full text-center">
         <div className="mb-8">
           <BookOpen className="w-16 h-16 text-slate-900 mx-auto mb-4" />
           <h1 className="text-4xl font-bold text-slate-900 mb-4">
-            Welcome to Your Learning Journey
+            Welcome to Your Active Courses
           </h1>
           <p className="text-lg text-slate-700">
             This app helps you track your educational progress and develop new
@@ -57,4 +57,3 @@ export const OnboardingWelcomeScreen: React.FC<OnboardingWelcomeScreenProps> = (
     </div>
   );
 };
-

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Pagination } from "./components/Pagination";
 import { HelpCard } from "./components/HelpCard";
 import { AIRecommendationCard } from "./components/AIRecommendationCard";
@@ -7,8 +7,10 @@ import { YesNoToggle } from "./components/YesNoToggle";
 import { CourseLibraryScreen } from "./components/CourseLibraryScreen";
 import { OnboardingWelcomeScreen } from "./components/OnboardingWelcomeScreen";
 import { OnboardingAssessmentScreen } from "./components/OnboardingAssessmentScreen";
-import { OnboardingGoalsScreen } from "./components/OnboardingGoalsScreen";
 import { OnboardingDashboardScreen } from "./components/OnboardingDashboardScreen";
+import { saveUserState, getUserState } from "./utils";
+import { UserState } from "./types";
+import { courses } from "./data";
 import {
   Award,
   Target,
@@ -20,7 +22,6 @@ import {
   X,
   Sparkles,
   Check,
-  Edit3,
   Home,
   RefreshCw,
   Flame,
@@ -29,6 +30,13 @@ import {
   Code,
   TrendingUp,
   Globe,
+  Eye,
+  Headphones,
+  BookOpen,
+  User,
+  Activity,
+  Network,
+  Clock,
 } from "lucide-react";
 
 interface LearningStyle {
@@ -72,66 +80,70 @@ interface Milestone {
 
 const learningStyles: LearningStyle[] = [
   {
-    id: "intro-to-ux",
-    name: "Intro to UX",
-    icon: Palette,
+    id: "visual",
+    name: "Visual",
+    icon: Eye,
     color: "bg-[#e6243c]",
     iconColor: "text-[#e6243c]",
-    description: "Master the fundamentals of user experience design",
+    description: "Learn best through seeing and visual representations",
   },
   {
-    id: "design-systems",
-    name: "Design Systems",
-    icon: Sparkles,
+    id: "auditory",
+    name: "Auditory",
+    icon: Headphones,
     color: "bg-[#dfa739]",
     iconColor: "text-[#dfa739]",
-    description: "Build scalable and consistent design systems",
+    description: "Learn best through listening and verbal instruction",
   },
   {
-    id: "energy-efficiency",
-    name: "Energy Efficiency at Home",
-    icon: Home,
+    id: "kinesthetic",
+    name: "Kinesthetic",
+    icon: Activity,
     color: "bg-[#4aa236]",
     iconColor: "text-[#4aa236]",
-    description:
-      "Reduce your carbon footprint with practical home improvements",
+    description: "Learn best through hands-on experience and physical activity",
   },
   {
-    id: "web-development",
-    name: "Web Development Basics",
-    icon: Code,
+    id: "reading-writing",
+    name: "Reading/Writing",
+    icon: BookOpen,
     color: "bg-red-400",
     iconColor: "text-red-500",
-    description: "Learn modern web development fundamentals",
+    description: "Learn best through reading and writing activities",
   },
   {
-    id: "product-strategy",
-    name: "Product Strategy",
-    icon: Target,
+    id: "social",
+    name: "Social",
+    icon: Users,
     color: "bg-pink-400",
     iconColor: "text-pink-500",
-    description: "Develop products that users love and businesses need",
+    description: "Learn best in groups and through collaboration",
   },
   {
-    id: "data-analytics",
-    name: "Data Analytics",
-    icon: TrendingUp,
+    id: "solitary",
+    name: "Solitary",
+    icon: User,
     color: "bg-blue-400",
     iconColor: "text-blue-500",
-    description: "Turn data into actionable insights",
+    description: "Learn best independently and through self-study",
   },
   {
-    id: "sustainability",
-    name: "Sustainability Practices",
-    icon: Globe,
+    id: "logical",
+    name: "Logical",
+    icon: Network,
     color: "bg-purple-400",
     iconColor: "text-purple-500",
-    description: "Learn sustainable practices for modern living",
+    description: "Learn best through logic, reasoning, and systems thinking",
   },
 ];
 
 function App() {
+  // Load user state from localStorage on mount
+  const [userState, setUserState] = useState<UserState>(getUserState());
   const [currentScreen, setCurrentScreen] = useState(1);
+  const [selectedCourseId, setSelectedCourseId] = useState<string | undefined>(
+    undefined
+  );
   const [selectedLearningStyle, setSelectedLearningStyle] =
     useState<LearningStyle | null>(null);
   const [goals, setGoals] = useState<Goal[]>([]);
@@ -166,140 +178,127 @@ function App() {
       title: "User Experience Design",
       color: "bg-red-500",
       innerColor: "bg-red-700",
+      icon: Palette,
     },
     {
       id: "sdg2",
       title: "Design Systems",
       color: "bg-orange-500",
       innerColor: "bg-orange-700",
+      icon: Sparkles,
     },
     {
       id: "sdg3",
       title: "Web Development",
       color: "bg-yellow-500",
       innerColor: "bg-yellow-700",
+      icon: Code,
     },
     {
       id: "sdg4",
       title: "Product Strategy",
       color: "bg-green-500",
       innerColor: "bg-green-700",
+      icon: Target,
     },
     {
       id: "sdg5",
       title: "Data Analytics",
       color: "bg-teal-500",
       innerColor: "bg-teal-700",
+      icon: TrendingUp,
     },
     {
       id: "sdg6",
       title: "Energy Efficiency",
       color: "bg-blue-500",
       innerColor: "bg-blue-700",
+      icon: Home,
     },
     {
       id: "sdg7",
       title: "Sustainability",
       color: "bg-indigo-500",
       innerColor: "bg-indigo-700",
+      icon: Globe,
     },
     {
       id: "sdg8",
       title: "Business Skills",
       color: "bg-purple-500",
       innerColor: "bg-purple-700",
+      icon: Award,
     },
     {
       id: "sdg9",
       title: "Innovation",
       color: "bg-pink-500",
       innerColor: "bg-pink-700",
+      icon: Lightbulb,
     },
     {
       id: "sdg10",
       title: "Communication",
       color: "bg-rose-500",
       innerColor: "bg-rose-700",
+      icon: Users,
     },
     {
       id: "sdg11",
       title: "Leadership",
       color: "bg-cyan-500",
       innerColor: "bg-cyan-700",
+      icon: Shield,
     },
     {
       id: "sdg12",
       title: "Technology",
       color: "bg-emerald-500",
       innerColor: "bg-emerald-700",
+      icon: Brain,
     },
     {
       id: "sdg13",
       title: "Marketing",
       color: "bg-amber-500",
       innerColor: "bg-amber-700",
+      icon: TrendingUp,
     },
     {
       id: "sdg14",
       title: "Finance",
       color: "bg-violet-500",
       innerColor: "bg-violet-700",
+      icon: Award,
     },
     {
       id: "sdg15",
       title: "Personal Growth",
       color: "bg-fuchsia-500",
       innerColor: "bg-fuchsia-700",
+      icon: Heart,
     },
     {
       id: "sdg16",
       title: "Career Development",
       color: "bg-sky-500",
       innerColor: "bg-sky-700",
+      icon: Target,
     },
     {
       id: "sdg17",
       title: "Creative Skills",
       color: "bg-lime-500",
       innerColor: "bg-lime-700",
+      icon: Sparkles,
     },
   ];
   const [editingGoal, setEditingGoal] = useState<Goal | null>(null);
-  const [situationToggle1, setSituationToggle1] = useState<boolean | null>(
-    null
-  );
-  const [situationToggle2, setSituationToggle2] = useState<boolean | null>(
-    null
-  );
-  const [situationDescription, setSituationDescription] = useState("");
-  const situationTextareaRef = useRef<HTMLTextAreaElement>(null);
-  const [step5Toggle1, setStep5Toggle1] = useState<boolean | null>(null);
-  const [step5Toggle2, setStep5Toggle2] = useState<boolean | null>(null);
-  const [step5Description, setStep5Description] = useState("");
-  const step5TextareaRef = useRef<HTMLTextAreaElement>(null);
-
-  // Callback functions for textarea onChange handlers
-  const handleSituationDescriptionChange = useCallback(
-    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-      setSituationDescription(e.target.value);
-    },
-    []
-  );
-
-  const handleStep5DescriptionChange = useCallback(
-    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-      setStep5Description(e.target.value);
-    },
-    []
-  );
-  const [step6AmountChange, setStep6AmountChange] = useState(0);
   const [step7AmountChange, setStep7AmountChange] = useState(0);
   const [selectedSDG, setSelectedSDG] = useState<string>("");
 
-  // AI Suggested Actions selection and editing state
+  // AI Suggested Courses selection state
   const [selectedAIAction, setSelectedAIAction] = useState<string | null>(null);
-  const [editingActionId, setEditingActionId] = useState<string | null>(null);
-  const [editedActionText, setEditedActionText] = useState<string>("");
 
   const [progressModalOpen, setProgressModalOpen] = useState(false);
   const [selectedGoalForProgress, setSelectedGoalForProgress] =
@@ -413,6 +412,52 @@ function App() {
     }
   }, [currentScreen, navigateToScreen]);
 
+  // Function to get suggested courses based on selections
+  const getSuggestedCourses = () => {
+    if (!selectedSDG || !selectedLearningStyle) {
+      return courses.slice(0, 3); // Return first 3 courses as default
+    }
+
+    // Map SDG IDs to course categories/tags
+    const sdgToCourseMap: { [key: string]: string[] } = {
+      sdg1: ["Design", "UX", "Product"], // No Poverty - design solutions
+      sdg2: ["Design", "Product", "Strategy"], // Zero Hunger - product strategy
+      sdg3: ["Development", "Web", "Analytics"], // Good Health - health tech
+      sdg4: ["Design", "UX", "Product"], // Quality Education - educational design
+      sdg5: ["Product", "Strategy", "Analytics"], // Gender Equality - inclusive products
+      sdg6: ["Sustainability", "Energy", "Environment"], // Clean Water - sustainability
+      sdg7: ["Sustainability", "Energy", "Environment"], // Affordable Energy - energy efficiency
+      sdg8: ["Product", "Strategy", "Analytics"], // Decent Work - business strategy
+      sdg9: ["Development", "Design", "Product"], // Industry Innovation - tech innovation
+      sdg10: ["Product", "Strategy", "Analytics"], // Reduced Inequalities - inclusive design
+      sdg11: ["Design", "Product", "Sustainability"], // Sustainable Cities - urban design
+      sdg12: ["Sustainability", "Environment", "Product"], // Responsible Consumption - sustainability
+      sdg13: ["Sustainability", "Energy", "Environment"], // Climate Action - sustainability
+      sdg14: ["Sustainability", "Environment", "Analytics"], // Life Below Water - environmental
+      sdg15: ["Sustainability", "Environment", "Analytics"], // Life on Land - environmental
+      sdg16: ["Product", "Strategy", "Analytics"], // Peace and Justice - governance
+      sdg17: ["Product", "Strategy", "Analytics"], // Partnerships - collaboration
+    };
+
+    const relevantTags = sdgToCourseMap[selectedSDG] || [];
+
+    // Filter courses that match the SDG category/tags
+    const matchingCourses = courses.filter((course) =>
+      relevantTags.some(
+        (tag) =>
+          course.category.toLowerCase().includes(tag.toLowerCase()) ||
+          course.tags.some((courseTag) =>
+            courseTag.toLowerCase().includes(tag.toLowerCase())
+          )
+      )
+    );
+
+    // Return matching courses or default to first 3
+    return matchingCourses.length > 0
+      ? matchingCourses.slice(0, 3)
+      : courses.slice(0, 3);
+  };
+
   // Simulate AI loading when entering goal creation screen
   useEffect(() => {
     if (currentScreen === 3 && selectedLearningStyle) {
@@ -523,8 +568,8 @@ function App() {
   const Navigation = () => {
     const navItems = [
       { label: "Dashboard", action: () => navigateToScreen(0) },
-      { label: "Add Action", action: () => navigateToScreen(11) },
-      { label: "Learning Journey", action: () => navigateToScreen(17) },
+      // { label: "Add Action", action: () => navigateToScreen(11) },
+      { label: "Learning Metrics", action: () => navigateToScreen(17) },
       { label: "Design System", action: () => navigateToScreen(20) },
     ];
 
@@ -552,7 +597,7 @@ function App() {
               // Determine if this item is currently active
               const isActive =
                 (item.label === "Dashboard" && currentScreen === 0) ||
-                (item.label === "Add Action" && currentScreen === 8) ||
+                // (item.label === "Add Action" && currentScreen === 8) ||
                 (item.label === "Learning Journey" && currentScreen === 17) ||
                 (item.label === "Design System" && currentScreen === 20);
 
@@ -571,11 +616,11 @@ function App() {
                       className={`h-5 w-5 ${isActive ? "text-blue-600" : ""}`}
                     />
                   )}
-                  {item.label === "Add Action" && (
+                  {/* {item.label === "Add Action" && (
                     <Award
                       className={`h-5 w-5 ${isActive ? "text-blue-600" : ""}`}
                     />
-                  )}
+                  )} */}
                   {item.label === "Learning Journey" && (
                     <Heart
                       className={`h-5 w-5 ${isActive ? "text-blue-600" : ""}`}
@@ -684,6 +729,10 @@ function App() {
       progressUpdate={progressUpdate}
       setProgressUpdate={setProgressUpdate}
       updateGoalProgress={updateGoalProgress}
+      onNavigateToCourse={(courseId) => {
+        setSelectedCourseId(courseId);
+        navigateToScreen(21);
+      }}
     />
   );
 
@@ -849,22 +898,26 @@ function App() {
                           <div
                             className={`${
                               isListView ? "w-10 h-10" : "w-20 h-20"
-                            } rounded-full overflow-hidden flex items-center justify-center relative shadow-md ${
+                            } rounded-full flex items-center justify-center relative shadow-lg backdrop-blur-md ${
                               selectedLearningStyle?.id === learningStyle.id &&
                               selectedSDG
-                                ? "bg-blue-50 border-2 border-blue-500 ring-2 ring-blue-200 ring-offset-2"
+                                ? "bg-white/30 border-2 border-blue-500 ring-2 ring-blue-200 ring-offset-2"
                                 : aiSelectedLearningStyle === learningStyle.id
-                                ? "bg-green-50 border-2 border-green-500 ring-2 ring-green-200 ring-offset-2"
-                                : `bg-white border-2 ${learningStyle.color.replace(
-                                    "bg-",
-                                    "border-"
-                                  )}`
+                                ? "bg-white/30 border-2 border-green-500 ring-2 ring-green-200 ring-offset-2"
+                                : "bg-white/20 border border-white/30"
                             }`}
                           >
                             <IconComponent
                               className={`${
-                                isListView ? "h-5 w-5" : "h-12 w-12"
-                              } ${learningStyle.iconColor}`}
+                                isListView ? "h-5 w-5" : "h-10 w-10"
+                              } ${
+                                selectedLearningStyle?.id ===
+                                  learningStyle.id && selectedSDG
+                                  ? "text-blue-600"
+                                  : aiSelectedLearningStyle === learningStyle.id
+                                  ? "text-green-600"
+                                  : "text-slate-700"
+                              }`}
                             />
                           </div>
                           {selectedLearningStyle?.id === learningStyle.id && (
@@ -1021,35 +1074,23 @@ function App() {
                           lastUpdated: new Date(),
                         };
                         setGoals([...goals, goal]);
-                        navigateToScreen(5);
+                        navigateToScreen(8);
                       } else if (selectedAIAction) {
-                        // If AI action is selected but no custom goal, create goal from AI action
-                        const aiActionTitles = {
-                          "5min": "5 Minute Action",
-                          "15min": "15 Minute Action",
-                          custom: "Create Your Own Goal",
-                        };
-                        const aiActionDescriptions = {
-                          "5min":
-                            "Set aside 5 minutes each morning to journal about yesterday's experiences, decisions, and how they aligned with your values",
-                          "15min":
-                            "Identify one important decision each week, research options for 30 minutes, then meditate for 15 minutes before making your choice",
-                          custom:
-                            "Create a personalized goal with specific actions, measurable outcomes, and a clear timeline that aligns with your current life circumstances",
-                        };
+                        // If AI course is selected but no custom goal, create goal from selected course
+                        const selectedCourse = courses.find(
+                          (c) => c.id === selectedAIAction
+                        );
+
+                        if (!selectedCourse) {
+                          return; // Course not found, don't proceed
+                        }
 
                         const goal: Goal = {
                           id: Date.now().toString(),
                           learningStyleId: selectedLearningStyle!.id,
                           sdgIds: selectedSDG ? selectedSDG.split(",") : [],
-                          title:
-                            aiActionTitles[
-                              selectedAIAction as keyof typeof aiActionTitles
-                            ],
-                          description:
-                            aiActionDescriptions[
-                              selectedAIAction as keyof typeof aiActionDescriptions
-                            ],
+                          title: selectedCourse.title,
+                          description: selectedCourse.description,
                           progress: 0,
                           completed: false,
                           progressHistory: [],
@@ -1094,7 +1135,7 @@ function App() {
                           lastUpdated: new Date(),
                         };
                         setGoals([...goals, goal]);
-                        navigateToScreen(5);
+                        navigateToScreen(8);
                       }
                     }}
                     previousLabel="Back"
@@ -1106,8 +1147,8 @@ function App() {
                   <div className="text-center py-8">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-slate-900 mx-auto mb-4"></div>
                     <p className="text-slate-600">
-                      Learning Micro-Academy AI is generating personalized
-                      suggestions
+                      Learning Micro-Academy AI is finding courses that match
+                      your selections
                     </p>
                   </div>
                 )}
@@ -1115,44 +1156,34 @@ function App() {
                 {showGoalSuggestions && (
                   <div className="mb-6">
                     <h3 className="font-semibold mb-4 text-slate-800 px-2">
-                      Learning Micro-Academy AI Suggested Actions
+                      Learning Micro-Academy AI Suggested Courses
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                      {/* 5 Minute Action Goal */}
-                      <div className="bg-white p-6 rounded-xl shadow-md border border-slate-100 hover:shadow-lg transition-shadow">
-                        <div className="flex items-start justify-between h-full">
-                          <div className="flex-1">
-                            <div className="flex items-center justify-between mb-2">
-                              <h4 className="font-semibold text-slate-900">
-                                5 Minute Action
-                              </h4>
-                              <div className="flex items-center space-x-2">
+                      {getSuggestedCourses().map((course) => (
+                        <div
+                          key={course.id}
+                          className="bg-white p-6 rounded-xl shadow-md border border-slate-100 hover:shadow-lg transition-shadow"
+                        >
+                          <div className="flex items-start justify-between h-full">
+                            <div className="flex-1">
+                              <div className="flex items-center justify-between mb-2">
+                                <h4 className="font-semibold text-slate-900">
+                                  {course.title}
+                                </h4>
                                 <button
                                   onClick={() => {
-                                    if (editingActionId === "5min") {
-                                      setEditingActionId(null);
-                                      setEditedActionText("");
-                                    } else {
-                                      setEditingActionId("5min");
-                                      setEditedActionText(
-                                        "Set aside 5 minutes each morning to journal about yesterday's experiences, decisions, and how they aligned with your values"
-                                      );
-                                    }
-                                  }}
-                                  className="text-slate-400 hover:text-slate-600 transition-colors p-1"
-                                >
-                                  <Edit3 className="h-4 w-4" />
-                                </button>
-                                <button
-                                  onClick={() => {
-                                    if (selectedAIAction === "5min") {
+                                    if (selectedAIAction === course.id) {
                                       setSelectedAIAction(null);
                                     } else {
-                                      setSelectedAIAction("5min");
+                                      setSelectedAIAction(course.id);
+                                      setNewGoal({
+                                        title: course.title,
+                                        description: course.description,
+                                      });
                                     }
                                   }}
                                   className={`w-6 h-6 rounded-full flex items-center justify-center transition-colors ${
-                                    selectedAIAction === "5min"
+                                    selectedAIAction === course.id
                                       ? "bg-blue-500 text-white"
                                       : "bg-slate-200 text-slate-400 hover:bg-slate-300"
                                   }`}
@@ -1160,186 +1191,24 @@ function App() {
                                   <Check className="h-4 w-4" />
                                 </button>
                               </div>
-                            </div>
-                            {editingActionId === "5min" ? (
-                              <textarea
-                                value={editedActionText}
-                                onChange={(e) =>
-                                  setEditedActionText(e.target.value)
-                                }
-                                className="w-full p-2 border border-slate-300 rounded-lg text-sm text-slate-600 resize-none"
-                                rows={3}
-                                autoFocus
-                                onBlur={() => {
-                                  setEditingActionId(null);
-                                  setEditedActionText("");
-                                }}
-                                onKeyDown={(e) => {
-                                  if (e.key === "Enter" && e.ctrlKey) {
-                                    setEditingActionId(null);
-                                    setEditedActionText("");
-                                  }
-                                }}
-                              />
-                            ) : (
-                              <p className="text-sm text-slate-600">
-                                Set aside 5 minutes each morning to journal
-                                about yesterday's experiences, decisions, and
-                                how they aligned with your values
+                              <p className="text-sm text-slate-600 mb-3">
+                                {course.description}
                               </p>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* 15 Minute Action Goal */}
-                      <div className="bg-white p-6 rounded-xl shadow-md border border-slate-100 hover:shadow-lg transition-shadow">
-                        <div className="flex items-start justify-between h-full">
-                          <div className="flex-1">
-                            <div className="flex items-center justify-between mb-2">
-                              <h4 className="font-semibold text-slate-900">
-                                15 Minute Action
-                              </h4>
-                              <div className="flex items-center space-x-2">
-                                <button
-                                  onClick={() => {
-                                    if (editingActionId === "15min") {
-                                      setEditingActionId(null);
-                                      setEditedActionText("");
-                                    } else {
-                                      setEditingActionId("15min");
-                                      setEditedActionText(
-                                        "Identify one important decision each week, research options for 30 minutes, then meditate for 15 minutes before making your choice"
-                                      );
-                                    }
-                                  }}
-                                  className="text-slate-400 hover:text-slate-600 transition-colors p-1"
-                                >
-                                  <Edit3 className="h-4 w-4" />
-                                </button>
-                                <button
-                                  onClick={() => {
-                                    if (selectedAIAction === "15min") {
-                                      setSelectedAIAction(null);
-                                    } else {
-                                      setSelectedAIAction("15min");
-                                    }
-                                  }}
-                                  className={`w-6 h-6 rounded-full flex items-center justify-center transition-colors ${
-                                    selectedAIAction === "15min"
-                                      ? "bg-blue-500 text-white"
-                                      : "bg-slate-200 text-slate-400 hover:bg-slate-300"
-                                  }`}
-                                >
-                                  <Check className="h-4 w-4" />
-                                </button>
+                              <div className="flex items-center gap-3 text-xs text-slate-500">
+                                <span>{course.duration}</span>
+                                <span>•</span>
+                                <span>{course.level}</span>
+                                {course.category && (
+                                  <>
+                                    <span>•</span>
+                                    <span>{course.category}</span>
+                                  </>
+                                )}
                               </div>
                             </div>
-                            {editingActionId === "15min" ? (
-                              <textarea
-                                value={editedActionText}
-                                onChange={(e) =>
-                                  setEditedActionText(e.target.value)
-                                }
-                                className="w-full p-2 border border-slate-300 rounded-lg text-sm text-slate-600 resize-none"
-                                rows={3}
-                                autoFocus
-                                onBlur={() => {
-                                  setEditingActionId(null);
-                                  setEditedActionText("");
-                                }}
-                                onKeyDown={(e) => {
-                                  if (e.key === "Enter" && e.ctrlKey) {
-                                    setEditingActionId(null);
-                                    setEditedActionText("");
-                                  }
-                                }}
-                              />
-                            ) : (
-                              <p className="text-sm text-slate-600">
-                                Identify one important decision each week,
-                                research options for 30 minutes, then meditate
-                                for 15 minutes before making your choice
-                              </p>
-                            )}
                           </div>
                         </div>
-                      </div>
-
-                      {/* Create Your Own Goal */}
-                      <div className="bg-white p-6 rounded-xl shadow-md border border-slate-100 hover:shadow-lg transition-shadow">
-                        <div className="flex items-start justify-between h-full">
-                          <div className="flex-1">
-                            <div className="flex items-center justify-between mb-2">
-                              <h4 className="font-semibold text-slate-900">
-                                Create Your Own Goal
-                              </h4>
-                              <div className="flex items-center space-x-2">
-                                <button
-                                  onClick={() => {
-                                    if (editingActionId === "custom") {
-                                      setEditingActionId(null);
-                                      setEditedActionText("");
-                                    } else {
-                                      setEditingActionId("custom");
-                                      setEditedActionText(
-                                        "Create a personalized goal with specific actions, measurable outcomes, and a clear timeline that aligns with your current life circumstances"
-                                      );
-                                    }
-                                  }}
-                                  className="text-slate-400 hover:text-slate-600 transition-colors p-1"
-                                >
-                                  <Edit3 className="h-4 w-4" />
-                                </button>
-                                <button
-                                  onClick={() => {
-                                    if (selectedAIAction === "custom") {
-                                      setSelectedAIAction(null);
-                                    } else {
-                                      setSelectedAIAction("custom");
-                                    }
-                                  }}
-                                  className={`w-6 h-6 rounded-full flex items-center justify-center transition-colors ${
-                                    selectedAIAction === "custom"
-                                      ? "bg-blue-500 text-white"
-                                      : "bg-slate-200 text-slate-400 hover:bg-slate-300"
-                                  }`}
-                                >
-                                  <Check className="h-4 w-4" />
-                                </button>
-                              </div>
-                            </div>
-                            {editingActionId === "custom" ? (
-                              <textarea
-                                value={editedActionText}
-                                onChange={(e) =>
-                                  setEditedActionText(e.target.value)
-                                }
-                                className="w-full p-2 border border-slate-300 rounded-lg text-sm text-slate-600 resize-none"
-                                rows={3}
-                                autoFocus
-                                onBlur={() => {
-                                  setEditingActionId(null);
-                                  setEditedActionText("");
-                                }}
-                                onKeyDown={(e) => {
-                                  if (e.key === "Enter" && e.ctrlKey) {
-                                    setEditingActionId(null);
-                                    setEditedActionText("");
-                                  }
-                                }}
-                              />
-                            ) : (
-                              <p className="text-sm text-slate-600">
-                                Create a personalized goal with specific
-                                actions, measurable outcomes, and a clear
-                                timeline that aligns with your current life
-                                circumstances
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                      </div>
+                      ))}
                     </div>
                   </div>
                 )}
@@ -1446,7 +1315,7 @@ function App() {
                     </div>
                     <div className="text-center mt-2">
                       <span className="text-xs font-medium text-slate-600  px-3 py-1 rounded-full">
-                        Step 2: Personal Growth
+                        Step 2: Learning Style
                       </span>
                     </div>
                   </div>
@@ -1473,7 +1342,7 @@ function App() {
                 <div className="mt-16 text-center">
                   <p className="text-sm text-slate-600 leading-relaxed max-w-md mx-auto">
                     Your goal connects <strong>global impact</strong> (SDG) with{" "}
-                    <strong>personal growth</strong> (Learning Style) to create{" "}
+                    <strong>learning style</strong> to create{" "}
                     <strong>meaningful action</strong> that benefits both you
                     and the world.
                   </p>
@@ -1489,10 +1358,10 @@ function App() {
 
               <div className="space-y-3">
                 <button
-                  onClick={() => navigateToScreen(5)}
+                  onClick={() => navigateToScreen(8)}
                   className="w-full bg-slate-900 hover:bg-slate-800 text-white py-3 px-6 rounded-full font-medium transition-all shadow-lg hover:shadow-xl"
                 >
-                  Continue to Describe a Situation
+                  Continue
                 </button>
                 <button
                   onClick={() => navigateToScreen(11)}
@@ -1507,350 +1376,6 @@ function App() {
       </div>
     </div>
   );
-
-  // Screen 5: Describe a Situation
-  const DescribeSituationScreen = useCallback(() => {
-    return (
-      <div className="min-h-screen max-w-[1200px] mx-auto">
-        <header>
-          <div className="px-4 md:px-6 py-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <button
-                  onClick={() => navigateToScreen(1)}
-                  className="hover:opacity-80 transition-opacity"
-                >
-                  <span className="text-2xl font-bold text-slate-900">
-                    MicroLearn
-                  </span>
-                </button>
-              </div>
-              <Navigation />
-            </div>
-          </div>
-        </header>
-
-        <div className="p-4 md:p-6">
-          <div className="max-w-md mx-auto md:max-w-[calc(42rem+400px)] lg:max-w-[calc(42rem+400px)]">
-            <div className="bg-white rounded-xl shadow-xl overflow-hidden">
-              <div className="bg-slate-900 p-6 text-white">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <h2 className="text-2xl font-bold">Describe a Situation</h2>
-                  </div>
-                </div>
-              </div>
-
-              <div className="p-6">
-                {/* Page Title */}
-                <h3 className="text-xl font-semibold text-slate-900 mb-6">
-                  Describe a situation where you demonstrated personal growth.
-                </h3>
-
-                {/* Pagination */}
-                <div className="mb-6">
-                  <Pagination
-                    currentStep={4}
-                    totalSteps={7}
-                    onPrevious={() => navigateToScreen(3)}
-                    onNext={() => navigateToScreen(6)}
-                    canGoPrevious={true}
-                    canGoNext={
-                      situationToggle1 !== null &&
-                      situationToggle2 !== null &&
-                      situationDescription.trim().length > 0
-                    }
-                    previousLabel="Back"
-                    nextLabel="Next"
-                  />
-                </div>
-
-                {/* Form Content */}
-                <div className="space-y-6">
-                  {/* Toggle 1 - Impact on Yourself */}
-                  <div className="bg-white p-6 rounded-xl shadow-md border border-slate-100">
-                    <YesNoToggle
-                      label="Impact on Yourself?"
-                      value={situationToggle1}
-                      onChange={setSituationToggle1}
-                    />
-                  </div>
-
-                  {/* Toggle 2 - Impact on Others */}
-                  <div className="bg-white p-6 rounded-xl shadow-md border border-slate-100">
-                    <YesNoToggle
-                      label="Impact on Others?"
-                      value={situationToggle2}
-                      onChange={setSituationToggle2}
-                    />
-                  </div>
-
-                  {/* Textarea - Reflections and Notes */}
-                  <div className="bg-white p-6 rounded-xl shadow-md border border-slate-100">
-                    <label
-                      htmlFor="reflections-notes"
-                      className="block text-lg font-semibold text-slate-700 mb-3"
-                    >
-                      Reflections and Notes
-                    </label>
-                    <textarea
-                      ref={situationTextareaRef}
-                      id="reflections-notes"
-                      name="reflections-notes"
-                      value={situationDescription}
-                      onChange={handleSituationDescriptionChange}
-                      placeholder="Start typing here..."
-                      className="w-full h-32 p-4 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-sm"
-                      maxLength={500}
-                    />
-                    <div className="flex justify-between items-center mt-2">
-                      <p className="text-sm text-slate-500">
-                        Maximum 500 characters
-                      </p>
-                      <p className="text-sm text-slate-400">
-                        Share your thoughts and reflections
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }, [
-    situationDescription,
-    situationToggle1,
-    situationToggle2,
-    handleSituationDescriptionChange,
-    situationTextareaRef,
-  ]);
-
-  // Screen 6: Step 5
-  const Step5Screen = useCallback(() => {
-    return (
-      <div className="min-h-screen max-w-[1200px] mx-auto">
-        <header>
-          <div className="px-4 md:px-6 py-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <button
-                  onClick={() => navigateToScreen(1)}
-                  className="hover:opacity-80 transition-opacity"
-                >
-                  <span className="text-2xl font-bold text-slate-900">
-                    MicroLearn
-                  </span>
-                </button>
-              </div>
-              <Navigation />
-            </div>
-          </div>
-        </header>
-
-        <div className="p-4 md:p-6">
-          <div className="max-w-md mx-auto md:max-w-[calc(42rem+400px)] lg:max-w-[calc(42rem+400px)]">
-            <div className="bg-white rounded-xl shadow-xl overflow-hidden">
-              <div className="bg-slate-900 p-6 text-white">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <h2 className="text-2xl font-bold">Describe an Action</h2>
-                  </div>
-                </div>
-              </div>
-
-              <div className="p-6">
-                {/* Pagination */}
-                <div className="mb-6">
-                  <Pagination
-                    currentStep={5}
-                    totalSteps={7}
-                    onPrevious={() => navigateToScreen(5)}
-                    onNext={() => navigateToScreen(7)}
-                    canGoPrevious={true}
-                    canGoNext={
-                      step5Toggle1 !== null &&
-                      step5Toggle2 !== null &&
-                      step5Description.trim().length > 0
-                    }
-                    previousLabel="Back"
-                    nextLabel="Next"
-                  />
-                </div>
-
-                {/* Form Content */}
-                <div className="space-y-6">
-                  {/* Toggle 1 - Impact on Yourself */}
-                  <div className="bg-white p-6 rounded-xl shadow-md border border-slate-100">
-                    <YesNoToggle
-                      label="Impact on Yourself?"
-                      value={step5Toggle1}
-                      onChange={setStep5Toggle1}
-                    />
-                  </div>
-
-                  {/* Toggle 2 - Impact on Others */}
-                  <div className="bg-white p-6 rounded-xl shadow-md border border-slate-100">
-                    <YesNoToggle
-                      label="Impact on Others?"
-                      value={step5Toggle2}
-                      onChange={setStep5Toggle2}
-                    />
-                  </div>
-
-                  {/* Textarea - Reflections and Notes */}
-                  <div className="bg-white p-6 rounded-xl shadow-md border border-slate-100">
-                    <label
-                      htmlFor="step5-reflections-notes"
-                      className="block text-lg font-semibold text-slate-700 mb-3"
-                    >
-                      Reflections and Notes
-                    </label>
-                    <textarea
-                      ref={step5TextareaRef}
-                      id="step5-reflections-notes"
-                      name="step5-reflections-notes"
-                      value={step5Description}
-                      onChange={handleStep5DescriptionChange}
-                      placeholder="Start typing here..."
-                      className="w-full h-32 p-4 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-sm"
-                      maxLength={500}
-                    />
-                    <div className="flex justify-between items-center mt-2">
-                      <p className="text-sm text-slate-500">
-                        Maximum 500 characters
-                      </p>
-                      <p className="text-sm text-slate-400">
-                        Share your thoughts and reflections
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }, [
-    step5Description,
-    step5Toggle1,
-    step5Toggle2,
-    handleStep5DescriptionChange,
-    step5TextareaRef,
-  ]);
-
-  // Screen 7: Step 6 - Rate Learning Progress
-  const Step6Screen = () => {
-    const amountChangeOptions = [
-      { value: 0, label: "None" },
-      { value: 1, label: "Slight" },
-      { value: 2, label: "Moderate" },
-      { value: 3, label: "Significant" },
-      { value: 4, label: "Dramatic" },
-    ];
-
-    return (
-      <div className="min-h-screen max-w-[1200px] mx-auto">
-        <header>
-          <div className="px-4 md:px-6 py-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <button
-                  onClick={() => navigateToScreen(1)}
-                  className="hover:opacity-80 transition-opacity"
-                >
-                  <span className="text-2xl font-bold text-slate-900">
-                    MicroLearn
-                  </span>
-                </button>
-              </div>
-              <Navigation />
-            </div>
-          </div>
-        </header>
-
-        <div className="p-4 md:p-6">
-          <div className="max-w-md mx-auto md:max-w-[calc(42rem+400px)] lg:max-w-[calc(42rem+400px)]">
-            <div className="bg-white rounded-xl shadow-xl overflow-hidden">
-              <div className="bg-slate-900 p-6 text-white">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <h2 className="text-2xl font-bold">
-                      Rate Learning Progress
-                    </h2>
-                  </div>
-                </div>
-              </div>
-
-              <div className="p-6">
-                {/* Pagination */}
-                <div className="mb-6">
-                  <Pagination
-                    currentStep={6}
-                    totalSteps={7}
-                    onPrevious={() => navigateToScreen(6)}
-                    onNext={() => navigateToScreen(8)}
-                    canGoPrevious={true}
-                    canGoNext={true}
-                    previousLabel="Back"
-                    nextLabel="Next"
-                  />
-                </div>
-
-                {/* Rate Learning Progress */}
-                <div className="bg-white p-6 rounded-xl shadow-md border border-slate-100">
-                  <h3 className="text-lg font-medium text-slate-700 mb-6">
-                    Learning Progress
-                  </h3>
-
-                  {/* Timeline */}
-                  <div className="relative">
-                    {/* Items */}
-                    <div className="flex justify-between relative">
-                      {amountChangeOptions.map((option, index) => (
-                        <div
-                          key={option.value}
-                          className="flex flex-col items-center cursor-pointer"
-                          onClick={() => setStep6AmountChange(option.value)}
-                        >
-                          {/* Dot */}
-                          <div
-                            className={`w-4 h-4 rounded-full border-2 transition-colors relative z-10 ${
-                              step6AmountChange === option.value
-                                ? "bg-blue-600 border-blue-600"
-                                : "bg-white border-slate-400"
-                            }`}
-                          ></div>
-
-                          {/* Label */}
-                          <div className="mt-2 text-center">
-                            <div
-                              className={`text-xs font-medium transition-colors ${
-                                step6AmountChange === option.value
-                                  ? "text-blue-600"
-                                  : "text-slate-600"
-                              }`}
-                            >
-                              {option.label}
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* Line - positioned to intersect the dots */}
-                    <div className="absolute top-2 left-4 right-4 h-0.5 bg-slate-300 z-0"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
 
   // Screen 8: Step 7 - Rate Learning Progress
   const Step7Screen = () => {
@@ -1899,9 +1424,9 @@ function App() {
                 {/* Pagination */}
                 <div className="mb-6">
                   <Pagination
-                    currentStep={7}
-                    totalSteps={7}
-                    onPrevious={() => navigateToScreen(7)}
+                    currentStep={4}
+                    totalSteps={4}
+                    onPrevious={() => navigateToScreen(4)}
                     onNext={() => {
                       // Navigate to dashboard
                       navigateToScreen(0);
@@ -2097,23 +1622,24 @@ function App() {
                     >
                       <div className="mb-2 flex justify-center relative">
                         <div
-                          className={`w-20 h-20 rounded-full flex items-center justify-center shadow-md ${
+                          className={`w-20 h-20 rounded-full flex items-center justify-center shadow-lg backdrop-blur-md ${
                             selectedSDG === sdg.id
-                              ? `${
-                                  sdg.color || "bg-slate-500"
-                                } border-2 border-blue-500 ring-2 ring-blue-200 ring-offset-2`
+                              ? `bg-white/30 border-2 border-blue-500 ring-2 ring-blue-200 ring-offset-2`
                               : aiSelectedSDG === sdg.id
-                              ? `${
-                                  sdg.color || "bg-slate-500"
-                                } border-2 border-green-500 ring-2 ring-green-200 ring-offset-2`
-                              : sdg.color || "bg-slate-500"
+                              ? `bg-white/30 border-2 border-green-500 ring-2 ring-green-200 ring-offset-2`
+                              : `bg-white/20 border border-white/30`
                           }`}
                         >
-                          <div
-                            className={`w-12 h-12 rounded-full ${
-                              sdg.innerColor || "bg-slate-700"
-                            }`}
-                          />
+                          {sdg.icon &&
+                            React.createElement(sdg.icon, {
+                              className: `w-10 h-10 ${
+                                selectedSDG === sdg.id
+                                  ? "text-blue-600"
+                                  : aiSelectedSDG === sdg.id
+                                  ? "text-green-600"
+                                  : "text-slate-700"
+                              }`,
+                            })}
                         </div>
                         {selectedSDG === sdg.id && (
                           <div className="absolute -top-2 -right-2 w-7 h-7 bg-blue-500 rounded-full overflow-hidden flex items-center justify-center shadow-lg">
@@ -4004,10 +3530,10 @@ function App() {
             {/* Page Title */}
             <div className="mb-6">
               <h2 className="text-2xl font-bold text-slate-900 mb-2">
-                Your Personal Growth Journey
+                Learning Metrics
               </h2>
               <p className="text-slate-600">
-                Archive of all actions you've created and completed
+                Track all your learning goals and courses
               </p>
             </div>
 
@@ -4017,7 +3543,7 @@ function App() {
                 <div className="flex items-center space-x-2 mb-2">
                   <Target className="h-5 w-5 text-slate-600" />
                   <span className="text-sm font-medium text-slate-600">
-                    Total Actions
+                    Total Goals
                   </span>
                 </div>
                 <p className="text-2xl font-bold text-slate-900">
@@ -4046,29 +3572,40 @@ function App() {
                 </div>
                 <p className="text-2xl font-bold text-slate-900">2</p>
               </div>
+              <div className="bg-white p-4 rounded-xl shadow-md border border-slate-100">
+                <div className="flex items-center space-x-2 mb-2">
+                  <BookOpen className="h-5 w-5 text-green-500" />
+                  <span className="text-sm font-medium text-slate-600">
+                    Completed Courses
+                  </span>
+                </div>
+                <p className="text-2xl font-bold text-slate-900">
+                  {userState.preferences.completedCourses?.length || 0}
+                </p>
+              </div>
             </div>
 
-            {/* Actions Archive */}
+            {/* Learning Goals Archive */}
             <div className="space-y-6">
               {goals.length === 0 ? (
                 <div className="text-center py-12">
                   <Target className="h-12 w-12 text-slate-400 mx-auto mb-4" />
                   <h3 className="text-lg font-medium text-slate-900 mb-2">
-                    No actions yet
+                    No learning goals yet
                   </h3>
                   <p className="text-slate-600 mb-4">
-                    Start your journey by creating your first action
+                    Start Your Active Courses by creating your first goal
                   </p>
                   <button
-                    onClick={() => navigateToScreen(11)}
+                    onClick={() => navigateToScreen(3)}
                     className="bg-slate-900 hover:bg-slate-800 text-white py-2 px-6 rounded-full font-medium transition-colors"
                   >
-                    Save
+                    Create Goal
                   </button>
                 </div>
               ) : (
                 <div className="space-y-8">
-                  {/* In Progress Actions */}
+                  {/* In Progress Goals */}
                   {goals.filter((goal) => !goal.completed).length > 0 && (
                     <div>
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -4102,7 +3639,7 @@ function App() {
                                   </p>
                                 </div>
                                 <div className="ml-4 flex items-center space-x-2">
-                                  <div className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
+                                  <div className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800 whitespace-nowrap">
                                     Action created
                                   </div>
                                   <button
@@ -4254,11 +3791,65 @@ function App() {
                     </div>
                   )}
 
-                  {/* Completed Actions grouped by Learning Style */}
+                  {/* Completed Courses */}
+                  {userState.preferences.completedCourses &&
+                    userState.preferences.completedCourses.length > 0 && (
+                      <div className="mb-8">
+                        <h3 className="text-lg font-semibold text-slate-900 mb-4">
+                          Completed Courses
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                          {userState.preferences.completedCourses
+                            .map((courseId) =>
+                              courses.find((c) => c.id === courseId)
+                            )
+                            .filter((course) => course !== undefined)
+                            .map((course) => (
+                              <div
+                                key={course!.id}
+                                className="bg-white p-4 rounded-xl shadow-md border border-slate-100 hover:shadow-md transition-shadow"
+                              >
+                                <div className="flex items-start justify-between mb-3">
+                                  <div className="flex-1">
+                                    <h5 className="font-medium text-slate-900 mb-1">
+                                      {course!.title}
+                                    </h5>
+                                    <p className="text-xs text-slate-600 mb-2">
+                                      {course!.category}
+                                    </p>
+                                  </div>
+                                  <div className="ml-2 flex items-center space-x-2">
+                                    <div className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 whitespace-nowrap">
+                                      Completed
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                  <div className="flex items-center gap-2 text-xs text-slate-500">
+                                    <Clock className="w-3 h-3" />
+                                    {course!.duration}
+                                  </div>
+                                  <button
+                                    onClick={() => {
+                                      setSelectedCourseId(course!.id);
+                                      navigateToScreen(21);
+                                    }}
+                                    className="text-xs text-blue-600 hover:text-blue-800 font-medium transition-colors"
+                                  >
+                                    View Course
+                                  </button>
+                                </div>
+                              </div>
+                            ))}
+                        </div>
+                      </div>
+                    )}
+
+                  {/* Completed Goals grouped by Learning Style */}
                   {goals.filter((goal) => goal.completed).length > 0 && (
                     <div>
                       <h3 className="text-lg font-semibold text-slate-900 mb-4">
-                        Completed Actions
+                        Completed Goals
                       </h3>
                       {learningStyles.map((learningStyle) => {
                         const completedGoalsForLearningStyle = goals.filter(
@@ -4291,7 +3882,7 @@ function App() {
                                       </p>
                                     </div>
                                     <div className="ml-2 flex items-center space-x-2">
-                                      <div className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
+                                      <div className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 whitespace-nowrap">
                                         Completed
                                       </div>
                                       <button
@@ -5293,7 +4884,7 @@ function App() {
                         </div>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <div className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
+                        <div className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800 whitespace-nowrap">
                           Action created
                         </div>
                         {showCodeLabels && (
@@ -5684,16 +5275,22 @@ function App() {
 
   const handleOnboardingNext = () => {
     if (onboardingStep === null) return;
-    if (onboardingStep < 4) {
-      setOnboardingStep(onboardingStep + 1);
-    } else {
+    if (onboardingStep === 1) {
+      setOnboardingStep(2);
+    } else if (onboardingStep === 2) {
+      setOnboardingStep(4); // Skip step 3 (goals), go directly to dashboard
+    } else if (onboardingStep === 4) {
       handleOnboardingComplete();
     }
   };
 
   const handleOnboardingBack = () => {
     if (onboardingStep === null || onboardingStep === 1) return;
-    setOnboardingStep(onboardingStep - 1);
+    if (onboardingStep === 4) {
+      setOnboardingStep(2); // Skip step 3 (goals), go back to step 2
+    } else {
+      setOnboardingStep(onboardingStep - 1);
+    }
   };
 
   // Show onboarding for new users
@@ -5708,18 +5305,20 @@ function App() {
             onNext={handleOnboardingNext}
             onBack={handleOnboardingBack}
             onComplete={(data) => {
-              // Store assessment data
-              console.log("Assessment data:", data);
-            }}
-          />
-        )}
-        {onboardingStep === 3 && (
-          <OnboardingGoalsScreen
-            onNext={handleOnboardingNext}
-            onBack={handleOnboardingBack}
-            onComplete={(goals) => {
-              // Store goals
-              console.log("Learning goals:", goals);
+              // Save assessment data to user profile
+              const updatedState: UserState = {
+                ...userState,
+                preferences: {
+                  ...userState.preferences,
+                  onboardingData: {
+                    ...userState.preferences.onboardingData,
+                    subjects: data.subjects,
+                    proficiencyLevel: data.proficiencyLevel,
+                  },
+                },
+              };
+              setUserState(updatedState);
+              saveUserState(updatedState);
             }}
           />
         )}
@@ -5745,9 +5344,6 @@ function App() {
       {currentScreen === 2 && <LearningStyleSelectionScreen />}
       {currentScreen === 3 && <GoalCreationScreen />}
       {currentScreen === 4 && <GoalConfirmationScreen />}
-      {currentScreen === 5 && <DescribeSituationScreen />}
-      {currentScreen === 6 && <Step5Screen />}
-      {currentScreen === 7 && <Step6Screen />}
       {currentScreen === 8 && <Step7Screen />}
       {currentScreen === 9 && <JourneyViewScreen />}
       {currentScreen === 10 && <ProgressSubmissionScreen />}
@@ -5758,8 +5354,17 @@ function App() {
       {currentScreen === 20 && <DesignSystemScreen />}
       {currentScreen === 21 && (
         <CourseLibraryScreen
-          onBack={() => navigateToScreen(1)}
+          onBack={() => {
+            setSelectedCourseId(undefined);
+            navigateToScreen(1);
+          }}
           Navigation={Navigation}
+          userState={userState}
+          onCourseComplete={() => {
+            // Refresh user state after course completion
+            setUserState(getUserState());
+          }}
+          initialCourseId={selectedCourseId}
         />
       )}
     </div>

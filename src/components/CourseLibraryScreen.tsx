@@ -9,20 +9,66 @@ import {
   FileText,
   Target,
   HelpCircle,
+  Check,
+  CheckCircle2,
 } from "lucide-react";
+import { UserState } from "../types";
+import { saveUserState } from "../utils";
 
 interface CourseLibraryScreenProps {
   onBack: () => void;
   selectedFont?: string;
   Navigation?: React.ComponentType;
+  userState?: UserState;
+  onCourseComplete?: () => void;
+  initialCourseId?: string;
 }
 
 export const CourseLibraryScreen: React.FC<CourseLibraryScreenProps> = ({
   onBack,
   selectedFont = "nunito-poppins",
   Navigation,
+  userState,
+  onCourseComplete,
+  initialCourseId,
 }) => {
-  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+  const completedCourses = userState?.preferences?.completedCourses || [];
+
+  // Initialize with initialCourseId if provided
+  const [selectedCourse, setSelectedCourse] = useState<Course | null>(
+    initialCourseId
+      ? courses.find((c) => c.id === initialCourseId) || null
+      : null
+  );
+
+  const handleToggleComplete = (courseId: string, e?: React.MouseEvent) => {
+    if (e) {
+      e.stopPropagation(); // Prevent card click when clicking button
+    }
+    if (!userState) return;
+
+    const isCompleted = completedCourses.includes(courseId);
+    const updatedCompletedCourses = isCompleted
+      ? completedCourses.filter((id: string) => id !== courseId)
+      : [...completedCourses, courseId];
+
+    const updatedState: UserState = {
+      ...userState,
+      preferences: {
+        ...userState.preferences,
+        completedCourses: updatedCompletedCourses,
+      },
+    };
+
+    saveUserState(updatedState);
+    if (onCourseComplete) {
+      onCourseComplete();
+    }
+  };
+
+  const isCourseCompleted = (courseId: string) => {
+    return completedCourses.includes(courseId);
+  };
   const [selectedLesson, setSelectedLesson] = useState<CourseLesson | null>(
     null
   );
@@ -198,6 +244,30 @@ export const CourseLibraryScreen: React.FC<CourseLibraryScreenProps> = ({
                   </span>
                 ))}
               </div>
+              {userState && (
+                <div className="mt-6">
+                  <button
+                    onClick={(e) => handleToggleComplete(selectedCourse.id, e)}
+                    className={`flex items-center gap-2 px-6 py-3 rounded-full font-medium transition-colors ${
+                      isCourseCompleted(selectedCourse.id)
+                        ? "bg-green-100 text-green-700 hover:bg-green-200"
+                        : "bg-slate-900 text-white hover:bg-slate-800"
+                    }`}
+                  >
+                    {isCourseCompleted(selectedCourse.id) ? (
+                      <>
+                        <CheckCircle2 className="w-5 h-5" />
+                        Completed
+                      </>
+                    ) : (
+                      <>
+                        <Check className="w-5 h-5" />
+                        Mark as Complete
+                      </>
+                    )}
+                  </button>
+                </div>
+              )}
             </div>
 
             <div className="p-8">
@@ -322,16 +392,30 @@ export const CourseLibraryScreen: React.FC<CourseLibraryScreenProps> = ({
             <div
               key={course.id}
               onClick={() => setSelectedCourse(course)}
-              className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow cursor-pointer overflow-hidden border border-slate-200"
+              className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow cursor-pointer overflow-hidden border border-slate-200 relative"
             >
+              {isCourseCompleted(course.id) && (
+                <div className="absolute top-4 right-4 z-10">
+                  <div className="bg-green-500 text-white rounded-full p-2">
+                    <CheckCircle2 className="w-5 h-5" />
+                  </div>
+                </div>
+              )}
               <div className="p-6">
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-xs font-medium text-slate-500 uppercase tracking-wide">
                     {course.category}
                   </span>
-                  <span className="text-xs px-2 py-1 bg-slate-100 text-slate-700 rounded-full">
-                    {course.level}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    {isCourseCompleted(course.id) && (
+                      <span className="text-xs px-2 py-1 bg-green-100 text-green-700 rounded-full font-medium">
+                        Completed
+                      </span>
+                    )}
+                    <span className="text-xs px-2 py-1 bg-slate-100 text-slate-700 rounded-full">
+                      {course.level}
+                    </span>
+                  </div>
                 </div>
                 <h3 className="text-xl font-bold text-slate-900 mb-2">
                   {course.title}

@@ -1,7 +1,6 @@
 import React from "react";
 import { Target } from "lucide-react";
 import { Goal } from "../types";
-import { virtues } from "../data";
 
 interface ActionsOverviewProps {
   goals: Goal[];
@@ -10,6 +9,7 @@ interface ActionsOverviewProps {
   toggleCardExpansion: (cardId: string) => void;
   selectedAmountChange1: string | null;
   setSelectedAmountChange1: (value: string | null) => void;
+  onNavigateToCourse?: (courseId: string) => void;
 }
 
 export const ActionsOverview: React.FC<ActionsOverviewProps> = ({
@@ -19,6 +19,7 @@ export const ActionsOverview: React.FC<ActionsOverviewProps> = ({
   toggleCardExpansion,
   selectedAmountChange1,
   setSelectedAmountChange1,
+  onNavigateToCourse,
 }) => {
   return (
     <div className="bg-slate-50 object-cover p-4 border border-slate-100">
@@ -27,13 +28,7 @@ export const ActionsOverview: React.FC<ActionsOverviewProps> = ({
           onClick={() => navigateToScreen(17)}
           className="text-lg md:text-xl font-semibold text-slate-900 hover:text-blue-600 transition-colors text-left"
         >
-          Your Learning Journey
-        </button>
-        <button
-          onClick={() => navigateToScreen(11)}
-          className="text-slate-600 hover:text-slate-900 text-sm font-medium transition-colors"
-        >
-          Add Action
+          Your Active Courses
         </button>
       </div>
 
@@ -41,7 +36,10 @@ export const ActionsOverview: React.FC<ActionsOverviewProps> = ({
         {/* Sample goal - always shown when no real goals exist */}
         {goals.length === 0 && (
           <div className="bg-white p-4 rounded-2xl shadow-md border border-slate-100">
-            <div className="flex items-center justify-between mb-3">
+            <button
+              onClick={() => toggleCardExpansion("sample-card")}
+              className="w-full flex items-center justify-between mb-3 cursor-pointer hover:opacity-80 transition-opacity text-left"
+            >
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-pink-400 rounded-full overflow-hidden flex items-center justify-center">
                   <Target className="h-5 w-5 text-white" />
@@ -57,16 +55,13 @@ export const ActionsOverview: React.FC<ActionsOverviewProps> = ({
                 </div>
               </div>
               <div className="flex items-center space-x-2">
-                <div className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
+                <div className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800 whitespace-nowrap">
                   Action created
                 </div>
-                <button
-                  onClick={() => toggleCardExpansion("sample-card")}
-                  className="text-slate-400 hover:text-slate-600 transition-colors"
-                >
+                <div className="text-slate-400">
                   {expandedCards.has("sample-card") ? (
                     <svg
-                      className="w-4 h-4"
+                      className="w-5 h-5"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -80,7 +75,7 @@ export const ActionsOverview: React.FC<ActionsOverviewProps> = ({
                     </svg>
                   ) : (
                     <svg
-                      className="w-4 h-4"
+                      className="w-5 h-5"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -93,9 +88,9 @@ export const ActionsOverview: React.FC<ActionsOverviewProps> = ({
                       />
                     </svg>
                   )}
-                </button>
+                </div>
               </div>
-            </div>
+            </button>
 
             {expandedCards.has("sample-card") && (
               <div className="mt-4 pt-3 border-t border-slate-100">
@@ -105,6 +100,14 @@ export const ActionsOverview: React.FC<ActionsOverviewProps> = ({
                   Dedicate 30 minutes daily to progress through the lessons and
                   hands-on exercises.
                 </p>
+                {onNavigateToCourse && (
+                  <button
+                    onClick={() => onNavigateToCourse("intro-to-ux")}
+                    className="mt-3 w-full bg-slate-900 hover:bg-slate-800 text-white py-2 px-4 rounded-full font-medium transition-colors text-sm"
+                  >
+                    Continue Course
+                  </button>
+                )}
 
                 {/* Learning Progress Timeline */}
                 <div className="mt-4 pt-3 border-t border-slate-100">
@@ -165,8 +168,6 @@ export const ActionsOverview: React.FC<ActionsOverviewProps> = ({
 
         {/* User's actual goals */}
         {goals.map((goal) => {
-          const virtue = virtues.find((v) => v.id === goal.virtueId);
-          const IconComponent = virtue?.icon;
           return (
             <div
               key={goal.id}
@@ -174,25 +175,19 @@ export const ActionsOverview: React.FC<ActionsOverviewProps> = ({
             >
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center space-x-3">
-                  <div
-                    className={`w-10 h-10 ${
-                      virtue?.color || "0"
-                    } rounded-full overflow-hidden flex items-center justify-center`}
-                  >
-                    {IconComponent && (
-                      <IconComponent className="h-5 w-5 text-white" />
-                    )}
+                  <div className="w-10 h-10 bg-slate-400 rounded-full overflow-hidden flex items-center justify-center">
+                    <Target className="h-5 w-5 text-white" />
                   </div>
                   <div>
                     <h4 className="text-lg font-semibold text-slate-900">
-                      {virtue?.name || "Unknown Virtue"}
+                      {goal.title}
                     </h4>
-                    <p className="text-xs text-slate-600">{goal.title}</p>
+                    <p className="text-xs text-slate-600">{goal.description}</p>
                   </div>
                 </div>
                 <div className="text-right">
                   <div
-                    className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                    className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium whitespace-nowrap ${
                       goal.completed
                         ? "bg-emerald-100 text-emerald-800"
                         : "bg-amber-100 text-amber-800"

@@ -9,6 +9,9 @@ export interface LearningStyle {
   description: string;
 }
 
+// Virtue is an alias for LearningStyle for backward compatibility
+export type Virtue = LearningStyle;
+
 export interface Goal {
   id: string;
   learningStyleId: string;
@@ -67,6 +70,17 @@ export interface UserPreferences {
     activeLearningStreak: number;
     completionRate: number;
   };
+  onboardingData?: {
+    subjects?: string[];
+    proficiencyLevel?: string;
+    learningGoals?: string;
+    onboardingGoals?: Array<{
+      id: string;
+      title: string;
+      description: string;
+    }>;
+  };
+  completedCourses?: string[]; // Array of course IDs
 }
 
 export interface UserState {

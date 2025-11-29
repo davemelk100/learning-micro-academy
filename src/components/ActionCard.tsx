@@ -29,13 +29,13 @@ export const ActionCard: React.FC<ActionCardProps> = ({
   const getStatusBadge = () => {
     if (isCompleted) {
       return (
-        <div className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+        <div className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 whitespace-nowrap">
           Completed
         </div>
       );
     }
     return (
-      <div className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
+      <div className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800 whitespace-nowrap">
         In Progress
       </div>
     );

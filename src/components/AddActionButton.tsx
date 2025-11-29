@@ -22,7 +22,6 @@ export const AddActionButton: React.FC<AddActionButtonProps> = ({
       >
         <Plus className="h-3 w-3" />
       </div>
-      <span className="text-sm font-medium">Add Action</span>
     </button>
   );
 };

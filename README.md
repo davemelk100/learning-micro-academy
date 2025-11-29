@@ -21,7 +21,7 @@ Learning Micro-Academy is a modern learning platform designed to help learners e
 - **Course Selection**: Browse and select from a variety of learning topics
 - **Featured Courses**: Discover highlighted courses each week
 - **Learning Assistant**: AI-powered recommendations for personalized learning paths
-- **Progress Tracking**: Monitor your learning journey and completed courses
+- **Progress Tracking**: Monitor Your Active Courses and completed courses
 - **Mobile Ready**: Built with Capacitor for iOS and Android deployment
 
 ## Getting Started

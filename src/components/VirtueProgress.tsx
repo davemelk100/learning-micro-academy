@@ -22,17 +22,17 @@ export const VirtueProgress: React.FC<VirtueProgressProps> = ({
           onClick={() => navigateToScreen(17)}
           className="text-xl font-semibold text-slate-900 hover:text-blue-600 transition-colors text-left"
         >
-          Your Learning Journey
+           Learning Metrics
         </button>
         <button
-          onClick={() => navigateToScreen(6)}
+          onClick={() => navigateToScreen(17)}
           className="text-slate-600 hover:text-slate-900 text-sm font-medium transition-colors"
         >
           View All
         </button>
       </div>
       <p className="text-slate-600 text-sm mb-6">
-        Track your progress and celebrate your growth
+        Track your progress
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
