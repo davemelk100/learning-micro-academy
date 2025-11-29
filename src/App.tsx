@@ -6,6 +6,7 @@ import { Toast } from "./components/Toast";
 import { SharingModal } from "./components/SharingModal";
 import { HomeDashboardScreen } from "./screens/HomeDashboardScreen";
 import { YesNoToggle } from "./components/YesNoToggle";
+import { CourseLibraryScreen } from "./components/CourseLibraryScreen";
 import {
   ChevronRight,
   Award,
@@ -850,8 +851,7 @@ function App() {
             </h1>
             <p className="text-base text-slate-700 mb-6">
               Bite-sized courses for continuous learning. Join our cohort,
-              subscribe to our newsletter, or explore our Notion-based course
-              library.
+              subscribe to our newsletter, or explore our course library.
             </p>
           </div>
 
@@ -873,8 +873,7 @@ function App() {
             </button>
             <button
               onClick={() => {
-                // Link to Notion course library - you can update this URL
-                window.open("https://notion.so", "_blank");
+                navigateToScreen(21);
               }}
               className="w-full md:w-auto py-4 px-8 bg-white hover:bg-slate-100 text-slate-900 border-2 border-slate-900 rounded-full transition-all duration-200 font-medium shadow-lg hover:shadow-xl text-lg"
             >
@@ -5987,6 +5986,7 @@ function App() {
       {currentScreen === 13 && <UserResearchScreen />}
       {currentScreen === 17 && <ActionJourneyScreen />}
       {currentScreen === 20 && <DesignSystemScreen />}
+      {currentScreen === 21 && <CourseLibraryScreen onBack={() => navigateToScreen(1)} />}
 
       {/* Grace Modal */}
       {graceModalOpen && (

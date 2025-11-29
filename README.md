@@ -1,6 +1,6 @@
 # Learning Micro-Academy
 
-A learning platform for bite-sized courses and continuous learning. Join cohorts, subscribe to newsletters, or explore our Notion-based course library.
+A learning platform for bite-sized courses and continuous learning. Join cohorts, subscribe to newsletters, or explore our comprehensive course library.
 
 ## Overview
 
@@ -17,6 +17,7 @@ Learning Micro-Academy is a modern learning platform designed to help learners e
 
 ## Features
 
+- **Course Library**: Browse and explore a comprehensive collection of courses with detailed lessons
 - **Course Selection**: Browse and select from a variety of learning topics
 - **Featured Courses**: Discover highlighted courses each week
 - **Learning Assistant**: AI-powered recommendations for personalized learning paths

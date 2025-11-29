@@ -19,7 +19,8 @@ This repository was forked from `soulchi-design-demo` and transformed into Learn
 - Welcome screen now includes sign-up CTAs for:
   - Cohort membership
   - Newsletter subscription
-  - Notion-based course library access
+  - Course library access (local implementation)
+- Built-in course library with full course content and lessons
 - Updated all UI text to use learning/course terminology
 
 ### Technical Changes
