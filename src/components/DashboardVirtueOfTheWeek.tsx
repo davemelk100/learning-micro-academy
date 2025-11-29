@@ -1,9 +1,8 @@
 import React from "react";
-import { Sparkles } from "lucide-react";
 
 interface DashboardVirtueOfTheWeekProps {
   selectedFont: string;
-  getHeadingFontClass: (font: string) => string;
+  getHeadingFontClass: (_font: string) => string;
 }
 
 export const DashboardVirtueOfTheWeek: React.FC<

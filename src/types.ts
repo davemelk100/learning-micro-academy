@@ -99,7 +99,7 @@ export interface FontOption {
 
 export interface FontSelectorProps {
   selectedFont: string;
-  onFontChange: (font: string) => void;
+  onFontChange: (_font: string) => void;
   isOpen: boolean;
   onToggle: () => void;
 }
@@ -127,10 +127,10 @@ export interface ActionCardProps {
   goal: Goal;
   learningStyle: LearningStyle;
   isCompleted?: boolean;
-  onEdit?: (goal: Goal) => void;
-  onDelete?: (goal: Goal) => void;
-  onToggleComplete?: (goal: Goal) => void;
-  onSaveToDatabase?: (completedAction: CompletedAction) => void;
+  onEdit?: (_goal: Goal) => void;
+  onDelete?: (_goal: Goal) => void;
+  onToggleComplete?: (_goal: Goal) => void;
+  onSaveToDatabase?: (_completedAction: CompletedAction) => void;
   className?: string;
 }
 
@@ -155,12 +155,12 @@ export interface CompletedAction {
 }
 
 export interface DatabaseService {
-  saveCompletedAction: (action: CompletedAction) => Promise<void>;
+  saveCompletedAction: (_action: CompletedAction) => Promise<void>;
   getCompletedActions: () => Promise<CompletedAction[]>;
   updateCompletedAction: (
-    id: string,
-    updates: Partial<CompletedAction>
+    _id: string,
+    _updates: Partial<CompletedAction>
   ) => Promise<void>;
-  deleteCompletedAction: (id: string) => Promise<void>;
-  archiveCompletedAction: (id: string) => Promise<void>;
+  deleteCompletedAction: (_id: string) => Promise<void>;
+  archiveCompletedAction: (_id: string) => Promise<void>;
 }

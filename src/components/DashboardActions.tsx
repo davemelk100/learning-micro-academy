@@ -1,20 +1,20 @@
 import React from "react";
 import { ActionCard } from "./ActionCard";
-import { Goal, Virtue } from "../types";
+import { Goal } from "../types";
 import { virtues } from "../data";
 
 interface DashboardActionsProps {
   goals: Goal[];
   selectedFont: string;
-  getHeadingFontClass: (font: string) => string;
+  getHeadingFontClass: (_font: string) => string;
   showCompletedActions: boolean;
-  setShowCompletedActions: (show: boolean) => void;
-  openEditGoalModal: (goal: Goal) => void;
-  openDeleteModal: (goal: Goal) => void;
-  setGoals: (goals: Goal[]) => void;
-  saveUserState: (state: any) => void;
+  setShowCompletedActions: (_show: boolean) => void;
+  openEditGoalModal: (_goal: Goal) => void;
+  openDeleteModal: (_goal: Goal) => void;
+  setGoals: (_goals: Goal[]) => void;
+  saveUserState: (_state: any) => void;
   user: { name: string };
-  handleOpenSaveModal: (goal: any, virtue: any) => void;
+  handleOpenSaveModal: (_goal: any, _virtue: any) => void;
 }
 
 export const DashboardActions: React.FC<DashboardActionsProps> = ({

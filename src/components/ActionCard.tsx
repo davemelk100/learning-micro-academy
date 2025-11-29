@@ -6,10 +6,10 @@ interface ActionCardProps {
   goal: Goal;
   virtue: Virtue;
   isCompleted?: boolean;
-  onEdit?: (goal: Goal) => void;
-  onDelete?: (goal: Goal) => void;
-  onToggleComplete?: (goal: Goal) => void;
-  onSaveToDatabase?: (completedAction: CompletedAction) => void;
+  onEdit?: (_goal: Goal) => void;
+  onDelete?: (_goal: Goal) => void;
+  onToggleComplete?: (_goal: Goal) => void;
+  onSaveToDatabase?: (_completedAction: CompletedAction) => void;
   className?: string;
 }
 

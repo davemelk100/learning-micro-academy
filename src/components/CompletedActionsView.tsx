@@ -2,10 +2,8 @@ import React, { useState, useEffect } from "react";
 import {
   Database,
   Archive,
-  Edit3,
   Trash2,
   Search,
-  Filter,
   Calendar,
   Star,
   Tag,

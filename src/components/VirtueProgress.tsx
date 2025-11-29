@@ -3,7 +3,7 @@ import { virtues } from "../data";
 import { Heart, Bot, Target } from "lucide-react";
 
 interface VirtueProgressProps {
-  navigateToScreen: (screen: number) => void;
+  navigateToScreen: (_screen: number) => void;
 }
 
 export const VirtueProgress: React.FC<VirtueProgressProps> = ({
@@ -22,7 +22,7 @@ export const VirtueProgress: React.FC<VirtueProgressProps> = ({
           onClick={() => navigateToScreen(17)}
           className="text-xl font-semibold text-slate-900 hover:text-blue-600 transition-colors text-left"
         >
-           Learning Metrics
+          Learning Metrics
         </button>
         <button
           onClick={() => navigateToScreen(17)}
@@ -31,9 +31,7 @@ export const VirtueProgress: React.FC<VirtueProgressProps> = ({
           View All
         </button>
       </div>
-      <p className="text-slate-600 text-sm mb-6">
-        Track your progress
-      </p>
+      <p className="text-slate-600 text-sm mb-6">Track your progress</p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {progressData.map((item, index) => {

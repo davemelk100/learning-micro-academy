@@ -738,7 +738,7 @@ function App() {
 
   // Screen 2: Learning Style Selection
   const LearningStyleSelectionScreen = () => {
-    const [isListView, setIsListView] = useState(false);
+    const [isListView] = useState(false);
     return (
       <div className="min-h-screen  max-w-[1200px] mx-auto">
         <header>
@@ -1448,7 +1448,7 @@ function App() {
                   <div className="relative">
                     {/* Items */}
                     <div className="flex justify-between relative">
-                      {amountChangeOptions.map((option, index) => (
+                      {amountChangeOptions.map((option) => (
                         <div
                           key={option.value}
                           className="flex flex-col items-center cursor-pointer"

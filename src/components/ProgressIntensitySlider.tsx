@@ -3,7 +3,7 @@ import { Gauge } from "lucide-react";
 
 interface ProgressIntensitySliderProps {
   value: number; // 1-10 scale
-  onChange: (value: number) => void;
+  onChange: (_value: number) => void;
   className?: string;
 }
 

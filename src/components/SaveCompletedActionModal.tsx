@@ -6,7 +6,7 @@ import { createCompletedActionFromGoal } from "../services/databaseService";
 interface SaveCompletedActionModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (completedAction: CompletedAction) => void;
+  onSave: (_completedAction: CompletedAction) => void;
   goal: Goal;
   virtue: Virtue;
 }

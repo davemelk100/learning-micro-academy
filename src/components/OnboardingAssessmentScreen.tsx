@@ -4,7 +4,7 @@ import { ArrowRight, ArrowLeft } from "lucide-react";
 interface OnboardingAssessmentScreenProps {
   onNext: () => void;
   onBack: () => void;
-  onComplete: (data: {
+  onComplete: (_data: {
     subjects: string[];
     proficiencyLevel: string;
   }) => void;

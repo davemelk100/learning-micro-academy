@@ -13,22 +13,26 @@ interface HomeDashboardScreenProps {
   userStats: {
     currentStreak: number;
   };
-  navigateToScreen: (screen: number) => void;
+  navigateToScreen: (_screen: number) => void;
   Navigation: React.ComponentType;
-  onNavigateToCourse?: (courseId: string) => void;
+  onNavigateToCourse?: (_courseId: string) => void;
   // Additional props for modals and editing functionality
   editingGoal: Goal | null;
-  setEditingGoal: (goal: Goal | null) => void;
+  setEditingGoal: (_goal: Goal | null) => void;
   newGoal: any;
-  setNewGoal: (goal: any) => void;
-  setGoals: (goals: Goal[]) => void;
+  setNewGoal: (_goal: any) => void;
+  setGoals: (_goals: Goal[]) => void;
   progressModalOpen: boolean;
-  setProgressModalOpen: (open: boolean) => void;
+  setProgressModalOpen: (_open: boolean) => void;
   selectedGoalForProgress: Goal | null;
-  setSelectedGoalForProgress: (goal: Goal | null) => void;
+  setSelectedGoalForProgress: (_goal: Goal | null) => void;
   progressUpdate: { amount: number; notes: string };
-  setProgressUpdate: (update: { amount: number; notes: string }) => void;
-  updateGoalProgress: (goalId: string, amount: number, notes: string) => void;
+  setProgressUpdate: (_update: { amount: number; notes: string }) => void;
+  updateGoalProgress: (
+    _goalId: string,
+    _amount: number,
+    _notes: string
+  ) => void;
 }
 
 export const HomeDashboardScreen: React.FC<HomeDashboardScreenProps> = ({
@@ -37,18 +41,6 @@ export const HomeDashboardScreen: React.FC<HomeDashboardScreenProps> = ({
   userStats,
   navigateToScreen,
   Navigation,
-  editingGoal,
-  setEditingGoal,
-  newGoal,
-  setNewGoal,
-  setGoals,
-  progressModalOpen,
-  setProgressModalOpen,
-  selectedGoalForProgress,
-  setSelectedGoalForProgress,
-  progressUpdate,
-  setProgressUpdate,
-  updateGoalProgress,
   onNavigateToCourse,
 }) => {
   const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());

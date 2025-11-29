@@ -1,7 +1,7 @@
 import React from "react";
 
 interface AppHeaderProps {
-  navigateToScreen: (screen: number) => void;
+  navigateToScreen: (_screen: number) => void;
   Navigation: React.ComponentType;
 }
 

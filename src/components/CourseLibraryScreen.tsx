@@ -26,7 +26,6 @@ interface CourseLibraryScreenProps {
 
 export const CourseLibraryScreen: React.FC<CourseLibraryScreenProps> = ({
   onBack,
-  selectedFont = "nunito-poppins",
   Navigation,
   userState,
   onCourseComplete,

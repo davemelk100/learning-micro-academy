@@ -4,12 +4,12 @@ import { Goal } from "../types";
 
 interface ActionsOverviewProps {
   goals: Goal[];
-  navigateToScreen: (screen: number) => void;
+  navigateToScreen: (_screen: number) => void;
   expandedCards: Set<string>;
-  toggleCardExpansion: (cardId: string) => void;
+  toggleCardExpansion: (_cardId: string) => void;
   selectedAmountChange1: string | null;
-  setSelectedAmountChange1: (value: string | null) => void;
-  onNavigateToCourse?: (courseId: string) => void;
+  setSelectedAmountChange1: (_value: string | null) => void;
+  onNavigateToCourse?: (_courseId: string) => void;
 }
 
 export const ActionsOverview: React.FC<ActionsOverviewProps> = ({

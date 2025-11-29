@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Check } from "lucide-react";
 import { learningTopics } from "../data";
@@ -7,9 +7,9 @@ import { AIInput } from "./AIInput";
 
 interface SDGSelectionScreenProps {
   selectedSDGs: string[];
-  setSelectedSDGs: (sdgs: string[]) => void;
-  setCurrentSelectedSDG: (sdg: string) => void;
-  navigateToScreen: (screen: number) => void;
+  setSelectedSDGs: (_sdgs: string[]) => void;
+  setCurrentSelectedSDG: (_sdg: string) => void;
+  navigateToScreen: (_screen: number) => void;
   selectedFont: string;
   aiConversationOpen: boolean;
   conversationInputRef: React.RefObject<HTMLInputElement>;

@@ -5,11 +5,11 @@ import { CompletedAction } from "../types";
 interface SavedActionsSectionProps {
   savedCompletedActions: CompletedAction[];
   showSavedActions: boolean;
-  setShowSavedActions: (show: boolean) => void;
+  setShowSavedActions: (_show: boolean) => void;
   selectedFont: string;
-  getHeadingFontClass: (font: string) => string;
-  handleArchiveSavedAction: (id: string) => void;
-  handleDeleteSavedAction: (id: string) => void;
+  getHeadingFontClass: (_font: string) => string;
+  handleArchiveSavedAction: (_id: string) => void;
+  handleDeleteSavedAction: (_id: string) => void;
 }
 
 export const SavedActionsSection: React.FC<SavedActionsSectionProps> = ({

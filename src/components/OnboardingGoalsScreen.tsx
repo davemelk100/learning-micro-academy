@@ -11,7 +11,7 @@ interface LearningGoal {
 interface OnboardingGoalsScreenProps {
   onNext: () => void;
   onBack: () => void;
-  onComplete: (goals: LearningGoal[]) => void;
+  onComplete: (_goals: LearningGoal[]) => void;
 }
 
 export const OnboardingGoalsScreen: React.FC<OnboardingGoalsScreenProps> = ({
