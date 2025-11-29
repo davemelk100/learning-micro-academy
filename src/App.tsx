@@ -8,9 +8,13 @@ import { CourseLibraryScreen } from "./components/CourseLibraryScreen";
 import { OnboardingWelcomeScreen } from "./components/OnboardingWelcomeScreen";
 import { OnboardingAssessmentScreen } from "./components/OnboardingAssessmentScreen";
 import { OnboardingDashboardScreen } from "./components/OnboardingDashboardScreen";
+import { AuthModal } from "./components/Auth/AuthModal";
+import { UserProfile } from "./components/Profile/UserProfile";
+import { useAuth } from "./contexts/AuthContext";
 import { saveUserState, getUserState } from "./utils";
 import { UserState } from "./types";
 import { courses } from "./data";
+import { User as UserIcon, LogOut } from "lucide-react";
 import {
   Award,
   Target,
@@ -137,8 +141,60 @@ const learningStyles: LearningStyle[] = [
 ];
 
 function App() {
-  // Load user state from localStorage on mount
-  const [userState, setUserState] = useState<UserState>(getUserState());
+  const { user, isAuthenticated, logout, refreshUser } = useAuth();
+  const [userState, setUserState] = useState<UserState>({
+    preferences: {
+      theme: "light",
+      notifications: true,
+      emailUpdates: true,
+      language: "en",
+      selectedLearningStyle: null,
+      selectedSDGs: [],
+      currentSelectedSDG: "",
+      hasCompletedSDGSetup: false,
+      hasCompletedOnboarding: false,
+      newGoal: {
+        title: "",
+        description: "",
+        target: 0,
+      },
+      lastUpdated: new Date().toISOString(),
+      name: "Guest",
+      selectedFont: "philosopher-mulish",
+      darkMode: false,
+      progressIntensity: 5,
+      completedCourses: [],
+    },
+    goals: [],
+    progress: [],
+    currentScreen: 0,
+  });
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [loadingUserState, setLoadingUserState] = useState(true);
+
+  // Load user state on mount
+  useEffect(() => {
+    const loadUserState = async () => {
+      setLoadingUserState(true);
+      try {
+        const state = await getUserState();
+        setUserState(state);
+      } catch (error) {
+        console.error("Error loading user state:", error);
+      } finally {
+        setLoadingUserState(false);
+      }
+    };
+    loadUserState();
+  }, [isAuthenticated]);
+
+  // Save user state whenever it changes
+  useEffect(() => {
+    if (!loadingUserState) {
+      saveUserState(userState).catch(console.error);
+    }
+  }, [userState, loadingUserState]);
 
   // Helper function to get course completeness for a goal
   const getCourseCompleteness = (goal: Goal): number => {
@@ -172,7 +228,8 @@ function App() {
     title: "",
     description: "",
   });
-  const [user] = useState({ name: "Dave", isNewUser: true }); // Set to true for new user experience
+  // Use auth context user, fallback to default
+  const displayUser = user || { name: "Guest", isNewUser: true };
   const [onboardingStep, setOnboardingStep] = useState<number | null>(null); // null = not in onboarding, 1-4 = onboarding steps
   const [isLoadingGoalSuggestions, setIsLoadingGoalSuggestions] =
     useState(false);
@@ -409,12 +466,12 @@ function App() {
 
   // Determine initial screen based on user status
   useEffect(() => {
-    if (user.isNewUser) {
+    if (displayUser.isNewUser) {
       navigateToScreen(1); // Welcome screen for new users
     } else {
       navigateToScreen(0); // Dashboard for returning users
     }
-  }, [user.isNewUser, navigateToScreen]);
+  }, [displayUser.isNewUser, navigateToScreen]);
 
   // Reset to correct screen if somehow on wrong screen
   useEffect(() => {
@@ -697,7 +754,7 @@ function App() {
           </div>
 
           <div className="flex flex-col md:flex-row justify-center items-center gap-4 md:gap-8">
-            {user.isNewUser && onStartOnboarding && (
+            {displayUser.isNewUser && onStartOnboarding && (
               <button
                 onClick={onStartOnboarding}
                 className="w-full md:w-auto py-4 px-8 bg-slate-900 hover:bg-slate-800 text-white rounded-full transition-all duration-200 font-medium shadow-lg hover:shadow-xl text-lg"
@@ -724,7 +781,7 @@ function App() {
   // Home Dashboard Screen - now using extracted component
   const HomeDashboardScreenComponent = () => (
     <HomeDashboardScreen
-      user={user}
+      user={displayUser}
       goals={goals}
       userStats={userStats}
       navigateToScreen={navigateToScreen}
@@ -5223,7 +5280,7 @@ function App() {
   };
 
   // Show onboarding for new users
-  if (user.isNewUser && onboardingStep !== null) {
+  if (displayUser.isNewUser && onboardingStep !== null) {
     return (
       <div className="pb-20 md:pb-0">
         {onboardingStep === 1 && (
@@ -5247,7 +5304,7 @@ function App() {
                 },
               };
               setUserState(updatedState);
-              saveUserState(updatedState);
+              saveUserState(updatedState).catch(console.error);
             }}
           />
         )}
@@ -5260,11 +5317,65 @@ function App() {
 
   return (
     <div className="pb-20 md:pb-0">
+      {/* Auth and Profile Modals */}
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        onSuccess={() => {
+          refreshUser();
+          getUserState().then(setUserState).catch(console.error);
+        }}
+      />
+
+      {showProfileModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+          <UserProfile
+            onClose={() => {
+              setShowProfileModal(false);
+              refreshUser();
+              getUserState().then(setUserState).catch(console.error);
+            }}
+          />
+        </div>
+      )}
+
+      {/* Auth/Profile Button */}
+      <div className="fixed top-4 right-4 z-40 flex gap-2">
+        {isAuthenticated ? (
+          <>
+            <button
+              onClick={() => setShowProfileModal(true)}
+              className="bg-white rounded-full p-2 shadow-lg hover:bg-slate-100 transition-colors border border-slate-200"
+              title="Profile"
+            >
+              <UserIcon className="w-5 h-5 text-slate-700" />
+            </button>
+            <button
+              onClick={() => {
+                logout();
+                getUserState().then(setUserState).catch(console.error);
+              }}
+              className="bg-white rounded-full p-2 shadow-lg hover:bg-slate-100 transition-colors border border-slate-200"
+              title="Logout"
+            >
+              <LogOut className="w-5 h-5 text-slate-700" />
+            </button>
+          </>
+        ) : (
+          <button
+            onClick={() => setShowAuthModal(true)}
+            className="bg-slate-900 text-white rounded-full px-4 py-2 shadow-lg hover:bg-slate-800 transition-colors text-sm font-medium"
+          >
+            Login
+          </button>
+        )}
+      </div>
+
       {currentScreen === 0 && <HomeDashboardScreenComponent />}
       {currentScreen === 1 && (
         <WelcomeScreen
           onStartOnboarding={() => {
-            if (user.isNewUser) {
+            if (displayUser.isNewUser) {
               setOnboardingStep(1);
             }
           }}
@@ -5291,7 +5402,7 @@ function App() {
           userState={userState}
           onCourseComplete={() => {
             // Refresh user state after course completion
-            setUserState(getUserState());
+            getUserState().then(setUserState).catch(console.error);
           }}
           initialCourseId={selectedCourseId}
         />

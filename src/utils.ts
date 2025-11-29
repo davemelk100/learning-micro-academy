@@ -1,4 +1,5 @@
 import { UserState, UserPreferences } from "./types";
+import { apiService } from "./services/apiService";
 
 const STORAGE_KEY = "learning-micro-academy-user-state";
 
@@ -10,15 +11,53 @@ export const defaultUserPreferences: UserPreferences = {
   hasCompletedSDGSetup: false,
 };
 
-export const saveUserState = (state: UserState) => {
+export const saveUserState = async (state: UserState) => {
+  // Always save to localStorage as backup
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   } catch (error) {
-    console.error("Failed to save user state:", error);
+    console.error("Failed to save user state to localStorage:", error);
+  }
+
+  // If authenticated, also save to backend
+  if (apiService.isAuthenticated()) {
+    try {
+      // Save preferences
+      await apiService.updateUserPreferences(state.preferences);
+
+      // Save goals
+      await apiService.updateUserGoals(state.goals);
+    } catch (error) {
+      console.error("Failed to save user state to backend:", error);
+      // Don't throw - localStorage backup is fine
+    }
   }
 };
 
-export const getUserState = (): UserState => {
+export const getUserState = async (): Promise<UserState> => {
+  // If authenticated, try to load from backend first
+  if (apiService.isAuthenticated()) {
+    try {
+      const userResponse = await apiService.getCurrentUser();
+      if (userResponse.data) {
+        const user = userResponse.data;
+        const state: UserState = {
+          preferences: user.preferences || defaultUserPreferences,
+          goals: user.goals || [],
+          progress: user.progress || [],
+          currentScreen: 0,
+        };
+        // Also save to localStorage as backup
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        return state;
+      }
+    } catch (error) {
+      console.error("Failed to load user state from backend:", error);
+      // Fall through to localStorage
+    }
+  }
+
+  // Fallback to localStorage
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
@@ -32,7 +71,7 @@ export const getUserState = (): UserState => {
       };
     }
   } catch (error) {
-    console.error("Failed to load user state:", error);
+    console.error("Failed to load user state from localStorage:", error);
   }
 
   // Return default state if no stored data or error
