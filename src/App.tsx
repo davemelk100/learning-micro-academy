@@ -2,8 +2,6 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Pagination } from "./components/Pagination";
 import { HelpCard } from "./components/HelpCard";
 import { AIRecommendationCard } from "./components/AIRecommendationCard";
-import { Toast } from "./components/Toast";
-import { SharingModal } from "./components/SharingModal";
 import { HomeDashboardScreen } from "./screens/HomeDashboardScreen";
 import { YesNoToggle } from "./components/YesNoToggle";
 import { CourseLibraryScreen } from "./components/CourseLibraryScreen";
@@ -11,9 +9,7 @@ import { OnboardingWelcomeScreen } from "./components/OnboardingWelcomeScreen";
 import { OnboardingAssessmentScreen } from "./components/OnboardingAssessmentScreen";
 import { OnboardingGoalsScreen } from "./components/OnboardingGoalsScreen";
 import { OnboardingDashboardScreen } from "./components/OnboardingDashboardScreen";
-import { LearningMetricsCard } from "./components/LearningMetricsCard";
 import {
-  ChevronRight,
   Award,
   Target,
   Heart,
@@ -21,7 +17,6 @@ import {
   Users,
   Shield,
   Lightbulb,
-  Menu,
   X,
   Sparkles,
   Check,
@@ -30,13 +25,10 @@ import {
   RefreshCw,
   Flame,
   HeartHandshake,
-  UsersRound,
-  BookOpen,
   Palette,
   Code,
   TrendingUp,
   Globe,
-  Zap,
 } from "lucide-react";
 
 interface Virtue {
@@ -148,14 +140,6 @@ function App() {
   });
   const [user] = useState({ name: "Dave", isNewUser: true }); // Set to true for new user experience
   const [onboardingStep, setOnboardingStep] = useState<number | null>(null); // null = not in onboarding, 1-4 = onboarding steps
-  const [progressIntensity, setProgressIntensity] = useState(5); // Default to moderate (5/10)
-  const [learningMetrics, setLearningMetrics] = useState({
-    currentProficiency: 45,
-    skillsMasteredThisMonth: 3,
-    activeLearningStreak: 7,
-    completionRate: 68,
-  });
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLoadingGoalSuggestions, setIsLoadingGoalSuggestions] =
     useState(false);
   const [showGoalSuggestions, setShowGoalSuggestions] = useState(false);
@@ -165,37 +149,12 @@ function App() {
   const [aiSelectedVirtue, setAiSelectedVirtue] = useState<string | null>(null);
   const [aiVirtueSelectionReason, setAiVirtueSelectionReason] =
     useState<string>("");
-  const [loginForm, setLoginForm] = useState({ email: "", password: "" });
   const [hasHoveredSDG, setHasHoveredSDG] = useState(false);
   const [showSDGPopover, setShowSDGPopover] = useState(false);
-
-  // Amount of Change chip selections
-  const [selectedAmountChange1, setSelectedAmountChange1] = useState<
-    string | null
-  >(null);
-  const [selectedAmountChange2, setSelectedAmountChange2] = useState<
-    string | null
-  >(null);
-
-  // Card expansion state
-  const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
 
   // Design system action card expansion state
   const [designSystemCardExpanded, setDesignSystemCardExpanded] =
     useState(true);
-
-  // Toggle card expansion
-  const toggleCardExpansion = (cardId: string) => {
-    setExpandedCards((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(cardId)) {
-        newSet.delete(cardId);
-      } else {
-        newSet.add(cardId);
-      }
-      return newSet;
-    });
-  };
 
   // SDG Goals data
   const sdgGoals = [
@@ -261,11 +220,6 @@ function App() {
       image: "/17-partnership-for-the-goals.png",
     },
   ];
-  const [isLoggingIn, setIsLoggingIn] = useState(false);
-  const [selectedLifeAspect, setSelectedLifeAspect] = useState("");
-  const [selectedSuggestedGoal, setSelectedSuggestedGoal] = useState<
-    string | null
-  >(null);
   const [editingGoal, setEditingGoal] = useState<Goal | null>(null);
   const [graceModalOpen, setGraceModalOpen] = useState(false);
   const [situationToggle1, setSituationToggle1] = useState<boolean | null>(
@@ -304,14 +258,6 @@ function App() {
   const [editingActionId, setEditingActionId] = useState<string | null>(null);
   const [editedActionText, setEditedActionText] = useState<string>("");
 
-  // Success notification and sharing state
-  const [showSuccessToast, setShowSuccessToast] = useState(false);
-  const [showSharingModal, setShowSharingModal] = useState(false);
-  const [completedActionData, setCompletedActionData] = useState<{
-    title: string;
-    description: string;
-    virtueName: string;
-  } | null>(null);
   const [progressModalOpen, setProgressModalOpen] = useState(false);
   const [selectedGoalForProgress, setSelectedGoalForProgress] =
     useState<Goal | null>(null);
@@ -323,11 +269,6 @@ function App() {
   // Browser back button functionality
   const navigateToScreen = useCallback((screen: number) => {
     setCurrentScreen(screen);
-
-    // Reset AI suggested goals when navigating to Goal Creation screen
-    if (screen === 3) {
-      setSelectedSuggestedGoal("");
-    }
 
     // Update browser history
     window.history.pushState({ screen }, "", `#screen-${screen}`);
@@ -381,43 +322,6 @@ function App() {
         return goal;
       })
     );
-  };
-
-  const resetGoalProgress = (goalId: string, notes: string) => {
-    setGoals(
-      goals.map((goal) => {
-        if (goal.id === goalId) {
-          const progressEntry: ProgressEntry = {
-            id: Date.now().toString(),
-            date: new Date(),
-            amount: 0,
-            notes,
-            type: "reset",
-          };
-
-          return {
-            ...goal,
-            progress: 0,
-            completed: false,
-            milestones:
-              goal.milestones?.map((m) => ({
-                ...m,
-                achieved: false,
-                achievedDate: undefined,
-              })) || [],
-            progressHistory: [...goal.progressHistory, progressEntry],
-            lastUpdated: new Date(),
-          };
-        }
-        return goal;
-      })
-    );
-  };
-
-  const openProgressModal = (goal: Goal) => {
-    setSelectedGoalForProgress(goal);
-    setProgressModalOpen(true);
-    setProgressUpdate({ amount: 1, notes: "" });
   };
 
   // Handle browser back/forward buttons
@@ -594,30 +498,6 @@ function App() {
     }
   }, [currentScreen, selectedVirtue]);
 
-  // Handle selecting a suggested goal
-  const handleSelectSuggestedGoal = (
-    goalType: string,
-    title: string,
-    description: string
-  ) => {
-    setSelectedSuggestedGoal(goalType);
-    setNewGoal({
-      title: title,
-      description: description,
-    });
-  };
-
-  // Handle AI assistance click
-  const handleAIAssistanceClick = () => {
-    setIsLoadingAIAssistance(true);
-    // Simulate AI processing time
-    setTimeout(() => {
-      setIsLoadingAIAssistance(false);
-      // Navigate to goal suggestions screen
-      navigateToScreen(2);
-    }, 2000);
-  };
-
   // Handle Virtue AI assistance click
   const handleVirtueAIAssistanceClick = () => {
     setIsLoadingAIAssistance(true);
@@ -697,18 +577,6 @@ function App() {
     }, 2000);
   };
 
-  // Handle fake login
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoggingIn(true);
-
-    // Simulate login delay
-    setTimeout(() => {
-      setIsLoggingIn(false);
-      navigateToScreen(0); // Go to dashboard
-    }, 1500);
-  };
-
   // Mock data for dashboard
   const [userStats] = useState({
     totalGoals: 12,
@@ -719,44 +587,14 @@ function App() {
     totalPoints: 2450,
   });
 
-  const [recentActivities] = useState([
-    {
-      id: 1,
-      virtue: "Compassion",
-      action: "Helped a colleague with their project",
-      date: "Today",
-      points: 50,
-    },
-    {
-      id: 2,
-      virtue: "Culture",
-      action: "Spoke up in team meeting",
-      date: "Yesterday",
-      points: 75,
-    },
-    {
-      id: 3,
-      virtue: "Wisdom",
-      action: "Completed mindfulness session",
-      date: "2 days ago",
-      points: 40,
-    },
-  ]);
-
   // Navigation Component
-  const Navigation = ({
-    variant = "default",
-  }: {
-    variant?: "default" | "welcome";
-  }) => {
+  const Navigation = () => {
     const navItems = [
       { label: "Dashboard", action: () => navigateToScreen(0) },
       { label: "Add Action", action: () => navigateToScreen(11) },
       { label: "Virtue Journey", action: () => navigateToScreen(17) },
       { label: "Design System", action: () => navigateToScreen(20) },
     ];
-
-    const closeMenu = () => setIsMobileMenuOpen(false);
 
     return (
       <>
@@ -767,7 +605,6 @@ function App() {
               key={index}
               onClick={() => {
                 item.action();
-                closeMenu();
               }}
               className="text-slate-600 hover:text-slate-900 text-sm font-medium transition-colors"
             >
@@ -922,7 +759,6 @@ function App() {
   // Screen 2: Virtue Selection
   const VirtueSelectionScreen = () => {
     const [isListView, setIsListView] = useState(false);
-
     return (
       <div className="min-h-screen  max-w-[1200px] mx-auto">
         <header>
@@ -2139,23 +1975,8 @@ function App() {
                     totalSteps={7}
                     onPrevious={() => navigateToScreen(7)}
                     onNext={() => {
-                      // Set completed action data for sharing
-                      const latestGoal = goals[goals.length - 1];
-                      const selectedVirtueData = virtues.find(
-                        (v) => v.id === latestGoal?.virtueId
-                      );
-                      setCompletedActionData({
-                        title: latestGoal?.title || "My Action",
-                        description:
-                          latestGoal?.description ||
-                          "I completed my action successfully!",
-                        virtueName:
-                          selectedVirtueData?.name || "Personal Growth",
-                      });
-
-                      // Navigate to dashboard and show success toast
+                      // Navigate to dashboard
                       navigateToScreen(0);
-                      setShowSuccessToast(true);
                     }}
                     canGoPrevious={true}
                     canGoNext={true}
