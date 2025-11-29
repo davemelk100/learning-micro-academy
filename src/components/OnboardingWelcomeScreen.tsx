@@ -14,7 +14,7 @@ export const OnboardingWelcomeScreen: React.FC<
         <div className="mb-8">
           <BookOpen className="w-16 h-16 text-slate-900 mx-auto mb-4" />
           <h1 className="text-4xl font-bold text-slate-900 mb-4">
-            Welcome to Your Active Courses
+            Welcome to Active Courses
           </h1>
           <p className="text-lg text-slate-700">
             This app helps you track your educational progress and develop new

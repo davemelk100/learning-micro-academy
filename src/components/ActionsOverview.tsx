@@ -1,15 +1,15 @@
 import React from "react";
 import { Target } from "lucide-react";
 import { Goal } from "../types";
+import { courses } from "../data";
 
 interface ActionsOverviewProps {
   goals: Goal[];
   navigateToScreen: (_screen: number) => void;
   expandedCards: Set<string>;
   toggleCardExpansion: (_cardId: string) => void;
-  selectedAmountChange1: string | null;
-  setSelectedAmountChange1: (_value: string | null) => void;
   onNavigateToCourse?: (_courseId: string) => void;
+  completedCourses?: string[];
 }
 
 export const ActionsOverview: React.FC<ActionsOverviewProps> = ({
@@ -17,9 +17,8 @@ export const ActionsOverview: React.FC<ActionsOverviewProps> = ({
   navigateToScreen,
   expandedCards,
   toggleCardExpansion,
-  selectedAmountChange1,
-  setSelectedAmountChange1,
   onNavigateToCourse,
+  completedCourses = [],
 }) => {
   return (
     <div className="bg-slate-50 object-cover p-4 border border-slate-100">
@@ -28,7 +27,7 @@ export const ActionsOverview: React.FC<ActionsOverviewProps> = ({
           onClick={() => navigateToScreen(17)}
           className="text-lg md:text-xl font-semibold text-slate-900 hover:text-blue-600 transition-colors text-left"
         >
-          Your Active Courses
+          Active Courses
         </button>
       </div>
 
@@ -109,57 +108,35 @@ export const ActionsOverview: React.FC<ActionsOverviewProps> = ({
                   </button>
                 )}
 
-                {/* Learning Progress Timeline */}
+                {/* Course Completeness */}
                 <div className="mt-4 pt-3 border-t border-slate-100">
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-xs font-medium text-slate-700">
-                      Learning Progress
-                    </span>
-                  </div>
-                  <div className="relative">
-                    {/* Timeline line */}
-                    <div className="absolute top-1.5 left-0 right-0 h-0.5 bg-slate-200"></div>
-
-                    {/* Timeline items */}
-                    <div className="flex justify-between">
-                      {[
-                        "None",
-                        "Slight",
-                        "Moderate",
-                        "Significant",
-                        "Dramatic",
-                      ].map((changeType) => (
-                        <div
-                          key={changeType}
-                          className="flex flex-col items-center"
-                        >
-                          <div
-                            className={`w-3 h-3 rounded-full border-2 z-10 transition-all ${
-                              selectedAmountChange1 === changeType
-                                ? "bg-blue-600 border-blue-600"
-                                : "bg-white border-slate-300"
-                            }`}
-                          ></div>
-                          <button
-                            onClick={() =>
-                              setSelectedAmountChange1(
-                                selectedAmountChange1 === changeType
-                                  ? null
-                                  : changeType
-                              )
-                            }
-                            className={`mt-2 text-xs font-medium transition-colors text-center ${
-                              selectedAmountChange1 === changeType
-                                ? "text-blue-600"
-                                : "text-slate-600 hover:text-slate-900"
-                            }`}
-                          >
-                            {changeType}
-                          </button>
+                  {(() => {
+                    const sampleCourse = courses.find(
+                      (c) => c.id === "intro-to-ux"
+                    );
+                    const sampleCompleteness =
+                      sampleCourse && completedCourses.includes(sampleCourse.id)
+                        ? 100
+                        : 0;
+                    return (
+                      <>
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-xs font-medium text-slate-700">
+                            Course Completeness
+                          </span>
+                          <span className="text-xs font-semibold text-slate-900">
+                            {sampleCompleteness}%
+                          </span>
                         </div>
-                      ))}
-                    </div>
-                  </div>
+                        <div className="w-full bg-slate-200 rounded-full h-2">
+                          <div
+                            className="bg-blue-600 h-2 rounded-full transition-all"
+                            style={{ width: `${sampleCompleteness}%` }}
+                          />
+                        </div>
+                      </>
+                    );
+                  })()}
                 </div>
               </div>
             )}

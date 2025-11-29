@@ -22,7 +22,6 @@ import {
   X,
   Sparkles,
   Check,
-  Home,
   RefreshCw,
   Flame,
   HeartHandshake,
@@ -140,6 +139,28 @@ const learningStyles: LearningStyle[] = [
 function App() {
   // Load user state from localStorage on mount
   const [userState, setUserState] = useState<UserState>(getUserState());
+
+  // Helper function to get course completeness for a goal
+  const getCourseCompleteness = (goal: Goal): number => {
+    // Try to find a course that matches the goal title
+    const matchingCourse = courses.find(
+      (course) => course.title === goal.title || course.id === goal.id
+    );
+
+    if (!matchingCourse) {
+      // If no course found, use goal progress as fallback
+      return goal.progress || 0;
+    }
+
+    // If course is completed, return 100%
+    const completedCourses = userState?.preferences?.completedCourses || [];
+    if (completedCourses.includes(matchingCourse.id)) {
+      return 100;
+    }
+
+    // Otherwise use goal progress
+    return goal.progress || 0;
+  };
   const [currentScreen, setCurrentScreen] = useState(1);
   const [selectedCourseId, setSelectedCourseId] = useState<string | undefined>(
     undefined
@@ -207,13 +228,6 @@ function App() {
       color: "bg-teal-500",
       innerColor: "bg-teal-700",
       icon: TrendingUp,
-    },
-    {
-      id: "sdg6",
-      title: "Energy Efficiency",
-      color: "bg-blue-500",
-      innerColor: "bg-blue-700",
-      icon: Home,
     },
     {
       id: "sdg7",
@@ -425,8 +439,7 @@ function App() {
       sdg3: ["Development", "Web", "Analytics"], // Good Health - health tech
       sdg4: ["Design", "UX", "Product"], // Quality Education - educational design
       sdg5: ["Product", "Strategy", "Analytics"], // Gender Equality - inclusive products
-      sdg6: ["Sustainability", "Energy", "Environment"], // Clean Water - sustainability
-      sdg7: ["Sustainability", "Energy", "Environment"], // Affordable Energy - energy efficiency
+      sdg7: ["Sustainability", "Energy", "Environment"], // Affordable Energy
       sdg8: ["Product", "Strategy", "Analytics"], // Decent Work - business strategy
       sdg9: ["Development", "Design", "Product"], // Industry Innovation - tech innovation
       sdg10: ["Product", "Strategy", "Analytics"], // Reduced Inequalities - inclusive design
@@ -494,7 +507,6 @@ function App() {
       const learningStyleReasons = {
         "intro-to-ux": `${selectedLearningStyle.name} aligns with ${selectedSDGTitle} by helping you understand user needs and create solutions that address real-world challenges.`,
         "design-systems": `${selectedLearningStyle.name} complements ${selectedSDGTitle} by providing structured approaches to creating scalable and sustainable solutions.`,
-        "energy-efficiency": `${selectedLearningStyle.name} directly supports ${selectedSDGTitle} by teaching practical skills for reducing environmental impact.`,
         "web-development": `${selectedLearningStyle.name} aligns with ${selectedSDGTitle} by enabling you to build digital solutions that can scale and reach more people.`,
         "product-strategy": `${selectedLearningStyle.name} enhances ${selectedSDGTitle} by teaching strategic thinking and planning for long-term impact.`,
         "data-analytics": `${selectedLearningStyle.name} supports ${selectedSDGTitle} by providing tools to measure impact and make data-driven decisions.`,
@@ -733,6 +745,7 @@ function App() {
         setSelectedCourseId(courseId);
         navigateToScreen(21);
       }}
+      completedCourses={userState?.preferences?.completedCourses || []}
     />
   );
 
@@ -1438,49 +1451,54 @@ function App() {
                   />
                 </div>
 
-                {/* Rate Learning Progress */}
+                {/* Course Completeness */}
                 <div className="bg-white p-6 rounded-xl shadow-md border border-slate-100">
                   <h3 className="text-lg font-medium text-slate-700 mb-6">
-                    Learning Progress
+                    Course Completeness
                   </h3>
 
-                  {/* Timeline */}
-                  <div className="relative">
-                    {/* Items */}
-                    <div className="flex justify-between relative">
-                      {amountChangeOptions.map((option) => (
-                        <div
-                          key={option.value}
-                          className="flex flex-col items-center cursor-pointer"
-                          onClick={() => setStep7AmountChange(option.value)}
-                        >
-                          {/* Dot */}
-                          <div
-                            className={`w-4 h-4 rounded-full border-2 transition-colors relative z-10 ${
-                              step7AmountChange === option.value
-                                ? "bg-blue-600 border-blue-600"
-                                : "bg-white border-slate-400"
-                            }`}
-                          ></div>
-
-                          {/* Label */}
-                          <div className="mt-2 text-center">
-                            <div
-                              className={`text-xs font-medium transition-colors ${
-                                step7AmountChange === option.value
-                                  ? "text-blue-600"
-                                  : "text-slate-600"
-                              }`}
-                            >
-                              {option.label}
+                  {/* Progress Bar */}
+                  <div className="space-y-4">
+                    {goals.length > 0 ? (
+                      goals.map((goal) => {
+                        const completeness = getCourseCompleteness(goal);
+                        return (
+                          <div key={goal.id}>
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="text-sm font-medium text-slate-700">
+                                {goal.title}
+                              </span>
+                              <span className="text-sm font-semibold text-slate-900">
+                                {completeness}%
+                              </span>
+                            </div>
+                            <div className="w-full bg-slate-200 rounded-full h-2.5">
+                              <div
+                                className="bg-blue-600 h-2.5 rounded-full transition-all"
+                                style={{ width: `${completeness}%` }}
+                              />
                             </div>
                           </div>
+                        );
+                      })
+                    ) : (
+                      <div>
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-sm font-medium text-slate-700">
+                            No active courses
+                          </span>
+                          <span className="text-sm font-semibold text-slate-900">
+                            0%
+                          </span>
                         </div>
-                      ))}
-                    </div>
-
-                    {/* Line - positioned to intersect the dots */}
-                    <div className="absolute top-2 left-4 right-4 h-0.5 bg-slate-300 z-0"></div>
+                        <div className="w-full bg-slate-200 rounded-full h-2.5">
+                          <div
+                            className="bg-blue-600 h-2.5 rounded-full transition-all"
+                            style={{ width: "0%" }}
+                          />
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -3587,23 +3605,7 @@ function App() {
 
             {/* Learning Goals Archive */}
             <div className="space-y-6">
-              {goals.length === 0 ? (
-                <div className="text-center py-12">
-                  <Target className="h-12 w-12 text-slate-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-medium text-slate-900 mb-2">
-                    No learning goals yet
-                  </h3>
-                  <p className="text-slate-600 mb-4">
-                    Start Your Active Courses by creating your first goal
-                  </p>
-                  <button
-                    onClick={() => navigateToScreen(3)}
-                    className="bg-slate-900 hover:bg-slate-800 text-white py-2 px-6 rounded-full font-medium transition-colors"
-                  >
-                    Create Goal
-                  </button>
-                </div>
-              ) : (
+              {goals.length > 0 && (
                 <div className="space-y-8">
                   {/* In Progress Goals */}
                   {goals.filter((goal) => !goal.completed).length > 0 && (
@@ -3686,65 +3688,25 @@ function App() {
                                       "No description available."}
                                   </p>
 
-                                  {/* Learning Progress Timeline */}
+                                  {/* Course Completeness */}
                                   <div className="mt-4 pt-3 border-t border-slate-100">
-                                    <div className="flex items-center justify-between mb-3">
+                                    <div className="flex items-center justify-between mb-2">
                                       <span className="text-xs font-medium text-slate-700">
-                                        Learning Progress
+                                        Course Completeness
+                                      </span>
+                                      <span className="text-xs font-semibold text-slate-900">
+                                        {getCourseCompleteness(goal)}%
                                       </span>
                                     </div>
-                                    <div className="relative">
-                                      {/* Timeline line */}
-                                      <div className="absolute top-1.5 left-0 right-0 h-0.5 bg-slate-200"></div>
-
-                                      {/* Timeline items */}
-                                      <div className="flex justify-between">
-                                        {[
-                                          "None",
-                                          "Slight",
-                                          "Moderate",
-                                          "Significant",
-                                          "Dramatic",
-                                        ].map((changeType) => (
-                                          <div
-                                            key={changeType}
-                                            className="flex flex-col items-center"
-                                          >
-                                            <div
-                                              className={`w-3 h-3 rounded-full border-2 z-10 transition-all ${
-                                                selectedAmountChange[
-                                                  goal.id
-                                                ] === changeType
-                                                  ? "bg-blue-600 border-blue-600"
-                                                  : "bg-white border-slate-300"
-                                              }`}
-                                            ></div>
-                                            <button
-                                              onClick={() =>
-                                                setSelectedAmountChange(
-                                                  (prev) => ({
-                                                    ...prev,
-                                                    [goal.id]:
-                                                      prev[goal.id] ===
-                                                      changeType
-                                                        ? null
-                                                        : changeType,
-                                                  })
-                                                )
-                                              }
-                                              className={`mt-2 text-xs font-medium transition-colors text-center ${
-                                                selectedAmountChange[
-                                                  goal.id
-                                                ] === changeType
-                                                  ? "text-blue-600"
-                                                  : "text-slate-500 hover:text-slate-700"
-                                              }`}
-                                            >
-                                              {changeType}
-                                            </button>
-                                          </div>
-                                        ))}
-                                      </div>
+                                    <div className="w-full bg-slate-200 rounded-full h-2">
+                                      <div
+                                        className="bg-blue-600 h-2 rounded-full transition-all"
+                                        style={{
+                                          width: `${getCourseCompleteness(
+                                            goal
+                                          )}%`,
+                                        }}
+                                      />
                                     </div>
                                   </div>
 
@@ -4929,54 +4891,21 @@ function App() {
                           through the lessons and hands-on exercises.
                         </p>
 
-                        {/* Learning Progress Timeline */}
+                        {/* Course Completeness */}
                         <div className="mt-4 pt-3 border-t border-slate-100">
-                          <div className="flex items-center justify-between mb-3">
+                          <div className="flex items-center justify-between mb-2">
                             <span className="text-xs font-medium text-slate-700">
-                              Learning Progress
+                              Course Completeness
+                            </span>
+                            <span className="text-xs font-semibold text-slate-900">
+                              0%
                             </span>
                           </div>
-                          <div className="relative">
-                            {/* Timeline line */}
-                            <div className="absolute top-1.5 left-0 right-0 h-0.5 bg-slate-200"></div>
-
-                            {/* Timeline items */}
-                            <div className="flex justify-between">
-                              <div className="flex flex-col items-center">
-                                <div className="w-3 h-3 rounded-full border-2 z-10 transition-all bg-blue-600 border-blue-600"></div>
-                                <button className="mt-2 text-xs font-medium transition-colors text-center text-blue-600">
-                                  None
-                                </button>
-                              </div>
-
-                              <div className="flex flex-col items-center">
-                                <div className="w-3 h-3 rounded-full border-2 z-10 transition-all bg-white border-slate-300"></div>
-                                <button className="mt-2 text-xs font-medium transition-colors text-center text-slate-600 hover:text-slate-900">
-                                  Slight
-                                </button>
-                              </div>
-
-                              <div className="flex flex-col items-center">
-                                <div className="w-3 h-3 rounded-full border-2 z-10 transition-all bg-white border-slate-300"></div>
-                                <button className="mt-2 text-xs font-medium transition-colors text-center text-slate-600 hover:text-slate-900">
-                                  Moderate
-                                </button>
-                              </div>
-
-                              <div className="flex flex-col items-center">
-                                <div className="w-3 h-3 rounded-full border-2 z-10 transition-all bg-white border-slate-300"></div>
-                                <button className="mt-2 text-xs font-medium transition-colors text-center text-slate-600 hover:text-slate-900">
-                                  Significant
-                                </button>
-                              </div>
-
-                              <div className="flex flex-col items-center">
-                                <div className="w-3 h-3 rounded-full border-2 z-10 transition-all bg-white border-slate-300"></div>
-                                <button className="mt-2 text-xs font-medium transition-colors text-center text-slate-600 hover:text-slate-900">
-                                  Dramatic
-                                </button>
-                              </div>
-                            </div>
+                          <div className="w-full bg-slate-200 rounded-full h-2">
+                            <div
+                              className="bg-blue-600 h-2 rounded-full transition-all"
+                              style={{ width: "0%" }}
+                            />
                           </div>
                         </div>
                       </div>

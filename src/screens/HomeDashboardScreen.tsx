@@ -16,6 +16,7 @@ interface HomeDashboardScreenProps {
   navigateToScreen: (_screen: number) => void;
   Navigation: React.ComponentType;
   onNavigateToCourse?: (_courseId: string) => void;
+  completedCourses?: string[];
   // Additional props for modals and editing functionality
   editingGoal: Goal | null;
   setEditingGoal: (_goal: Goal | null) => void;
@@ -42,11 +43,9 @@ export const HomeDashboardScreen: React.FC<HomeDashboardScreenProps> = ({
   navigateToScreen,
   Navigation,
   onNavigateToCourse,
+  completedCourses = [],
 }) => {
   const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
-  const [selectedAmountChange1, setSelectedAmountChange1] = useState<
-    string | null
-  >(null);
 
   const toggleCardExpansion = (cardId: string) => {
     const newExpanded = new Set(expandedCards);
@@ -73,9 +72,8 @@ export const HomeDashboardScreen: React.FC<HomeDashboardScreenProps> = ({
             navigateToScreen={navigateToScreen}
             expandedCards={expandedCards}
             toggleCardExpansion={toggleCardExpansion}
-            selectedAmountChange1={selectedAmountChange1}
-            setSelectedAmountChange1={setSelectedAmountChange1}
             onNavigateToCourse={onNavigateToCourse}
+            completedCourses={completedCourses}
           />
         </div>
 

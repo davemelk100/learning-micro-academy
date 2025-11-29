@@ -13,7 +13,7 @@ This repository was forked from a design demo and transformed into Learning Micr
 ### Content Transformation
 
 - **Virtues → Courses**: Transformed virtue/pillar cards into course modules
-  - Examples: Intro to UX, Design Systems, Energy Efficiency at Home, etc.
+  - Examples: Intro to UX, Design Systems, etc.
 - **SDGs → Learning Topics**: Changed SDG selection to Learning Topics selection
 - **Featured Course**: Replaced "Virtue of the Week" with "Featured Course"
 

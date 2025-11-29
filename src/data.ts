@@ -101,12 +101,6 @@ export const learningTopics = [
     innerColor: "bg-teal-700",
   },
   {
-    id: "topic6",
-    title: "Energy Efficiency",
-    color: "bg-blue-500",
-    innerColor: "bg-blue-700",
-  },
-  {
     id: "topic7",
     title: "Sustainability",
     color: "bg-indigo-500",
@@ -539,46 +533,6 @@ Key Metrics:
 - Engagement: How users interact with your product`,
         duration: "15 min",
         type: "reading",
-      },
-    ],
-  },
-  {
-    id: "energy-efficiency",
-    title: "Energy Efficiency at Home",
-    description:
-      "Practical strategies to reduce your home's energy consumption and carbon footprint. Learn about insulation, efficient appliances, and renewable energy options.",
-    category: "Sustainability",
-    duration: "4 weeks",
-    level: "Beginner",
-    instructor: "Emma Thompson",
-    tags: ["Energy", "Sustainability", "Home"],
-    lessons: [
-      {
-        id: "lesson-1",
-        title: "Understanding Home Energy Use",
-        content: `Understanding where your home uses energy is the first step to reducing consumption.
-
-Major Energy Consumers:
-- Heating & Cooling: 40-50% of home energy
-- Water Heating: 15-20%
-- Appliances: 10-15%
-- Lighting: 5-10%
-- Electronics: 5-10%
-
-Quick Wins:
-1. LED Bulbs: Replace incandescent bulbs (save 75% energy)
-2. Programmable Thermostat: Optimize heating/cooling
-3. Seal Air Leaks: Weatherstripping and caulking
-4. Insulation: Proper attic and wall insulation
-5. Energy Star Appliances: More efficient when replacing old ones
-
-Exercise:
-Conduct an energy audit of your home. Identify:
-- Top 3 energy consumers
-- Potential improvements
-- Estimated savings`,
-        duration: "20 min",
-        type: "exercise",
       },
     ],
   },
