@@ -7,6 +7,11 @@ import { SharingModal } from "./components/SharingModal";
 import { HomeDashboardScreen } from "./screens/HomeDashboardScreen";
 import { YesNoToggle } from "./components/YesNoToggle";
 import { CourseLibraryScreen } from "./components/CourseLibraryScreen";
+import { OnboardingWelcomeScreen } from "./components/OnboardingWelcomeScreen";
+import { OnboardingAssessmentScreen } from "./components/OnboardingAssessmentScreen";
+import { OnboardingGoalsScreen } from "./components/OnboardingGoalsScreen";
+import { OnboardingDashboardScreen } from "./components/OnboardingDashboardScreen";
+import { LearningMetricsCard } from "./components/LearningMetricsCard";
 import {
   ChevronRight,
   Award,
@@ -142,6 +147,14 @@ function App() {
     description: "",
   });
   const [user] = useState({ name: "Dave", isNewUser: true }); // Set to true for new user experience
+  const [onboardingStep, setOnboardingStep] = useState<number | null>(null); // null = not in onboarding, 1-4 = onboarding steps
+  const [progressIntensity, setProgressIntensity] = useState(5); // Default to moderate (5/10)
+  const [learningMetrics, setLearningMetrics] = useState({
+    currentProficiency: 45,
+    skillsMasteredThisMonth: 3,
+    activeLearningStreak: 7,
+    completionRate: 68,
+  });
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLoadingGoalSuggestions, setIsLoadingGoalSuggestions] =
     useState(false);
@@ -820,8 +833,12 @@ function App() {
     );
   };
 
-  // Screen 1: Welcome/Grace
-  const WelcomeScreen = () => (
+  // Screen 1: Welcome
+  const WelcomeScreen = ({
+    onStartOnboarding,
+  }: {
+    onStartOnboarding?: () => void;
+  }) => (
     <div className="min-h-screen flex flex-col max-w-[1200px] mx-auto">
       <header>
         <div className="px-4 md:px-6 py-4">
@@ -854,11 +871,19 @@ function App() {
           </div>
 
           <div className="flex flex-col md:flex-row justify-center items-center gap-4 md:gap-8">
+            {user.isNewUser && onStartOnboarding && (
+              <button
+                onClick={onStartOnboarding}
+                className="w-full md:w-auto py-4 px-8 bg-slate-900 hover:bg-slate-800 text-white rounded-full transition-all duration-200 font-medium shadow-lg hover:shadow-xl text-lg"
+              >
+                Start Learning Journey
+              </button>
+            )}
             <button
               onClick={() => {
                 navigateToScreen(21);
               }}
-              className="w-full md:w-auto py-4 px-8 bg-slate-900 hover:bg-slate-800 text-white rounded-full transition-all duration-200 font-medium shadow-lg hover:shadow-xl text-lg"
+              className="w-full md:w-auto py-4 px-8 bg-white hover:bg-slate-100 text-slate-900 border-2 border-slate-900 rounded-full transition-all duration-200 font-medium shadow-lg hover:shadow-xl text-lg"
             >
               Explore Course Library
             </button>
@@ -5925,10 +5950,72 @@ function App() {
     );
   };
 
+  // Onboarding workflow
+  const handleOnboardingComplete = () => {
+    setOnboardingStep(null);
+    navigateToScreen(0); // Go to dashboard
+  };
+
+  const handleOnboardingNext = () => {
+    if (onboardingStep === null) return;
+    if (onboardingStep < 4) {
+      setOnboardingStep(onboardingStep + 1);
+    } else {
+      handleOnboardingComplete();
+    }
+  };
+
+  const handleOnboardingBack = () => {
+    if (onboardingStep === null || onboardingStep === 1) return;
+    setOnboardingStep(onboardingStep - 1);
+  };
+
+  // Show onboarding for new users
+  if (user.isNewUser && onboardingStep !== null) {
+    return (
+      <div className="pb-20 md:pb-0">
+        {onboardingStep === 1 && (
+          <OnboardingWelcomeScreen onNext={handleOnboardingNext} />
+        )}
+        {onboardingStep === 2 && (
+          <OnboardingAssessmentScreen
+            onNext={handleOnboardingNext}
+            onBack={handleOnboardingBack}
+            onComplete={(data) => {
+              // Store assessment data
+              console.log("Assessment data:", data);
+            }}
+          />
+        )}
+        {onboardingStep === 3 && (
+          <OnboardingGoalsScreen
+            onNext={handleOnboardingNext}
+            onBack={handleOnboardingBack}
+            onComplete={(goals) => {
+              // Store goals
+              console.log("Learning goals:", goals);
+            }}
+          />
+        )}
+        {onboardingStep === 4 && (
+          <OnboardingDashboardScreen onComplete={handleOnboardingComplete} />
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className="pb-20 md:pb-0">
       {currentScreen === 0 && <HomeDashboardScreenComponent />}
-      {currentScreen === 1 && <WelcomeScreen />}
+      {currentScreen === 1 && (
+        <WelcomeScreen
+          onStartOnboarding={() => {
+            if (user.isNewUser) {
+              setOnboardingStep(1);
+            }
+          }}
+        />
+      )}
       {currentScreen === 2 && <VirtueSelectionScreen />}
       {currentScreen === 3 && <GoalCreationScreen />}
       {currentScreen === 4 && <GoalConfirmationScreen />}

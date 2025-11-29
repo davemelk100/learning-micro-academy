@@ -1,0 +1,13 @@
+{
+  "ignore": [
+    "node_modules/**",
+    "dist/**",
+    "build/**",
+    "*.lock",
+    "package-lock.json",
+    "yarn.lock",
+    "coverage/**",
+    "public/**"
+  ]
+}
+

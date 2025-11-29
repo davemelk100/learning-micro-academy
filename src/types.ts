@@ -50,6 +50,7 @@ export interface UserPreferences {
   selectedSDGs: string[];
   currentSelectedSDG: string;
   hasCompletedSDGSetup: boolean;
+  hasCompletedOnboarding: boolean;
   newGoal: {
     title: string;
     description: string;
@@ -59,6 +60,13 @@ export interface UserPreferences {
   name: string;
   selectedFont: string;
   darkMode: boolean;
+  progressIntensity: number; // 1-10 scale
+  learningMetrics?: {
+    currentProficiency: number;
+    skillsMasteredThisMonth: number;
+    activeLearningStreak: number;
+    completionRate: number;
+  };
 }
 
 export interface UserState {
