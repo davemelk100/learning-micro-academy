@@ -1,6 +1,6 @@
 # Learning Micro-Academy
 
-A learning platform for bite-sized courses and continuous learning. Join cohorts, subscribe to newsletters, or explore our comprehensive course library.
+A learning platform for bite-sized courses and continuous learning. Explore our comprehensive course library.
 
 ## Overview
 
@@ -11,7 +11,6 @@ Learning Micro-Academy is a modern learning platform designed to help learners e
 - Web Development
 - Product Strategy
 - Data Analytics
-- Energy Efficiency
 - Sustainability Practices
 - And many more learning topics
 
@@ -21,7 +20,7 @@ Learning Micro-Academy is a modern learning platform designed to help learners e
 - **Course Selection**: Browse and select from a variety of learning topics
 - **Featured Courses**: Discover highlighted courses each week
 - **Learning Assistant**: AI-powered recommendations for personalized learning paths
-- **Progress Tracking**: Monitor your learning journey and completed courses
+- **Progress Tracking**: Monitor Active Courses and completed courses
 - **Mobile Ready**: Built with Capacitor for iOS and Android deployment
 
 ## Getting Started

@@ -13,22 +13,27 @@ interface HomeDashboardScreenProps {
   userStats: {
     currentStreak: number;
   };
-  navigateToScreen: (screen: number) => void;
+  navigateToScreen: (_screen: number) => void;
   Navigation: React.ComponentType;
+  onNavigateToCourse?: (_courseId: string) => void;
+  completedCourses?: string[];
   // Additional props for modals and editing functionality
   editingGoal: Goal | null;
-  setEditingGoal: (goal: Goal | null) => void;
+  setEditingGoal: (_goal: Goal | null) => void;
   newGoal: any;
-  setNewGoal: (goal: any) => void;
-  setGoals: (goals: Goal[]) => void;
+  setNewGoal: (_goal: any) => void;
+  setGoals: (_goals: Goal[]) => void;
   progressModalOpen: boolean;
-  setProgressModalOpen: (open: boolean) => void;
+  setProgressModalOpen: (_open: boolean) => void;
   selectedGoalForProgress: Goal | null;
-  setSelectedGoalForProgress: (goal: Goal | null) => void;
+  setSelectedGoalForProgress: (_goal: Goal | null) => void;
   progressUpdate: { amount: number; notes: string };
-  setProgressUpdate: (update: { amount: number; notes: string }) => void;
-  updateGoalProgress: (goalId: string, amount: number, notes: string) => void;
-  openGraceModal: () => void;
+  setProgressUpdate: (_update: { amount: number; notes: string }) => void;
+  updateGoalProgress: (
+    _goalId: string,
+    _amount: number,
+    _notes: string
+  ) => void;
 }
 
 export const HomeDashboardScreen: React.FC<HomeDashboardScreenProps> = ({
@@ -37,24 +42,10 @@ export const HomeDashboardScreen: React.FC<HomeDashboardScreenProps> = ({
   userStats,
   navigateToScreen,
   Navigation,
-  editingGoal,
-  setEditingGoal,
-  newGoal,
-  setNewGoal,
-  setGoals,
-  progressModalOpen,
-  setProgressModalOpen,
-  selectedGoalForProgress,
-  setSelectedGoalForProgress,
-  progressUpdate,
-  setProgressUpdate,
-  updateGoalProgress,
-  openGraceModal,
+  onNavigateToCourse,
+  completedCourses = [],
 }) => {
   const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
-  const [selectedAmountChange1, setSelectedAmountChange1] = useState<
-    string | null
-  >(null);
 
   const toggleCardExpansion = (cardId: string) => {
     const newExpanded = new Set(expandedCards);
@@ -73,16 +64,16 @@ export const HomeDashboardScreen: React.FC<HomeDashboardScreenProps> = ({
       <div className="p-4 md:p-6">
         <WelcomeSection userName={user.name} />
 
-        {/* Virtue of the Week and Your Actions Row */}
+        {/* Featured Course and Your Actions Row */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6 md:mb-8">
-          <VirtueOfTheWeek openGraceModal={openGraceModal} />
+          <VirtueOfTheWeek />
           <ActionsOverview
             goals={goals}
             navigateToScreen={navigateToScreen}
             expandedCards={expandedCards}
             toggleCardExpansion={toggleCardExpansion}
-            selectedAmountChange1={selectedAmountChange1}
-            setSelectedAmountChange1={setSelectedAmountChange1}
+            onNavigateToCourse={onNavigateToCourse}
+            completedCourses={completedCourses}
           />
         </div>
 

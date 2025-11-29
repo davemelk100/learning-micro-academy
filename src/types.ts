@@ -1,6 +1,6 @@
 import React from "react";
 
-export interface Virtue {
+export interface LearningStyle {
   id: string;
   name: string;
   icon: React.ComponentType<any>;
@@ -9,9 +9,12 @@ export interface Virtue {
   description: string;
 }
 
+// Virtue is an alias for LearningStyle for backward compatibility
+export type Virtue = LearningStyle;
+
 export interface Goal {
   id: string;
-  virtueId: string;
+  learningStyleId: string;
   sdgIds: string[];
   title: string;
   description: string;
@@ -46,10 +49,11 @@ export interface UserPreferences {
   notifications: boolean;
   emailUpdates: boolean;
   language: string;
-  selectedVirtue: string | null;
+  selectedLearningStyle: string | null;
   selectedSDGs: string[];
   currentSelectedSDG: string;
   hasCompletedSDGSetup: boolean;
+  hasCompletedOnboarding: boolean;
   newGoal: {
     title: string;
     description: string;
@@ -59,6 +63,24 @@ export interface UserPreferences {
   name: string;
   selectedFont: string;
   darkMode: boolean;
+  progressIntensity: number; // 1-10 scale
+  learningMetrics?: {
+    currentProficiency: number;
+    skillsMasteredThisMonth: number;
+    activeLearningStreak: number;
+    completionRate: number;
+  };
+  onboardingData?: {
+    subjects?: string[];
+    proficiencyLevel?: string;
+    learningGoals?: string;
+    onboardingGoals?: Array<{
+      id: string;
+      title: string;
+      description: string;
+    }>;
+  };
+  completedCourses?: string[]; // Array of course IDs
 }
 
 export interface UserState {
@@ -77,7 +99,7 @@ export interface FontOption {
 
 export interface FontSelectorProps {
   selectedFont: string;
-  onFontChange: (font: string) => void;
+  onFontChange: (_font: string) => void;
   isOpen: boolean;
   onToggle: () => void;
 }
@@ -103,12 +125,12 @@ export interface AIRecommendationCardProps {
 
 export interface ActionCardProps {
   goal: Goal;
-  virtue: Virtue;
+  learningStyle: LearningStyle;
   isCompleted?: boolean;
-  onEdit?: (goal: Goal) => void;
-  onDelete?: (goal: Goal) => void;
-  onToggleComplete?: (goal: Goal) => void;
-  onSaveToDatabase?: (completedAction: CompletedAction) => void;
+  onEdit?: (_goal: Goal) => void;
+  onDelete?: (_goal: Goal) => void;
+  onToggleComplete?: (_goal: Goal) => void;
+  onSaveToDatabase?: (_completedAction: CompletedAction) => void;
   className?: string;
 }
 
@@ -117,8 +139,8 @@ export interface CompletedAction {
   originalGoalId: string;
   title: string;
   description: string;
-  virtueId: string;
-  virtueName: string;
+  learningStyleId: string;
+  learningStyleName: string;
   sdgIds: string[];
   completedAt: string;
   completionNotes?: string;
@@ -133,12 +155,12 @@ export interface CompletedAction {
 }
 
 export interface DatabaseService {
-  saveCompletedAction: (action: CompletedAction) => Promise<void>;
+  saveCompletedAction: (_action: CompletedAction) => Promise<void>;
   getCompletedActions: () => Promise<CompletedAction[]>;
   updateCompletedAction: (
-    id: string,
-    updates: Partial<CompletedAction>
+    _id: string,
+    _updates: Partial<CompletedAction>
   ) => Promise<void>;
-  deleteCompletedAction: (id: string) => Promise<void>;
-  archiveCompletedAction: (id: string) => Promise<void>;
+  deleteCompletedAction: (_id: string) => Promise<void>;
+  archiveCompletedAction: (_id: string) => Promise<void>;
 }

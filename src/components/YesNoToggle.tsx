@@ -2,7 +2,7 @@ import React from "react";
 
 interface YesNoToggleProps {
   value: boolean | null; // null = unselected/outlined state
-  onChange: (value: boolean) => void;
+  onChange: (_value: boolean) => void;
   disabled?: boolean;
   className?: string;
   label?: string;

@@ -1,32 +1,97 @@
 import React, { useState } from "react";
 import { courses, Course, CourseLesson } from "../data";
-import { BookOpen, Clock, Users, ChevronRight, Play, FileText, Target, HelpCircle } from "lucide-react";
+import {
+  BookOpen,
+  Clock,
+  Users,
+  ChevronRight,
+  Play,
+  FileText,
+  Target,
+  HelpCircle,
+  Check,
+  CheckCircle2,
+} from "lucide-react";
+import { UserState } from "../types";
+import { saveUserState } from "../utils";
 
 interface CourseLibraryScreenProps {
   onBack: () => void;
   selectedFont?: string;
+  Navigation?: React.ComponentType;
+  userState?: UserState;
+  onCourseComplete?: () => void;
+  initialCourseId?: string;
 }
 
 export const CourseLibraryScreen: React.FC<CourseLibraryScreenProps> = ({
   onBack,
-  selectedFont = "nunito-poppins",
+  Navigation,
+  userState,
+  onCourseComplete,
+  initialCourseId,
 }) => {
-  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
-  const [selectedLesson, setSelectedLesson] = useState<CourseLesson | null>(null);
+  const completedCourses = userState?.preferences?.completedCourses || [];
+
+  // Initialize with initialCourseId if provided
+  const [selectedCourse, setSelectedCourse] = useState<Course | null>(
+    initialCourseId
+      ? courses.find((c) => c.id === initialCourseId) || null
+      : null
+  );
+
+  const handleToggleComplete = (courseId: string, e?: React.MouseEvent) => {
+    if (e) {
+      e.stopPropagation(); // Prevent card click when clicking button
+    }
+    if (!userState) return;
+
+    const isCompleted = completedCourses.includes(courseId);
+    const updatedCompletedCourses = isCompleted
+      ? completedCourses.filter((id: string) => id !== courseId)
+      : [...completedCourses, courseId];
+
+    const updatedState: UserState = {
+      ...userState,
+      preferences: {
+        ...userState.preferences,
+        completedCourses: updatedCompletedCourses,
+      },
+    };
+
+    saveUserState(updatedState);
+    if (onCourseComplete) {
+      onCourseComplete();
+    }
+  };
+
+  const isCourseCompleted = (courseId: string) => {
+    return completedCourses.includes(courseId);
+  };
+  const [selectedLesson, setSelectedLesson] = useState<CourseLesson | null>(
+    null
+  );
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [selectedLevel, setSelectedLevel] = useState<string>("All");
 
-  const categories = ["All", ...Array.from(new Set(courses.map((c) => c.category)))];
+  const categories = [
+    "All",
+    ...Array.from(new Set(courses.map((c) => c.category))),
+  ];
   const levels = ["All", "Beginner", "Intermediate", "Advanced"];
 
   const filteredCourses = courses.filter((course) => {
     const matchesSearch =
       course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       course.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      course.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()));
-    const matchesCategory = selectedCategory === "All" || course.category === selectedCategory;
-    const matchesLevel = selectedLevel === "All" || course.level === selectedLevel;
+      course.tags.some((tag) =>
+        tag.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    const matchesCategory =
+      selectedCategory === "All" || course.category === selectedCategory;
+    const matchesLevel =
+      selectedLevel === "All" || course.level === selectedLevel;
     return matchesSearch && matchesCategory && matchesLevel;
   });
 
@@ -46,6 +111,25 @@ export const CourseLibraryScreen: React.FC<CourseLibraryScreenProps> = ({
   if (selectedLesson && selectedCourse) {
     return (
       <div className="min-h-screen bg-warm-white">
+        {Navigation && (
+          <header>
+            <div className="px-4 md:px-6 py-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <button
+                    onClick={onBack}
+                    className="hover:opacity-80 transition-opacity"
+                  >
+                    <span className="text-2xl font-bold text-slate-900">
+                      MicroLearn
+                    </span>
+                  </button>
+                </div>
+                <Navigation />
+              </div>
+            </div>
+          </header>
+        )}
         <div className="max-w-4xl mx-auto px-4 py-8">
           <button
             onClick={() => setSelectedLesson(null)}
@@ -57,8 +141,12 @@ export const CourseLibraryScreen: React.FC<CourseLibraryScreenProps> = ({
 
           <div className="bg-white rounded-xl shadow-lg p-8">
             <div className="mb-6">
-              <span className="text-sm text-slate-500 mb-2 block">{selectedCourse.title}</span>
-              <h1 className="text-3xl font-bold text-slate-900 mb-4">{selectedLesson.title}</h1>
+              <span className="text-sm text-slate-500 mb-2 block">
+                {selectedCourse.title}
+              </span>
+              <h1 className="text-3xl font-bold text-slate-900 mb-4">
+                {selectedLesson.title}
+              </h1>
               <div className="flex items-center gap-4 text-sm text-slate-600">
                 <div className="flex items-center gap-1">
                   {getLessonIcon(selectedLesson.type)}
@@ -85,6 +173,25 @@ export const CourseLibraryScreen: React.FC<CourseLibraryScreenProps> = ({
   if (selectedCourse) {
     return (
       <div className="min-h-screen bg-warm-white">
+        {Navigation && (
+          <header>
+            <div className="px-4 md:px-6 py-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <button
+                    onClick={onBack}
+                    className="hover:opacity-80 transition-opacity"
+                  >
+                    <span className="text-2xl font-bold text-slate-900">
+                      MicroLearn
+                    </span>
+                  </button>
+                </div>
+                <Navigation />
+              </div>
+            </div>
+          </header>
+        )}
         <div className="max-w-6xl mx-auto px-4 py-8">
           <button
             onClick={() => setSelectedCourse(null)}
@@ -98,9 +205,15 @@ export const CourseLibraryScreen: React.FC<CourseLibraryScreenProps> = ({
             <div className="p-8 border-b border-slate-200">
               <div className="flex items-start justify-between mb-4">
                 <div>
-                  <span className="text-sm text-slate-500 mb-2 block">{selectedCourse.category}</span>
-                  <h1 className="text-3xl font-bold text-slate-900 mb-2">{selectedCourse.title}</h1>
-                  <p className="text-slate-700 mb-4">{selectedCourse.description}</p>
+                  <span className="text-sm text-slate-500 mb-2 block">
+                    {selectedCourse.category}
+                  </span>
+                  <h1 className="text-3xl font-bold text-slate-900 mb-2">
+                    {selectedCourse.title}
+                  </h1>
+                  <p className="text-slate-700 mb-4">
+                    {selectedCourse.description}
+                  </p>
                 </div>
               </div>
 
@@ -114,7 +227,9 @@ export const CourseLibraryScreen: React.FC<CourseLibraryScreenProps> = ({
                   {selectedCourse.level}
                 </div>
                 {selectedCourse.instructor && (
-                  <div className="text-slate-600">Instructor: {selectedCourse.instructor}</div>
+                  <div className="text-slate-600">
+                    Instructor: {selectedCourse.instructor}
+                  </div>
                 )}
               </div>
 
@@ -128,10 +243,36 @@ export const CourseLibraryScreen: React.FC<CourseLibraryScreenProps> = ({
                   </span>
                 ))}
               </div>
+              {userState && (
+                <div className="mt-6">
+                  <button
+                    onClick={(e) => handleToggleComplete(selectedCourse.id, e)}
+                    className={`flex items-center gap-2 px-6 py-3 rounded-full font-medium transition-colors ${
+                      isCourseCompleted(selectedCourse.id)
+                        ? "bg-green-100 text-green-700 hover:bg-green-200"
+                        : "bg-slate-900 text-white hover:bg-slate-800"
+                    }`}
+                  >
+                    {isCourseCompleted(selectedCourse.id) ? (
+                      <>
+                        <CheckCircle2 className="w-5 h-5" />
+                        Completed
+                      </>
+                    ) : (
+                      <>
+                        <Check className="w-5 h-5" />
+                        Mark as Complete
+                      </>
+                    )}
+                  </button>
+                </div>
+              )}
             </div>
 
             <div className="p-8">
-              <h2 className="text-xl font-bold text-slate-900 mb-4">Course Lessons</h2>
+              <h2 className="text-xl font-bold text-slate-900 mb-4">
+                Course Lessons
+              </h2>
               <div className="space-y-3">
                 {selectedCourse.lessons.map((lesson, index) => (
                   <button
@@ -169,6 +310,25 @@ export const CourseLibraryScreen: React.FC<CourseLibraryScreenProps> = ({
 
   return (
     <div className="min-h-screen bg-warm-white">
+      {Navigation && (
+        <header>
+          <div className="px-4 md:px-6 py-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <button
+                  onClick={onBack}
+                  className="hover:opacity-80 transition-opacity"
+                >
+                  <span className="text-2xl font-bold text-slate-900">
+                    MicroLearn
+                  </span>
+                </button>
+              </div>
+              <Navigation />
+            </div>
+          </div>
+        </header>
+      )}
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="mb-8">
           <button
@@ -181,9 +341,12 @@ export const CourseLibraryScreen: React.FC<CourseLibraryScreenProps> = ({
 
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="text-4xl font-bold text-slate-900 mb-2">Course Library</h1>
+              <h1 className="text-4xl font-bold text-slate-900 mb-2">
+                Course Library
+              </h1>
               <p className="text-slate-600">
-                Explore our collection of bite-sized courses for continuous learning
+                Explore our collection of bite-sized courses for continuous
+                learning
               </p>
             </div>
           </div>
@@ -228,38 +391,58 @@ export const CourseLibraryScreen: React.FC<CourseLibraryScreenProps> = ({
             <div
               key={course.id}
               onClick={() => setSelectedCourse(course)}
-              className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow cursor-pointer overflow-hidden border border-slate-200"
+              className="bg-white rounded-xl shadow-sm hover:shadow-md transition-all cursor-pointer overflow-hidden border border-slate-200"
             >
               <div className="p-6">
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-xs font-medium text-slate-500 uppercase tracking-wide">
+                <div className="flex items-start justify-between mb-4">
+                  <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">
                     {course.category}
                   </span>
-                  <span className="text-xs px-2 py-1 bg-slate-100 text-slate-700 rounded-full">
-                    {course.level}
-                  </span>
-                </div>
-                <h3 className="text-xl font-bold text-slate-900 mb-2">{course.title}</h3>
-                <p className="text-sm text-slate-600 mb-4 line-clamp-2">{course.description}</p>
-                <div className="flex items-center gap-4 text-xs text-slate-500 mb-4">
-                  <div className="flex items-center gap-1">
-                    <Clock className="w-3 h-3" />
-                    {course.duration}
+                  <div className="flex items-center gap-2">
+                    {isCourseCompleted(course.id) && (
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-green-50 text-green-700 rounded-full text-xs font-medium">
+                        <CheckCircle2 className="w-3.5 h-3.5" />
+                        Completed
+                      </span>
+                    )}
+                    {!isCourseCompleted(course.id) && (
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white text-slate-500 rounded-full text-xs font-medium border border-slate-200">
+                        <Check className="w-3.5 h-3.5 text-green-600" />
+                        Begin
+                      </span>
+                    )}
                   </div>
-                  <div className="flex items-center gap-1">
-                    <BookOpen className="w-3 h-3" />
-                    {course.lessons.length} lessons
-                  </div>
                 </div>
-                <div className="flex flex-wrap gap-2">
-                  {course.tags.slice(0, 3).map((tag) => (
-                    <span
-                      key={tag}
-                      className="px-2 py-1 bg-slate-50 text-slate-600 rounded text-xs"
-                    >
-                      {tag}
-                    </span>
-                  ))}
+                <h3 className="text-lg font-bold text-slate-900 mb-2 leading-tight">
+                  {course.title}
+                </h3>
+                <p className="text-sm text-slate-600 mb-5 line-clamp-2 leading-relaxed">
+                  {course.description}
+                </p>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4 text-xs text-slate-500">
+                    <div className="flex items-center gap-1.5">
+                      <Clock className="w-3.5 h-3.5" />
+                      <span>{course.duration}</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <BookOpen className="w-3.5 h-3.5" />
+                      <span>
+                        {course.lessons.length}{" "}
+                        {course.lessons.length === 1 ? "lesson" : "lessons"}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    {course.tags.slice(0, 3).map((tag) => (
+                      <span
+                        key={tag}
+                        className="px-2.5 py-1 bg-slate-50 text-slate-700 rounded-full text-xs font-medium"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
@@ -268,7 +451,9 @@ export const CourseLibraryScreen: React.FC<CourseLibraryScreenProps> = ({
 
         {filteredCourses.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-slate-600">No courses found matching your criteria.</p>
+            <p className="text-slate-600">
+              No courses found matching your criteria.
+            </p>
             <button
               onClick={() => {
                 setSearchQuery("");
@@ -285,4 +470,3 @@ export const CourseLibraryScreen: React.FC<CourseLibraryScreenProps> = ({
     </div>
   );
 };
-

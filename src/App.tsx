@@ -1,14 +1,17 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Pagination } from "./components/Pagination";
 import { HelpCard } from "./components/HelpCard";
 import { AIRecommendationCard } from "./components/AIRecommendationCard";
-import { Toast } from "./components/Toast";
-import { SharingModal } from "./components/SharingModal";
 import { HomeDashboardScreen } from "./screens/HomeDashboardScreen";
 import { YesNoToggle } from "./components/YesNoToggle";
 import { CourseLibraryScreen } from "./components/CourseLibraryScreen";
+import { OnboardingWelcomeScreen } from "./components/OnboardingWelcomeScreen";
+import { OnboardingAssessmentScreen } from "./components/OnboardingAssessmentScreen";
+import { OnboardingDashboardScreen } from "./components/OnboardingDashboardScreen";
+import { saveUserState, getUserState } from "./utils";
+import { UserState } from "./types";
+import { courses } from "./data";
 import {
-  ChevronRight,
   Award,
   Target,
   Heart,
@@ -16,25 +19,26 @@ import {
   Users,
   Shield,
   Lightbulb,
-  Menu,
   X,
   Sparkles,
   Check,
-  Edit3,
-  Home,
   RefreshCw,
   Flame,
   HeartHandshake,
-  UsersRound,
-  BookOpen,
   Palette,
   Code,
   TrendingUp,
   Globe,
-  Zap,
+  Eye,
+  Headphones,
+  BookOpen,
+  User,
+  Activity,
+  Network,
+  Clock,
 } from "lucide-react";
 
-interface Virtue {
+interface LearningStyle {
   id: string;
   name: string;
   icon: React.ComponentType<any>;
@@ -45,7 +49,7 @@ interface Virtue {
 
 interface Goal {
   id: string;
-  virtueId: string;
+  learningStyleId: string;
   sdgIds: string[];
   title: string;
   description: string;
@@ -73,232 +77,243 @@ interface Milestone {
   achievedDate?: Date;
 }
 
-const virtues: Virtue[] = [
+const learningStyles: LearningStyle[] = [
   {
-    id: "intro-to-ux",
-    name: "Intro to UX",
-    icon: Palette,
+    id: "visual",
+    name: "Visual",
+    icon: Eye,
     color: "bg-[#e6243c]",
     iconColor: "text-[#e6243c]",
-    description: "Master the fundamentals of user experience design",
+    description: "Learn best through seeing and visual representations",
   },
   {
-    id: "design-systems",
-    name: "Design Systems",
-    icon: Sparkles,
+    id: "auditory",
+    name: "Auditory",
+    icon: Headphones,
     color: "bg-[#dfa739]",
     iconColor: "text-[#dfa739]",
-    description: "Build scalable and consistent design systems",
+    description: "Learn best through listening and verbal instruction",
   },
   {
-    id: "energy-efficiency",
-    name: "Energy Efficiency at Home",
-    icon: Home,
+    id: "kinesthetic",
+    name: "Kinesthetic",
+    icon: Activity,
     color: "bg-[#4aa236]",
     iconColor: "text-[#4aa236]",
-    description:
-      "Reduce your carbon footprint with practical home improvements",
+    description: "Learn best through hands-on experience and physical activity",
   },
   {
-    id: "web-development",
-    name: "Web Development Basics",
-    icon: Code,
+    id: "reading-writing",
+    name: "Reading/Writing",
+    icon: BookOpen,
     color: "bg-red-400",
     iconColor: "text-red-500",
-    description: "Learn modern web development fundamentals",
+    description: "Learn best through reading and writing activities",
   },
   {
-    id: "product-strategy",
-    name: "Product Strategy",
-    icon: Target,
+    id: "social",
+    name: "Social",
+    icon: Users,
     color: "bg-pink-400",
     iconColor: "text-pink-500",
-    description: "Develop products that users love and businesses need",
+    description: "Learn best in groups and through collaboration",
   },
   {
-    id: "data-analytics",
-    name: "Data Analytics",
-    icon: TrendingUp,
+    id: "solitary",
+    name: "Solitary",
+    icon: User,
     color: "bg-blue-400",
     iconColor: "text-blue-500",
-    description: "Turn data into actionable insights",
+    description: "Learn best independently and through self-study",
   },
   {
-    id: "sustainability",
-    name: "Sustainability Practices",
-    icon: Globe,
+    id: "logical",
+    name: "Logical",
+    icon: Network,
     color: "bg-purple-400",
     iconColor: "text-purple-500",
-    description: "Learn sustainable practices for modern living",
+    description: "Learn best through logic, reasoning, and systems thinking",
   },
 ];
 
 function App() {
+  // Load user state from localStorage on mount
+  const [userState, setUserState] = useState<UserState>(getUserState());
+
+  // Helper function to get course completeness for a goal
+  const getCourseCompleteness = (goal: Goal): number => {
+    // Try to find a course that matches the goal title
+    const matchingCourse = courses.find(
+      (course) => course.title === goal.title || course.id === goal.id
+    );
+
+    if (!matchingCourse) {
+      // If no course found, use goal progress as fallback
+      return goal.progress || 0;
+    }
+
+    // If course is completed, return 100%
+    const completedCourses = userState?.preferences?.completedCourses || [];
+    if (completedCourses.includes(matchingCourse.id)) {
+      return 100;
+    }
+
+    // Otherwise use goal progress
+    return goal.progress || 0;
+  };
   const [currentScreen, setCurrentScreen] = useState(1);
-  const [selectedVirtue, setSelectedVirtue] = useState<Virtue | null>(null);
+  const [selectedCourseId, setSelectedCourseId] = useState<string | undefined>(
+    undefined
+  );
+  const [selectedLearningStyle, setSelectedLearningStyle] =
+    useState<LearningStyle | null>(null);
   const [goals, setGoals] = useState<Goal[]>([]);
   const [newGoal, setNewGoal] = useState({
     title: "",
     description: "",
   });
   const [user] = useState({ name: "Dave", isNewUser: true }); // Set to true for new user experience
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [onboardingStep, setOnboardingStep] = useState<number | null>(null); // null = not in onboarding, 1-4 = onboarding steps
   const [isLoadingGoalSuggestions, setIsLoadingGoalSuggestions] =
     useState(false);
   const [showGoalSuggestions, setShowGoalSuggestions] = useState(false);
   const [isLoadingAIAssistance, setIsLoadingAIAssistance] = useState(false);
   const [aiSelectedSDG, setAiSelectedSDG] = useState<string | null>(null);
   const [aiSelectionReason, setAiSelectionReason] = useState<string>("");
-  const [aiSelectedVirtue, setAiSelectedVirtue] = useState<string | null>(null);
-  const [aiVirtueSelectionReason, setAiVirtueSelectionReason] =
+  const [aiSelectedLearningStyle, setAiSelectedLearningStyle] = useState<
+    string | null
+  >(null);
+  const [aiLearningStyleSelectionReason, setAiLearningStyleSelectionReason] =
     useState<string>("");
-  const [loginForm, setLoginForm] = useState({ email: "", password: "" });
   const [hasHoveredSDG, setHasHoveredSDG] = useState(false);
   const [showSDGPopover, setShowSDGPopover] = useState(false);
-
-  // Amount of Change chip selections
-  const [selectedAmountChange1, setSelectedAmountChange1] = useState<
-    string | null
-  >(null);
-  const [selectedAmountChange2, setSelectedAmountChange2] = useState<
-    string | null
-  >(null);
-
-  // Card expansion state
-  const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
 
   // Design system action card expansion state
   const [designSystemCardExpanded, setDesignSystemCardExpanded] =
     useState(true);
 
-  // Toggle card expansion
-  const toggleCardExpansion = (cardId: string) => {
-    setExpandedCards((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(cardId)) {
-        newSet.delete(cardId);
-      } else {
-        newSet.add(cardId);
-      }
-      return newSet;
-    });
-  };
-
-  // SDG Goals data
+  // Learning Topics data
   const sdgGoals = [
-    { id: "sdg1", title: "No Poverty", image: "/1-no-poverty.png" },
-    { id: "sdg2", title: "Zero Hunger", image: "/15-zero-hunger.png" },
+    {
+      id: "sdg1",
+      title: "User Experience Design",
+      color: "bg-red-500",
+      innerColor: "bg-red-700",
+      icon: Palette,
+    },
+    {
+      id: "sdg2",
+      title: "Design Systems",
+      color: "bg-orange-500",
+      innerColor: "bg-orange-700",
+      icon: Sparkles,
+    },
     {
       id: "sdg3",
-      title: "Good Health and Well-Being",
-      image: "/3-Good-Health.png",
+      title: "Web Development",
+      color: "bg-yellow-500",
+      innerColor: "bg-yellow-700",
+      icon: Code,
     },
-    { id: "sdg4", title: "Quality Education", image: "/4-education.png" },
-    { id: "sdg5", title: "Gender Equality", image: "/5-Gender-Equality.png" },
     {
-      id: "sdg6",
-      title: "Clean Water and Sanitation",
-      image: "/Property 1=Clean Water.png",
+      id: "sdg4",
+      title: "Product Strategy",
+      color: "bg-green-500",
+      innerColor: "bg-green-700",
+      icon: Target,
+    },
+    {
+      id: "sdg5",
+      title: "Data Analytics",
+      color: "bg-teal-500",
+      innerColor: "bg-teal-700",
+      icon: TrendingUp,
     },
     {
       id: "sdg7",
-      title: "Affordable and Clean Energy",
-      image: "/7-Affordable-and-Clean-Energy.png",
+      title: "Sustainability",
+      color: "bg-indigo-500",
+      innerColor: "bg-indigo-700",
+      icon: Globe,
     },
     {
       id: "sdg8",
-      title: "Decent Work and Economic Growth",
-      image: "/8-Decent-Work-and-Economic-Growth.png",
+      title: "Business Skills",
+      color: "bg-purple-500",
+      innerColor: "bg-purple-700",
+      icon: Award,
     },
     {
       id: "sdg9",
-      title: "Industry, Innovation and Infrastructure",
-      image: "/Property 1=Variant18.png",
+      title: "Innovation",
+      color: "bg-pink-500",
+      innerColor: "bg-pink-700",
+      icon: Lightbulb,
     },
     {
       id: "sdg10",
-      title: "Reduced Inequalities",
-      image: "/Property 1=Reduced Inequalities.png",
+      title: "Communication",
+      color: "bg-rose-500",
+      innerColor: "bg-rose-700",
+      icon: Users,
     },
     {
       id: "sdg11",
-      title: "Sustainable Cities and Communities",
-      image: "/11-sustainable-cities.png",
+      title: "Leadership",
+      color: "bg-cyan-500",
+      innerColor: "bg-cyan-700",
+      icon: Shield,
     },
     {
       id: "sdg12",
-      title: "Responsible Consumption and Production",
-      image: "/12-responsible.png",
+      title: "Technology",
+      color: "bg-emerald-500",
+      innerColor: "bg-emerald-700",
+      icon: Brain,
     },
-    { id: "sdg13", title: "Climate Action", image: "/13-Climate-Action.png" },
+    {
+      id: "sdg13",
+      title: "Marketing",
+      color: "bg-amber-500",
+      innerColor: "bg-amber-700",
+      icon: TrendingUp,
+    },
     {
       id: "sdg14",
-      title: "Life Below Water",
-      image: "/14-Life-Below-Water.png",
+      title: "Finance",
+      color: "bg-violet-500",
+      innerColor: "bg-violet-700",
+      icon: Award,
     },
-    { id: "sdg15", title: "Life on Land", image: "/15-life-on-land.png" },
+    {
+      id: "sdg15",
+      title: "Personal Growth",
+      color: "bg-fuchsia-500",
+      innerColor: "bg-fuchsia-700",
+      icon: Heart,
+    },
     {
       id: "sdg16",
-      title: "Peace, Justice and Strong Institutions",
-      image: "/16-peace-justice.png",
+      title: "Career Development",
+      color: "bg-sky-500",
+      innerColor: "bg-sky-700",
+      icon: Target,
     },
     {
       id: "sdg17",
-      title: "Partnerships for the Goals",
-      image: "/17-partnership-for-the-goals.png",
+      title: "Creative Skills",
+      color: "bg-lime-500",
+      innerColor: "bg-lime-700",
+      icon: Sparkles,
     },
   ];
-  const [isLoggingIn, setIsLoggingIn] = useState(false);
-  const [selectedLifeAspect, setSelectedLifeAspect] = useState("");
-  const [selectedSuggestedGoal, setSelectedSuggestedGoal] = useState<
-    string | null
-  >(null);
   const [editingGoal, setEditingGoal] = useState<Goal | null>(null);
-  const [graceModalOpen, setGraceModalOpen] = useState(false);
-  const [situationToggle1, setSituationToggle1] = useState<boolean | null>(
-    null
-  );
-  const [situationToggle2, setSituationToggle2] = useState<boolean | null>(
-    null
-  );
-  const [situationDescription, setSituationDescription] = useState("");
-  const situationTextareaRef = useRef<HTMLTextAreaElement>(null);
-  const [step5Toggle1, setStep5Toggle1] = useState<boolean | null>(null);
-  const [step5Toggle2, setStep5Toggle2] = useState<boolean | null>(null);
-  const [step5Description, setStep5Description] = useState("");
-  const step5TextareaRef = useRef<HTMLTextAreaElement>(null);
-
-  // Callback functions for textarea onChange handlers
-  const handleSituationDescriptionChange = useCallback(
-    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-      setSituationDescription(e.target.value);
-    },
-    []
-  );
-
-  const handleStep5DescriptionChange = useCallback(
-    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-      setStep5Description(e.target.value);
-    },
-    []
-  );
-  const [step6AmountChange, setStep6AmountChange] = useState(0);
   const [step7AmountChange, setStep7AmountChange] = useState(0);
   const [selectedSDG, setSelectedSDG] = useState<string>("");
 
-  // AI Suggested Actions selection and editing state
+  // AI Suggested Courses selection state
   const [selectedAIAction, setSelectedAIAction] = useState<string | null>(null);
-  const [editingActionId, setEditingActionId] = useState<string | null>(null);
-  const [editedActionText, setEditedActionText] = useState<string>("");
 
-  // Success notification and sharing state
-  const [showSuccessToast, setShowSuccessToast] = useState(false);
-  const [showSharingModal, setShowSharingModal] = useState(false);
-  const [completedActionData, setCompletedActionData] = useState<{
-    title: string;
-    description: string;
-    virtueName: string;
-  } | null>(null);
   const [progressModalOpen, setProgressModalOpen] = useState(false);
   const [selectedGoalForProgress, setSelectedGoalForProgress] =
     useState<Goal | null>(null);
@@ -310,11 +325,6 @@ function App() {
   // Browser back button functionality
   const navigateToScreen = useCallback((screen: number) => {
     setCurrentScreen(screen);
-
-    // Reset AI suggested goals when navigating to Goal Creation screen
-    if (screen === 3) {
-      setSelectedSuggestedGoal("");
-    }
 
     // Update browser history
     window.history.pushState({ screen }, "", `#screen-${screen}`);
@@ -370,43 +380,6 @@ function App() {
     );
   };
 
-  const resetGoalProgress = (goalId: string, notes: string) => {
-    setGoals(
-      goals.map((goal) => {
-        if (goal.id === goalId) {
-          const progressEntry: ProgressEntry = {
-            id: Date.now().toString(),
-            date: new Date(),
-            amount: 0,
-            notes,
-            type: "reset",
-          };
-
-          return {
-            ...goal,
-            progress: 0,
-            completed: false,
-            milestones:
-              goal.milestones?.map((m) => ({
-                ...m,
-                achieved: false,
-                achievedDate: undefined,
-              })) || [],
-            progressHistory: [...goal.progressHistory, progressEntry],
-            lastUpdated: new Date(),
-          };
-        }
-        return goal;
-      })
-    );
-  };
-
-  const openProgressModal = (goal: Goal) => {
-    setSelectedGoalForProgress(goal);
-    setProgressModalOpen(true);
-    setProgressUpdate({ amount: 1, notes: "" });
-  };
-
   // Handle browser back/forward buttons
   useEffect(() => {
     const handlePopState = (event: PopStateEvent) => {
@@ -426,126 +399,13 @@ function App() {
     return () => window.removeEventListener("popstate", handlePopState);
   }, [currentScreen]);
 
-  const sustainableDevelopmentGoals = [
-    {
-      id: "sdg1",
-      title: "No Poverty",
-      description:
-        "Economic growth must be inclusive to provide sustainable jobs and promote equality.",
-      image: "/1-no-poverty.png",
-    },
-    {
-      id: "sdg2",
-      title: "Zero Hunger",
-      description:
-        "The food and agriculture sector offers key solutions for development, and is central for hunger and poverty eradication.",
-      image: "/15-zero-hunger.png",
-    },
-    {
-      id: "sdg3",
-      title: "Good Health and Well-Being",
-      description:
-        "Ensuring healthy lives and promoting the well-being for all at all ages is essential to sustainable development.",
-      image: "/3-Good-Health.png",
-    },
-    {
-      id: "sdg4",
-      title: "Quality Education",
-      description:
-        "Obtaining a quality education is the foundation to improving people's lives and sustainable development.",
-      image: "/4-education.png",
-    },
-    {
-      id: "sdg5",
-      title: "Gender Equality",
-      description:
-        "Gender equality is not only a fundamental human right, but a necessary foundation for a peaceful, prosperous and sustainable world.",
-      image: "/5-Gender-Equality.png",
-    },
-    {
-      id: "sdg6",
-      title: "Clean Water and Sanitation",
-      description:
-        "Clean, accessible water for all is an essential part of the world we want to live in.",
-      image: "/Property 1=Clean Water.png",
-    },
-    {
-      id: "sdg7",
-      title: "Affordable and Clean Energy",
-      description:
-        "Energy is central to nearly every major challenge and opportunity.",
-      image: "/7-Affordable-and-Clean-Energy.png",
-    },
-    {
-      id: "sdg8",
-      title: "Decent Work and Economic Growth",
-      description:
-        "Sustainable economic growth will require societies to create the conditions that allow people to have quality jobs.",
-      image: "/8-Decent-Work-and-Economic-Growth.png",
-    },
-    {
-      id: "sdg9",
-      title: "Industry, Innovation, and Infrastructure",
-      description:
-        "Investments in infrastructure are crucial to achieving sustainable development.",
-      image: "/Property 1=Variant18.png",
-    },
-    {
-      id: "sdg10",
-      title: "Reduced Inequalities",
-      description:
-        "To reduce inequalities, policies should be universal in principle, paying attention to the needs of disadvantaged and marginalized populations.",
-      image: "/Property 1=Reduced Inequalities.png",
-    },
-    {
-      id: "sdg11",
-      title: "Sustainable Cities and Communities",
-      description:
-        "There needs to be a future in which cities provide opportunities for all, with access to basic services, energy, housing, transportation and more.",
-      image: "/11-sustainable-cities.png",
-    },
-    {
-      id: "sdg12",
-      title: "Responsible Consumption and Production",
-      description: "Responsible Production and Consumption",
-      image: "/12-responsible.png",
-    },
-    {
-      id: "sdg13",
-      title: "Climate Action",
-      description:
-        "Climate change is a global challenge that affects everyone, everywhere.",
-      image: "/13-Climate-Action.png",
-    },
-    {
-      id: "sdg14",
-      title: "Life Below Water",
-      description:
-        "Careful management of this essential global resource is a key feature of a sustainable future.",
-      image: "/14-Life-Below-Water.png",
-    },
-    {
-      id: "sdg15",
-      title: "Life on Land",
-      description:
-        "Sustainably manage forests, combat desertification, halt and reverse land degradation, halt biodiversity loss",
-      image: "/15-life-on-land.png",
-    },
-    {
-      id: "sdg16",
-      title: "Peace, Justice and Strong Institutions",
-      description:
-        "Access to justice for all, and building effective, accountable institutions at all levels.",
-      image: "/16-peace-justice.png",
-    },
-    {
-      id: "sdg17",
-      title: "Partnerships for the Goals",
-      description:
-        "Strengthen the means of implementation and revitalize the global partnership for sustainable development.",
-      image: "/17-partnership-for-the-goals.png",
-    },
-  ];
+  const sustainableDevelopmentGoals = sdgGoals.map((sdg) => ({
+    id: sdg.id,
+    title: sdg.title,
+    description: `Learn about ${sdg.title.toLowerCase()} and develop your skills in this area.`,
+    color: sdg.color,
+    innerColor: sdg.innerColor,
+  }));
 
   // Determine initial screen based on user status
   useEffect(() => {
@@ -566,9 +426,54 @@ function App() {
     }
   }, [currentScreen, navigateToScreen]);
 
+  // Function to get suggested courses based on selections
+  const getSuggestedCourses = () => {
+    if (!selectedSDG || !selectedLearningStyle) {
+      return courses.slice(0, 3); // Return first 3 courses as default
+    }
+
+    // Map SDG IDs to course categories/tags
+    const sdgToCourseMap: { [key: string]: string[] } = {
+      sdg1: ["Design", "UX", "Product"], // No Poverty - design solutions
+      sdg2: ["Design", "Product", "Strategy"], // Zero Hunger - product strategy
+      sdg3: ["Development", "Web", "Analytics"], // Good Health - health tech
+      sdg4: ["Design", "UX", "Product"], // Quality Education - educational design
+      sdg5: ["Product", "Strategy", "Analytics"], // Gender Equality - inclusive products
+      sdg7: ["Sustainability", "Energy", "Environment"], // Affordable Energy
+      sdg8: ["Product", "Strategy", "Analytics"], // Decent Work - business strategy
+      sdg9: ["Development", "Design", "Product"], // Industry Innovation - tech innovation
+      sdg10: ["Product", "Strategy", "Analytics"], // Reduced Inequalities - inclusive design
+      sdg11: ["Design", "Product", "Sustainability"], // Sustainable Cities - urban design
+      sdg12: ["Sustainability", "Environment", "Product"], // Responsible Consumption - sustainability
+      sdg13: ["Sustainability", "Energy", "Environment"], // Climate Action - sustainability
+      sdg14: ["Sustainability", "Environment", "Analytics"], // Life Below Water - environmental
+      sdg15: ["Sustainability", "Environment", "Analytics"], // Life on Land - environmental
+      sdg16: ["Product", "Strategy", "Analytics"], // Peace and Justice - governance
+      sdg17: ["Product", "Strategy", "Analytics"], // Partnerships - collaboration
+    };
+
+    const relevantTags = sdgToCourseMap[selectedSDG] || [];
+
+    // Filter courses that match the SDG category/tags
+    const matchingCourses = courses.filter((course) =>
+      relevantTags.some(
+        (tag) =>
+          course.category.toLowerCase().includes(tag.toLowerCase()) ||
+          course.tags.some((courseTag) =>
+            courseTag.toLowerCase().includes(tag.toLowerCase())
+          )
+      )
+    );
+
+    // Return matching courses or default to first 3
+    return matchingCourses.length > 0
+      ? matchingCourses.slice(0, 3)
+      : courses.slice(0, 3);
+  };
+
   // Simulate AI loading when entering goal creation screen
   useEffect(() => {
-    if (currentScreen === 3 && selectedVirtue) {
+    if (currentScreen === 3 && selectedLearningStyle) {
       setIsLoadingGoalSuggestions(true);
       setShowGoalSuggestions(false);
 
@@ -579,64 +484,41 @@ function App() {
 
       return () => clearTimeout(timer);
     }
-  }, [currentScreen, selectedVirtue]);
+  }, [currentScreen, selectedLearningStyle]);
 
-  // Handle selecting a suggested goal
-  const handleSelectSuggestedGoal = (
-    goalType: string,
-    title: string,
-    description: string
-  ) => {
-    setSelectedSuggestedGoal(goalType);
-    setNewGoal({
-      title: title,
-      description: description,
-    });
-  };
-
-  // Handle AI assistance click
-  const handleAIAssistanceClick = () => {
+  // Handle Learning Style AI assistance click
+  const handleLearningStyleAIAssistanceClick = () => {
     setIsLoadingAIAssistance(true);
-    // Simulate AI processing time
-    setTimeout(() => {
-      setIsLoadingAIAssistance(false);
-      // Navigate to goal suggestions screen
-      navigateToScreen(2);
-    }, 2000);
-  };
-
-  // Handle Virtue AI assistance click
-  const handleVirtueAIAssistanceClick = () => {
-    setIsLoadingAIAssistance(true);
-    setAiSelectedVirtue(null);
-    setAiVirtueSelectionReason("");
+    setAiSelectedLearningStyle(null);
+    setAiLearningStyleSelectionReason("");
 
     // Simulate AI processing time
     setTimeout(() => {
-      // Randomly select a virtue
-      const randomIndex = Math.floor(Math.random() * virtues.length);
-      const selectedVirtue = virtues[randomIndex];
+      // Randomly select a learning style
+      const randomIndex = Math.floor(Math.random() * learningStyles.length);
+      const selectedLearningStyle = learningStyles[randomIndex];
 
       // Get the selected SDG title for context
       const selectedSDGTitle =
         sdgGoals.find((sdg) => sdg.id === selectedSDG)?.title ||
         "your selected SDG";
 
-      // Generate a reason based on the selected virtue and SDG
-      const virtueReasons = {
-        grace: `Grace perfectly complements ${selectedSDGTitle} by encouraging thoughtful decision-making that considers the impact on all stakeholders, ensuring sustainable and ethical progress.`,
-        courage: `Courage is essential for ${selectedSDGTitle} as it requires bold action to challenge existing systems and drive meaningful change, even when facing resistance or uncertainty.`,
-        justice: `Justice aligns with ${selectedSDGTitle} by ensuring that progress is fair and equitable, addressing systemic inequalities and creating opportunities for all members of society.`,
-        wisdom: `Wisdom enhances ${selectedSDGTitle} by providing the insight needed to make informed decisions, balance competing interests, and create long-term sustainable solutions.`,
-        temperance: `Temperance supports ${selectedSDGTitle} by promoting balanced approaches to development, avoiding excess and ensuring resources are used responsibly and sustainably.`,
-        transcendence: `Transcendence elevates ${selectedSDGTitle} by inspiring individuals to look beyond immediate concerns and work toward a higher purpose that benefits humanity and the planet.`,
-        humanity: `Humanity is the foundation of ${selectedSDGTitle}, emphasizing compassion, empathy, and the inherent dignity of all people in every action and decision.`,
+      // Generate a reason based on the selected learning style and SDG
+      const learningStyleReasons = {
+        "intro-to-ux": `${selectedLearningStyle.name} aligns with ${selectedSDGTitle} by helping you understand user needs and create solutions that address real-world challenges.`,
+        "design-systems": `${selectedLearningStyle.name} complements ${selectedSDGTitle} by providing structured approaches to creating scalable and sustainable solutions.`,
+        "web-development": `${selectedLearningStyle.name} aligns with ${selectedSDGTitle} by enabling you to build digital solutions that can scale and reach more people.`,
+        "product-strategy": `${selectedLearningStyle.name} enhances ${selectedSDGTitle} by teaching strategic thinking and planning for long-term impact.`,
+        "data-analytics": `${selectedLearningStyle.name} supports ${selectedSDGTitle} by providing tools to measure impact and make data-driven decisions.`,
+        sustainability: `${selectedLearningStyle.name} aligns with ${selectedSDGTitle} by focusing on sustainable practices and long-term thinking.`,
       };
 
-      setAiSelectedVirtue(selectedVirtue.id);
-      setAiVirtueSelectionReason(
-        virtueReasons[selectedVirtue.id as keyof typeof virtueReasons] ||
-          `This Aspect Of Life aligns with ${selectedSDGTitle} by providing the moral foundation needed for meaningful progress.`
+      setAiSelectedLearningStyle(selectedLearningStyle.id);
+      setAiLearningStyleSelectionReason(
+        learningStyleReasons[
+          selectedLearningStyle.id as keyof typeof learningStyleReasons
+        ] ||
+          `${selectedLearningStyle.name} aligns with ${selectedSDGTitle} by providing the learning foundation needed for meaningful progress.`
       );
       setIsLoadingAIAssistance(false);
     }, 2000);
@@ -678,22 +560,10 @@ function App() {
       setAiSelectedSDG(selectedSDG.id);
       setAiSelectionReason(
         reasons[selectedSDG.id as keyof typeof reasons] ||
-          `${selectedSDG.title} aligns with your personal values and actions.`
+          `${selectedSDG.title} aligns with the subject matter.`
       );
       setIsLoadingAIAssistance(false);
     }, 2000);
-  };
-
-  // Handle fake login
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoggingIn(true);
-
-    // Simulate login delay
-    setTimeout(() => {
-      setIsLoggingIn(false);
-      navigateToScreen(0); // Go to dashboard
-    }, 1500);
   };
 
   // Mock data for dashboard
@@ -706,44 +576,14 @@ function App() {
     totalPoints: 2450,
   });
 
-  const [recentActivities] = useState([
-    {
-      id: 1,
-      virtue: "Compassion",
-      action: "Helped a colleague with their project",
-      date: "Today",
-      points: 50,
-    },
-    {
-      id: 2,
-      virtue: "Culture",
-      action: "Spoke up in team meeting",
-      date: "Yesterday",
-      points: 75,
-    },
-    {
-      id: 3,
-      virtue: "Wisdom",
-      action: "Completed mindfulness session",
-      date: "2 days ago",
-      points: 40,
-    },
-  ]);
-
   // Navigation Component
-  const Navigation = ({
-    variant = "default",
-  }: {
-    variant?: "default" | "welcome";
-  }) => {
+  const Navigation = () => {
     const navItems = [
       { label: "Dashboard", action: () => navigateToScreen(0) },
-      { label: "Add Action", action: () => navigateToScreen(11) },
-      { label: "Virtue Journey", action: () => navigateToScreen(17) },
+      // { label: "Add Action", action: () => navigateToScreen(11) },
+      { label: "Learning Metrics", action: () => navigateToScreen(17) },
       { label: "Design System", action: () => navigateToScreen(20) },
     ];
-
-    const closeMenu = () => setIsMobileMenuOpen(false);
 
     return (
       <>
@@ -754,7 +594,6 @@ function App() {
               key={index}
               onClick={() => {
                 item.action();
-                closeMenu();
               }}
               className="text-slate-600 hover:text-slate-900 text-sm font-medium transition-colors"
             >
@@ -770,8 +609,8 @@ function App() {
               // Determine if this item is currently active
               const isActive =
                 (item.label === "Dashboard" && currentScreen === 0) ||
-                (item.label === "Add Action" && currentScreen === 8) ||
-                (item.label === "Virtue Journey" && currentScreen === 17) ||
+                // (item.label === "Add Action" && currentScreen === 8) ||
+                (item.label === "Learning Journey" && currentScreen === 17) ||
                 (item.label === "Design System" && currentScreen === 20);
 
               return (
@@ -789,12 +628,12 @@ function App() {
                       className={`h-5 w-5 ${isActive ? "text-blue-600" : ""}`}
                     />
                   )}
-                  {item.label === "Add Action" && (
+                  {/* {item.label === "Add Action" && (
                     <Award
                       className={`h-5 w-5 ${isActive ? "text-blue-600" : ""}`}
                     />
-                  )}
-                  {item.label === "Virtue Journey" && (
+                  )} */}
+                  {item.label === "Learning Journey" && (
                     <Heart
                       className={`h-5 w-5 ${isActive ? "text-blue-600" : ""}`}
                     />
@@ -820,8 +659,12 @@ function App() {
     );
   };
 
-  // Screen 1: Welcome/Grace
-  const WelcomeScreen = () => (
+  // Screen 1: Welcome
+  const WelcomeScreen = ({
+    onStartOnboarding,
+  }: {
+    onStartOnboarding?: () => void;
+  }) => (
     <div className="min-h-screen flex flex-col max-w-[1200px] mx-auto">
       <header>
         <div className="px-4 md:px-6 py-4">
@@ -831,11 +674,9 @@ function App() {
                 onClick={() => navigateToScreen(1)}
                 className="hover:opacity-80 transition-opacity"
               >
-                <img
-                  src="/soulchi-logo.png"
-                  alt="Learning Micro-Academy"
-                  className="h-8"
-                />
+                <span className="text-2xl font-bold text-slate-900">
+                  MicroLearn
+                </span>
               </button>
             </div>
             <Navigation />
@@ -850,27 +691,20 @@ function App() {
               Learning Micro-Academy
             </h1>
             <p className="text-base text-slate-700 mb-6">
-              Bite-sized courses for continuous learning. Join our cohort,
-              subscribe to our newsletter, or explore our course library.
+              Bite-sized courses for continuous learning. Explore our
+              comprehensive course library.
             </p>
           </div>
 
           <div className="flex flex-col md:flex-row justify-center items-center gap-4 md:gap-8">
-            <button
-              onClick={() => {
-                // Sign up for cohort/newsletter - you can customize this action
-                const email = prompt(
-                  "Enter your email to join our cohort and get access to our course library:"
-                );
-                if (email) {
-                  alert(`Thanks! We'll send course updates to ${email}`);
-                  navigateToScreen(0);
-                }
-              }}
-              className="w-full md:w-auto py-4 px-8 bg-slate-900 hover:bg-slate-800 text-white rounded-full transition-all duration-200 font-medium shadow-lg hover:shadow-xl text-lg"
-            >
-              Join Cohort & Newsletter
-            </button>
+            {user.isNewUser && onStartOnboarding && (
+              <button
+                onClick={onStartOnboarding}
+                className="w-full md:w-auto py-4 px-8 bg-slate-900 hover:bg-slate-800 text-white rounded-full transition-all duration-200 font-medium shadow-lg hover:shadow-xl text-lg"
+              >
+                Start Learning Journey
+              </button>
+            )}
             <button
               onClick={() => {
                 navigateToScreen(21);
@@ -907,14 +741,17 @@ function App() {
       progressUpdate={progressUpdate}
       setProgressUpdate={setProgressUpdate}
       updateGoalProgress={updateGoalProgress}
-      openGraceModal={() => setGraceModalOpen(true)}
+      onNavigateToCourse={(courseId) => {
+        setSelectedCourseId(courseId);
+        navigateToScreen(21);
+      }}
+      completedCourses={userState?.preferences?.completedCourses || []}
     />
   );
 
-  // Screen 2: Virtue Selection
-  const VirtueSelectionScreen = () => {
-    const [isListView, setIsListView] = useState(false);
-
+  // Screen 2: Learning Style Selection
+  const LearningStyleSelectionScreen = () => {
+    const [isListView] = useState(false);
     return (
       <div className="min-h-screen  max-w-[1200px] mx-auto">
         <header>
@@ -925,11 +762,9 @@ function App() {
                   onClick={() => navigateToScreen(1)}
                   className="hover:opacity-80 transition-opacity"
                 >
-                  <img
-                    src="/soulchi-logo.png"
-                    alt="Learning Micro-Academy"
-                    className="h-8"
-                  />
+                  <span className="text-2xl font-bold text-slate-900">
+                    MicroLearn
+                  </span>
                 </button>
               </div>
               <Navigation />
@@ -941,7 +776,7 @@ function App() {
           <div className="max-w-md mx-auto md:max-w-[calc(42rem+400px)] lg:max-w-[calc(42rem+400px)]">
             <div className="bg-white rounded-xl shadow-xl overflow-hidden">
               <div className="bg-slate-900 p-6 text-white">
-                <h2 className="text-2xl font-bold">Select Aspect of Life</h2>
+                <h2 className="text-2xl font-bold">Select Learning Style</h2>
               </div>
 
               <div className="p-6">
@@ -949,13 +784,13 @@ function App() {
                   <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
                     <div className="flex flex-col mb-4 lg:mb-0">
                       <h3 className="text-xl font-semibold text-slate-800 mb-3">
-                        Select Aspect of Life
+                        Select Learning Style
                       </h3>
                       {/* AI assistance prompt on its own row */}
                       <div className="flex items-center space-x-2">
                         <Sparkles className="h-4 w-4 text-blue-500 animate-bounce transition-all duration-300 hover:scale-110 hover:drop-shadow-lg" />
                         <button
-                          onClick={handleVirtueAIAssistanceClick}
+                          onClick={handleLearningStyleAIAssistanceClick}
                           className="text-base text-slate-600 hover:text-slate-800 transition-colors cursor-pointer"
                         >
                           Let Learning Micro-Academy help
@@ -970,12 +805,12 @@ function App() {
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-slate-900 mx-auto mb-4"></div>
                     <p className="text-slate-600">
                       Learning Micro-Academy AI is analyzing your SDG selection
-                      and finding the perfect virtue match...
+                      and finding the perfect learning style match...
                     </p>
                   </div>
                 )}
 
-                {aiSelectedVirtue && aiVirtueSelectionReason && (
+                {aiSelectedLearningStyle && aiLearningStyleSelectionReason && (
                   <div className="mb-6 p-4 bg-blue-50 border border-blue-200 object-cover">
                     <div className="flex items-start space-x-3">
                       <div className="flex-shrink-0">
@@ -986,18 +821,18 @@ function App() {
                           Learning Micro-Academy AI Recommendation
                         </h4>
                         <p className="text-sm text-blue-800 mb-3">
-                          {aiVirtueSelectionReason}
+                          {aiLearningStyleSelectionReason}
                         </p>
                         <div className="flex space-x-2">
                           <button
                             onClick={() => {
-                              const virtue = virtues.find(
-                                (v) => v.id === aiSelectedVirtue
+                              const learningStyle = learningStyles.find(
+                                (v) => v.id === aiSelectedLearningStyle
                               );
-                              if (virtue) {
-                                setSelectedVirtue(virtue);
-                                setAiSelectedVirtue(null);
-                                setAiVirtueSelectionReason("");
+                              if (learningStyle) {
+                                setSelectedLearningStyle(learningStyle);
+                                setAiSelectedLearningStyle(null);
+                                setAiLearningStyleSelectionReason("");
                               }
                             }}
                             className="text-sm bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 object-cover transition-colors"
@@ -1005,7 +840,7 @@ function App() {
                             Accept
                           </button>
                           <button
-                            onClick={handleVirtueAIAssistanceClick}
+                            onClick={handleLearningStyleAIAssistanceClick}
                             className="text-sm bg-slate-200 hover:bg-slate-300 text-slate-700 px-3 py-2 object-cover transition-colors flex items-center space-x-1"
                           >
                             <RefreshCw className="h-4 w-4" />
@@ -1021,7 +856,7 @@ function App() {
                   <div className="mb-4 p-3 bg-amber-50 border border-amber-200 object-cover">
                     <p className="text-sm text-amber-800">
                       Please select a Sustainable Development Goal first to
-                      enable virtue selection.
+                      enable learning style selection.
                     </p>
                   </div>
                 )}
@@ -1032,9 +867,9 @@ function App() {
                     currentStep={2}
                     totalSteps={7}
                     onPrevious={() => navigateToScreen(11)}
-                    onNext={() => selectedVirtue && navigateToScreen(3)}
+                    onNext={() => selectedLearningStyle && navigateToScreen(3)}
                     canGoPrevious={true}
-                    canGoNext={!!selectedVirtue}
+                    canGoNext={!!selectedLearningStyle}
                     previousLabel="Back"
                     nextLabel="Next"
                   />
@@ -1047,12 +882,14 @@ function App() {
                       : "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6"
                   } mb-8`}
                 >
-                  {virtues.map((virtue) => {
-                    const IconComponent = virtue.icon;
+                  {learningStyles.map((learningStyle) => {
+                    const IconComponent = learningStyle.icon;
                     return (
                       <button
-                        key={virtue.id}
-                        onClick={() => selectedSDG && setSelectedVirtue(virtue)}
+                        key={learningStyle.id}
+                        onClick={() =>
+                          selectedSDG && setSelectedLearningStyle(learningStyle)
+                        }
                         disabled={!selectedSDG}
                         className={`${
                           isListView
@@ -1074,30 +911,35 @@ function App() {
                           <div
                             className={`${
                               isListView ? "w-10 h-10" : "w-20 h-20"
-                            } rounded-full overflow-hidden flex items-center justify-center relative shadow-md ${
-                              selectedVirtue?.id === virtue.id && selectedSDG
-                                ? "bg-blue-50 border-2 border-blue-500 ring-2 ring-blue-200 ring-offset-2"
-                                : aiSelectedVirtue === virtue.id
-                                ? "bg-green-50 border-2 border-green-500 ring-2 ring-green-200 ring-offset-2"
-                                : `bg-white border-2 ${virtue.color.replace(
-                                    "bg-",
-                                    "border-"
-                                  )}`
+                            } rounded-full flex items-center justify-center relative shadow-lg backdrop-blur-md ${
+                              selectedLearningStyle?.id === learningStyle.id &&
+                              selectedSDG
+                                ? "bg-white/30 border-2 border-blue-500 ring-2 ring-blue-200 ring-offset-2"
+                                : aiSelectedLearningStyle === learningStyle.id
+                                ? "bg-white/30 border-2 border-green-500 ring-2 ring-green-200 ring-offset-2"
+                                : "bg-white/20 border border-white/30"
                             }`}
                           >
                             <IconComponent
                               className={`${
-                                isListView ? "h-5 w-5" : "h-12 w-12"
-                              } ${virtue.iconColor}`}
+                                isListView ? "h-5 w-5" : "h-10 w-10"
+                              } ${
+                                selectedLearningStyle?.id ===
+                                  learningStyle.id && selectedSDG
+                                  ? "text-blue-600"
+                                  : aiSelectedLearningStyle === learningStyle.id
+                                  ? "text-green-600"
+                                  : "text-slate-700"
+                              }`}
                             />
                           </div>
-                          {selectedVirtue?.id === virtue.id && (
+                          {selectedLearningStyle?.id === learningStyle.id && (
                             <div className="absolute -top-2 -right-2 w-7 h-7 bg-blue-500 rounded-full flex items-center justify-center shadow-lg z-10">
                               <Check className="w-4 h-4 text-white" />
                             </div>
                           )}
-                          {aiSelectedVirtue === virtue.id &&
-                            selectedVirtue?.id !== virtue.id && (
+                          {aiSelectedLearningStyle === learningStyle.id &&
+                            selectedLearningStyle?.id !== learningStyle.id && (
                               <div className="absolute -top-2 -right-2 w-7 h-7 bg-green-500 rounded-full flex items-center justify-center shadow-lg z-10">
                                 <Sparkles className="w-4 h-4 text-white" />
                               </div>
@@ -1115,15 +957,15 @@ function App() {
                                 : "text-sm font-medium text-slate-800 leading-tight"
                             }`}
                           >
-                            {virtue.name}
+                            {learningStyle.name}
                           </p>
                           {isListView && (
                             <p className="text-xs text-slate-600 mt-1 text-left">
                               Click to{" "}
-                              {selectedVirtue?.id === virtue.id
+                              {selectedLearningStyle?.id === learningStyle.id
                                 ? "deselect"
                                 : "select"}{" "}
-                              this virtue
+                              this learning style
                             </p>
                           )}
                         </div>
@@ -1151,11 +993,9 @@ function App() {
                   onClick={() => navigateToScreen(1)}
                   className="hover:opacity-80 transition-opacity"
                 >
-                  <img
-                    src="/soulchi-logo.png"
-                    alt="Learning Micro-Academy"
-                    className="h-8"
-                  />
+                  <span className="text-2xl font-bold text-slate-900">
+                    MicroLearn
+                  </span>
                 </button>
               </div>
               <Navigation />
@@ -1199,7 +1039,7 @@ function App() {
                       if (newGoal.title && newGoal.description) {
                         const goal: Goal = {
                           id: Date.now().toString(),
-                          virtueId: selectedVirtue!.id,
+                          learningStyleId: selectedLearningStyle!.id,
                           sdgIds: selectedSDG ? selectedSDG.split(",") : [],
                           title: newGoal.title,
                           description: newGoal.description,
@@ -1247,35 +1087,23 @@ function App() {
                           lastUpdated: new Date(),
                         };
                         setGoals([...goals, goal]);
-                        navigateToScreen(5);
+                        navigateToScreen(8);
                       } else if (selectedAIAction) {
-                        // If AI action is selected but no custom goal, create goal from AI action
-                        const aiActionTitles = {
-                          "5min": "5 Minute Action",
-                          "15min": "15 Minute Action",
-                          custom: "Create Your Own Goal",
-                        };
-                        const aiActionDescriptions = {
-                          "5min":
-                            "Set aside 5 minutes each morning to journal about yesterday's experiences, decisions, and how they aligned with your values",
-                          "15min":
-                            "Identify one important decision each week, research options for 30 minutes, then meditate for 15 minutes before making your choice",
-                          custom:
-                            "Create a personalized goal with specific actions, measurable outcomes, and a clear timeline that aligns with your current life circumstances",
-                        };
+                        // If AI course is selected but no custom goal, create goal from selected course
+                        const selectedCourse = courses.find(
+                          (c) => c.id === selectedAIAction
+                        );
+
+                        if (!selectedCourse) {
+                          return; // Course not found, don't proceed
+                        }
 
                         const goal: Goal = {
                           id: Date.now().toString(),
-                          virtueId: selectedVirtue!.id,
+                          learningStyleId: selectedLearningStyle!.id,
                           sdgIds: selectedSDG ? selectedSDG.split(",") : [],
-                          title:
-                            aiActionTitles[
-                              selectedAIAction as keyof typeof aiActionTitles
-                            ],
-                          description:
-                            aiActionDescriptions[
-                              selectedAIAction as keyof typeof aiActionDescriptions
-                            ],
+                          title: selectedCourse.title,
+                          description: selectedCourse.description,
                           progress: 0,
                           completed: false,
                           progressHistory: [],
@@ -1320,7 +1148,7 @@ function App() {
                           lastUpdated: new Date(),
                         };
                         setGoals([...goals, goal]);
-                        navigateToScreen(5);
+                        navigateToScreen(8);
                       }
                     }}
                     previousLabel="Back"
@@ -1332,8 +1160,8 @@ function App() {
                   <div className="text-center py-8">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-slate-900 mx-auto mb-4"></div>
                     <p className="text-slate-600">
-                      Learning Micro-Academy AI is generating personalized
-                      suggestions
+                      Learning Micro-Academy AI is finding courses that match
+                      your selections
                     </p>
                   </div>
                 )}
@@ -1341,44 +1169,34 @@ function App() {
                 {showGoalSuggestions && (
                   <div className="mb-6">
                     <h3 className="font-semibold mb-4 text-slate-800 px-2">
-                      Learning Micro-Academy AI Suggested Actions
+                      Learning Micro-Academy AI Suggested Courses
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                      {/* 5 Minute Action Goal */}
-                      <div className="bg-white p-6 rounded-xl shadow-md border border-slate-100 hover:shadow-lg transition-shadow">
-                        <div className="flex items-start justify-between h-full">
-                          <div className="flex-1">
-                            <div className="flex items-center justify-between mb-2">
-                              <h4 className="font-semibold text-slate-900">
-                                5 Minute Action
-                              </h4>
-                              <div className="flex items-center space-x-2">
+                      {getSuggestedCourses().map((course) => (
+                        <div
+                          key={course.id}
+                          className="bg-white p-6 rounded-xl shadow-md border border-slate-100 hover:shadow-lg transition-shadow"
+                        >
+                          <div className="flex items-start justify-between h-full">
+                            <div className="flex-1">
+                              <div className="flex items-center justify-between mb-2">
+                                <h4 className="font-semibold text-slate-900">
+                                  {course.title}
+                                </h4>
                                 <button
                                   onClick={() => {
-                                    if (editingActionId === "5min") {
-                                      setEditingActionId(null);
-                                      setEditedActionText("");
-                                    } else {
-                                      setEditingActionId("5min");
-                                      setEditedActionText(
-                                        "Set aside 5 minutes each morning to journal about yesterday's experiences, decisions, and how they aligned with your values"
-                                      );
-                                    }
-                                  }}
-                                  className="text-slate-400 hover:text-slate-600 transition-colors p-1"
-                                >
-                                  <Edit3 className="h-4 w-4" />
-                                </button>
-                                <button
-                                  onClick={() => {
-                                    if (selectedAIAction === "5min") {
+                                    if (selectedAIAction === course.id) {
                                       setSelectedAIAction(null);
                                     } else {
-                                      setSelectedAIAction("5min");
+                                      setSelectedAIAction(course.id);
+                                      setNewGoal({
+                                        title: course.title,
+                                        description: course.description,
+                                      });
                                     }
                                   }}
                                   className={`w-6 h-6 rounded-full flex items-center justify-center transition-colors ${
-                                    selectedAIAction === "5min"
+                                    selectedAIAction === course.id
                                       ? "bg-blue-500 text-white"
                                       : "bg-slate-200 text-slate-400 hover:bg-slate-300"
                                   }`}
@@ -1386,186 +1204,24 @@ function App() {
                                   <Check className="h-4 w-4" />
                                 </button>
                               </div>
-                            </div>
-                            {editingActionId === "5min" ? (
-                              <textarea
-                                value={editedActionText}
-                                onChange={(e) =>
-                                  setEditedActionText(e.target.value)
-                                }
-                                className="w-full p-2 border border-slate-300 rounded-lg text-sm text-slate-600 resize-none"
-                                rows={3}
-                                autoFocus
-                                onBlur={() => {
-                                  setEditingActionId(null);
-                                  setEditedActionText("");
-                                }}
-                                onKeyDown={(e) => {
-                                  if (e.key === "Enter" && e.ctrlKey) {
-                                    setEditingActionId(null);
-                                    setEditedActionText("");
-                                  }
-                                }}
-                              />
-                            ) : (
-                              <p className="text-sm text-slate-600">
-                                Set aside 5 minutes each morning to journal
-                                about yesterday's experiences, decisions, and
-                                how they aligned with your values
+                              <p className="text-sm text-slate-600 mb-3">
+                                {course.description}
                               </p>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* 15 Minute Action Goal */}
-                      <div className="bg-white p-6 rounded-xl shadow-md border border-slate-100 hover:shadow-lg transition-shadow">
-                        <div className="flex items-start justify-between h-full">
-                          <div className="flex-1">
-                            <div className="flex items-center justify-between mb-2">
-                              <h4 className="font-semibold text-slate-900">
-                                15 Minute Action
-                              </h4>
-                              <div className="flex items-center space-x-2">
-                                <button
-                                  onClick={() => {
-                                    if (editingActionId === "15min") {
-                                      setEditingActionId(null);
-                                      setEditedActionText("");
-                                    } else {
-                                      setEditingActionId("15min");
-                                      setEditedActionText(
-                                        "Identify one important decision each week, research options for 30 minutes, then meditate for 15 minutes before making your choice"
-                                      );
-                                    }
-                                  }}
-                                  className="text-slate-400 hover:text-slate-600 transition-colors p-1"
-                                >
-                                  <Edit3 className="h-4 w-4" />
-                                </button>
-                                <button
-                                  onClick={() => {
-                                    if (selectedAIAction === "15min") {
-                                      setSelectedAIAction(null);
-                                    } else {
-                                      setSelectedAIAction("15min");
-                                    }
-                                  }}
-                                  className={`w-6 h-6 rounded-full flex items-center justify-center transition-colors ${
-                                    selectedAIAction === "15min"
-                                      ? "bg-blue-500 text-white"
-                                      : "bg-slate-200 text-slate-400 hover:bg-slate-300"
-                                  }`}
-                                >
-                                  <Check className="h-4 w-4" />
-                                </button>
+                              <div className="flex items-center gap-3 text-xs text-slate-500">
+                                <span>{course.duration}</span>
+                                <span>•</span>
+                                <span>{course.level}</span>
+                                {course.category && (
+                                  <>
+                                    <span>•</span>
+                                    <span>{course.category}</span>
+                                  </>
+                                )}
                               </div>
                             </div>
-                            {editingActionId === "15min" ? (
-                              <textarea
-                                value={editedActionText}
-                                onChange={(e) =>
-                                  setEditedActionText(e.target.value)
-                                }
-                                className="w-full p-2 border border-slate-300 rounded-lg text-sm text-slate-600 resize-none"
-                                rows={3}
-                                autoFocus
-                                onBlur={() => {
-                                  setEditingActionId(null);
-                                  setEditedActionText("");
-                                }}
-                                onKeyDown={(e) => {
-                                  if (e.key === "Enter" && e.ctrlKey) {
-                                    setEditingActionId(null);
-                                    setEditedActionText("");
-                                  }
-                                }}
-                              />
-                            ) : (
-                              <p className="text-sm text-slate-600">
-                                Identify one important decision each week,
-                                research options for 30 minutes, then meditate
-                                for 15 minutes before making your choice
-                              </p>
-                            )}
                           </div>
                         </div>
-                      </div>
-
-                      {/* Create Your Own Goal */}
-                      <div className="bg-white p-6 rounded-xl shadow-md border border-slate-100 hover:shadow-lg transition-shadow">
-                        <div className="flex items-start justify-between h-full">
-                          <div className="flex-1">
-                            <div className="flex items-center justify-between mb-2">
-                              <h4 className="font-semibold text-slate-900">
-                                Create Your Own Goal
-                              </h4>
-                              <div className="flex items-center space-x-2">
-                                <button
-                                  onClick={() => {
-                                    if (editingActionId === "custom") {
-                                      setEditingActionId(null);
-                                      setEditedActionText("");
-                                    } else {
-                                      setEditingActionId("custom");
-                                      setEditedActionText(
-                                        "Create a personalized goal with specific actions, measurable outcomes, and a clear timeline that aligns with your current life circumstances"
-                                      );
-                                    }
-                                  }}
-                                  className="text-slate-400 hover:text-slate-600 transition-colors p-1"
-                                >
-                                  <Edit3 className="h-4 w-4" />
-                                </button>
-                                <button
-                                  onClick={() => {
-                                    if (selectedAIAction === "custom") {
-                                      setSelectedAIAction(null);
-                                    } else {
-                                      setSelectedAIAction("custom");
-                                    }
-                                  }}
-                                  className={`w-6 h-6 rounded-full flex items-center justify-center transition-colors ${
-                                    selectedAIAction === "custom"
-                                      ? "bg-blue-500 text-white"
-                                      : "bg-slate-200 text-slate-400 hover:bg-slate-300"
-                                  }`}
-                                >
-                                  <Check className="h-4 w-4" />
-                                </button>
-                              </div>
-                            </div>
-                            {editingActionId === "custom" ? (
-                              <textarea
-                                value={editedActionText}
-                                onChange={(e) =>
-                                  setEditedActionText(e.target.value)
-                                }
-                                className="w-full p-2 border border-slate-300 rounded-lg text-sm text-slate-600 resize-none"
-                                rows={3}
-                                autoFocus
-                                onBlur={() => {
-                                  setEditingActionId(null);
-                                  setEditedActionText("");
-                                }}
-                                onKeyDown={(e) => {
-                                  if (e.key === "Enter" && e.ctrlKey) {
-                                    setEditingActionId(null);
-                                    setEditedActionText("");
-                                  }
-                                }}
-                              />
-                            ) : (
-                              <p className="text-sm text-slate-600">
-                                Create a personalized goal with specific
-                                actions, measurable outcomes, and a clear
-                                timeline that aligns with your current life
-                                circumstances
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                      </div>
+                      ))}
                     </div>
                   </div>
                 )}
@@ -1588,11 +1244,9 @@ function App() {
                 onClick={() => navigateToScreen(1)}
                 className="hover:opacity-80 transition-opacity"
               >
-                <img
-                  src="/soulchi-logo.png"
-                  alt="Learning Micro-Academy"
-                  className="h-8"
-                />
+                <span className="text-2xl font-bold text-slate-900">
+                  MicroLearn
+                </span>
               </button>
             </div>
             <Navigation />
@@ -1604,7 +1258,7 @@ function App() {
         <div className="max-w-md mx-auto md:max-w-[calc(42rem+400px)] lg:max-w-[calc(42rem+400px)]">
           <div className="text-left mb-4">
             <p className="text-slate-600 text-base font-medium">
-              Your Grace-based goal is ready
+              Your goal is ready
             </p>
           </div>
           <div className="bg-white rounded-xl shadow-xl overflow-hidden">
@@ -1631,18 +1285,12 @@ function App() {
                       {selectedSDG && (
                         <>
                           <div className="w-20 h-20 rounded-full overflow-hidden mb-2 overflow-hidden flex items-center justify-center bg-white">
-                            <img
-                              src={
+                            <div
+                              className={`w-12 h-12 rounded-full ${
                                 sustainableDevelopmentGoals.find(
                                   (s) => s.id === selectedSDG.split(",")[0]
-                                )?.image
-                              }
-                              alt={
-                                sustainableDevelopmentGoals.find(
-                                  (s) => s.id === selectedSDG.split(",")[0]
-                                )?.title
-                              }
-                              className="w-16 h-16 object-cover"
+                                )?.innerColor || "bg-slate-700"
+                              }`}
                             />
                           </div>
                           <span className="text-sm font-medium text-slate-800 leading-tight">
@@ -1662,25 +1310,25 @@ function App() {
                     </div>
                   </div>
 
-                  {/* Virtue Circle */}
+                  {/* Learning Style Circle */}
                   <div className="text-center flex flex-col items-center">
                     <div className="bg-white border-2 border-slate-200 rounded-full p-4 w-28 h-28 flex flex-col items-center justify-center shadow-md">
-                      {selectedVirtue && (
+                      {selectedLearningStyle && (
                         <>
                           <div className="w-20 h-20 rounded-full overflow-hidden mb-2 overflow-hidden flex items-center justify-center bg-white">
-                            {React.createElement(selectedVirtue.icon, {
-                              className: `h-12 w-12 ${selectedVirtue.iconColor}`,
+                            {React.createElement(selectedLearningStyle.icon, {
+                              className: `h-12 w-12 ${selectedLearningStyle.iconColor}`,
                             })}
                           </div>
                           <span className="text-sm font-medium text-slate-800 leading-tight">
-                            {selectedVirtue?.name}
+                            {selectedLearningStyle?.name}
                           </span>
                         </>
                       )}
                     </div>
                     <div className="text-center mt-2">
                       <span className="text-xs font-medium text-slate-600  px-3 py-1 rounded-full">
-                        Step 2: Personal Growth
+                        Step 2: Learning Style
                       </span>
                     </div>
                   </div>
@@ -1707,7 +1355,7 @@ function App() {
                 <div className="mt-16 text-center">
                   <p className="text-sm text-slate-600 leading-relaxed max-w-md mx-auto">
                     Your goal connects <strong>global impact</strong> (SDG) with{" "}
-                    <strong>personal growth</strong> (Virtue) to create{" "}
+                    <strong>learning style</strong> to create{" "}
                     <strong>meaningful action</strong> that benefits both you
                     and the world.
                   </p>
@@ -1723,10 +1371,10 @@ function App() {
 
               <div className="space-y-3">
                 <button
-                  onClick={() => navigateToScreen(5)}
+                  onClick={() => navigateToScreen(8)}
                   className="w-full bg-slate-900 hover:bg-slate-800 text-white py-3 px-6 rounded-full font-medium transition-all shadow-lg hover:shadow-xl"
                 >
-                  Continue to Describe a Situation
+                  Continue
                 </button>
                 <button
                   onClick={() => navigateToScreen(11)}
@@ -1742,8 +1390,16 @@ function App() {
     </div>
   );
 
-  // Screen 5: Describe a Situation
-  const DescribeSituationScreen = useCallback(() => {
+  // Screen 8: Step 7 - Rate Learning Progress
+  const Step7Screen = () => {
+    const amountChangeOptions = [
+      { value: 0, label: "None" },
+      { value: 1, label: "Slight" },
+      { value: 2, label: "Moderate" },
+      { value: 3, label: "Significant" },
+      { value: 4, label: "Dramatic" },
+    ];
+
     return (
       <div className="min-h-screen max-w-[1200px] mx-auto">
         <header>
@@ -1754,11 +1410,9 @@ function App() {
                   onClick={() => navigateToScreen(1)}
                   className="hover:opacity-80 transition-opacity"
                 >
-                  <img
-                    src="/soulchi-logo.png"
-                    alt="Learning Micro-Academy"
-                    className="h-8"
-                  />
+                  <span className="text-2xl font-bold text-slate-900">
+                    MicroLearn
+                  </span>
                 </button>
               </div>
               <Navigation />
@@ -1772,396 +1426,23 @@ function App() {
               <div className="bg-slate-900 p-6 text-white">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
-                    <h2 className="text-2xl font-bold">Describe a Situation</h2>
+                    <h2 className="text-2xl font-bold">
+                      Rate Learning Progress
+                    </h2>
                   </div>
                 </div>
               </div>
 
               <div className="p-6">
-                {/* Page Title */}
-                <h3 className="text-xl font-semibold text-slate-900 mb-6">
-                  Describe a situation where you exhibited grace.
-                </h3>
-
                 {/* Pagination */}
                 <div className="mb-6">
                   <Pagination
                     currentStep={4}
-                    totalSteps={7}
-                    onPrevious={() => navigateToScreen(3)}
-                    onNext={() => navigateToScreen(6)}
-                    canGoPrevious={true}
-                    canGoNext={
-                      situationToggle1 !== null &&
-                      situationToggle2 !== null &&
-                      situationDescription.trim().length > 0
-                    }
-                    previousLabel="Back"
-                    nextLabel="Next"
-                  />
-                </div>
-
-                {/* Form Content */}
-                <div className="space-y-6">
-                  {/* Toggle 1 - Impact on Yourself */}
-                  <div className="bg-white p-6 rounded-xl shadow-md border border-slate-100">
-                    <YesNoToggle
-                      label="Impact on Yourself?"
-                      value={situationToggle1}
-                      onChange={setSituationToggle1}
-                    />
-                  </div>
-
-                  {/* Toggle 2 - Impact on Others */}
-                  <div className="bg-white p-6 rounded-xl shadow-md border border-slate-100">
-                    <YesNoToggle
-                      label="Impact on Others?"
-                      value={situationToggle2}
-                      onChange={setSituationToggle2}
-                    />
-                  </div>
-
-                  {/* Textarea - Reflections and Notes */}
-                  <div className="bg-white p-6 rounded-xl shadow-md border border-slate-100">
-                    <label
-                      htmlFor="reflections-notes"
-                      className="block text-lg font-semibold text-slate-700 mb-3"
-                    >
-                      Reflections and Notes
-                    </label>
-                    <textarea
-                      ref={situationTextareaRef}
-                      id="reflections-notes"
-                      name="reflections-notes"
-                      value={situationDescription}
-                      onChange={handleSituationDescriptionChange}
-                      placeholder="Start typing here..."
-                      className="w-full h-32 p-4 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-sm"
-                      maxLength={500}
-                    />
-                    <div className="flex justify-between items-center mt-2">
-                      <p className="text-sm text-slate-500">
-                        Maximum 500 characters
-                      </p>
-                      <p className="text-sm text-slate-400">
-                        Share your thoughts and reflections
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }, [
-    situationDescription,
-    situationToggle1,
-    situationToggle2,
-    handleSituationDescriptionChange,
-    situationTextareaRef,
-  ]);
-
-  // Screen 6: Step 5
-  const Step5Screen = useCallback(() => {
-    return (
-      <div className="min-h-screen max-w-[1200px] mx-auto">
-        <header>
-          <div className="px-4 md:px-6 py-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <button
-                  onClick={() => navigateToScreen(1)}
-                  className="hover:opacity-80 transition-opacity"
-                >
-                  <img
-                    src="/soulchi-logo.png"
-                    alt="Learning Micro-Academy"
-                    className="h-8"
-                  />
-                </button>
-              </div>
-              <Navigation />
-            </div>
-          </div>
-        </header>
-
-        <div className="p-4 md:p-6">
-          <div className="max-w-md mx-auto md:max-w-[calc(42rem+400px)] lg:max-w-[calc(42rem+400px)]">
-            <div className="bg-white rounded-xl shadow-xl overflow-hidden">
-              <div className="bg-slate-900 p-6 text-white">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <h2 className="text-2xl font-bold">Describe an Action</h2>
-                  </div>
-                </div>
-              </div>
-
-              <div className="p-6">
-                {/* Pagination */}
-                <div className="mb-6">
-                  <Pagination
-                    currentStep={5}
-                    totalSteps={7}
-                    onPrevious={() => navigateToScreen(5)}
-                    onNext={() => navigateToScreen(7)}
-                    canGoPrevious={true}
-                    canGoNext={
-                      step5Toggle1 !== null &&
-                      step5Toggle2 !== null &&
-                      step5Description.trim().length > 0
-                    }
-                    previousLabel="Back"
-                    nextLabel="Next"
-                  />
-                </div>
-
-                {/* Form Content */}
-                <div className="space-y-6">
-                  {/* Toggle 1 - Impact on Yourself */}
-                  <div className="bg-white p-6 rounded-xl shadow-md border border-slate-100">
-                    <YesNoToggle
-                      label="Impact on Yourself?"
-                      value={step5Toggle1}
-                      onChange={setStep5Toggle1}
-                    />
-                  </div>
-
-                  {/* Toggle 2 - Impact on Others */}
-                  <div className="bg-white p-6 rounded-xl shadow-md border border-slate-100">
-                    <YesNoToggle
-                      label="Impact on Others?"
-                      value={step5Toggle2}
-                      onChange={setStep5Toggle2}
-                    />
-                  </div>
-
-                  {/* Textarea - Reflections and Notes */}
-                  <div className="bg-white p-6 rounded-xl shadow-md border border-slate-100">
-                    <label
-                      htmlFor="step5-reflections-notes"
-                      className="block text-lg font-semibold text-slate-700 mb-3"
-                    >
-                      Reflections and Notes
-                    </label>
-                    <textarea
-                      ref={step5TextareaRef}
-                      id="step5-reflections-notes"
-                      name="step5-reflections-notes"
-                      value={step5Description}
-                      onChange={handleStep5DescriptionChange}
-                      placeholder="Start typing here..."
-                      className="w-full h-32 p-4 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-sm"
-                      maxLength={500}
-                    />
-                    <div className="flex justify-between items-center mt-2">
-                      <p className="text-sm text-slate-500">
-                        Maximum 500 characters
-                      </p>
-                      <p className="text-sm text-slate-400">
-                        Share your thoughts and reflections
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }, [
-    step5Description,
-    step5Toggle1,
-    step5Toggle2,
-    handleStep5DescriptionChange,
-    step5TextareaRef,
-  ]);
-
-  // Screen 7: Step 6 - Rate Amount of Change
-  const Step6Screen = () => {
-    const amountChangeOptions = [
-      { value: 0, label: "No Change" },
-      { value: 1, label: "Slight Change" },
-      { value: 2, label: "Moderate Change" },
-      { value: 3, label: "Significant Change" },
-      { value: 4, label: "Dramatic Change" },
-    ];
-
-    return (
-      <div className="min-h-screen max-w-[1200px] mx-auto">
-        <header>
-          <div className="px-4 md:px-6 py-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <button
-                  onClick={() => navigateToScreen(1)}
-                  className="hover:opacity-80 transition-opacity"
-                >
-                  <img
-                    src="/soulchi-logo.png"
-                    alt="Learning Micro-Academy"
-                    className="h-8"
-                  />
-                </button>
-              </div>
-              <Navigation />
-            </div>
-          </div>
-        </header>
-
-        <div className="p-4 md:p-6">
-          <div className="max-w-md mx-auto md:max-w-[calc(42rem+400px)] lg:max-w-[calc(42rem+400px)]">
-            <div className="bg-white rounded-xl shadow-xl overflow-hidden">
-              <div className="bg-slate-900 p-6 text-white">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <h2 className="text-2xl font-bold">
-                      Rate Amount of Change
-                    </h2>
-                  </div>
-                </div>
-              </div>
-
-              <div className="p-6">
-                {/* Pagination */}
-                <div className="mb-6">
-                  <Pagination
-                    currentStep={6}
-                    totalSteps={7}
-                    onPrevious={() => navigateToScreen(6)}
-                    onNext={() => navigateToScreen(8)}
-                    canGoPrevious={true}
-                    canGoNext={true}
-                    previousLabel="Back"
-                    nextLabel="Next"
-                  />
-                </div>
-
-                {/* Rate Amount of Change */}
-                <div className="bg-white p-6 rounded-xl shadow-md border border-slate-100">
-                  <h3 className="text-lg font-medium text-slate-700 mb-6">
-                    Amount of Change
-                  </h3>
-
-                  {/* Timeline */}
-                  <div className="relative">
-                    {/* Items */}
-                    <div className="flex justify-between relative">
-                      {amountChangeOptions.map((option, index) => (
-                        <div
-                          key={option.value}
-                          className="flex flex-col items-center cursor-pointer"
-                          onClick={() => setStep6AmountChange(option.value)}
-                        >
-                          {/* Dot */}
-                          <div
-                            className={`w-4 h-4 rounded-full border-2 transition-colors relative z-10 ${
-                              step6AmountChange === option.value
-                                ? "bg-blue-600 border-blue-600"
-                                : "bg-white border-slate-400"
-                            }`}
-                          ></div>
-
-                          {/* Label */}
-                          <div className="mt-2 text-center">
-                            <div
-                              className={`text-xs font-medium transition-colors ${
-                                step6AmountChange === option.value
-                                  ? "text-blue-600"
-                                  : "text-slate-600"
-                              }`}
-                            >
-                              {option.label}
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* Line - positioned to intersect the dots */}
-                    <div className="absolute top-2 left-4 right-4 h-0.5 bg-slate-300 z-0"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  // Screen 8: Step 7 - Rate Amount of Change
-  const Step7Screen = () => {
-    const amountChangeOptions = [
-      { value: 0, label: "No Change" },
-      { value: 1, label: "Slight Change" },
-      { value: 2, label: "Moderate Change" },
-      { value: 3, label: "Significant Change" },
-      { value: 4, label: "Dramatic Change" },
-    ];
-
-    return (
-      <div className="min-h-screen max-w-[1200px] mx-auto">
-        <header>
-          <div className="px-4 md:px-6 py-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <button
-                  onClick={() => navigateToScreen(1)}
-                  className="hover:opacity-80 transition-opacity"
-                >
-                  <img
-                    src="/soulchi-logo.png"
-                    alt="Learning Micro-Academy"
-                    className="h-8"
-                  />
-                </button>
-              </div>
-              <Navigation />
-            </div>
-          </div>
-        </header>
-
-        <div className="p-4 md:p-6">
-          <div className="max-w-md mx-auto md:max-w-[calc(42rem+400px)] lg:max-w-[calc(42rem+400px)]">
-            <div className="bg-white rounded-xl shadow-xl overflow-hidden">
-              <div className="bg-slate-900 p-6 text-white">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <h2 className="text-2xl font-bold">
-                      Rate Amount of Change
-                    </h2>
-                  </div>
-                </div>
-              </div>
-
-              <div className="p-6">
-                {/* Pagination */}
-                <div className="mb-6">
-                  <Pagination
-                    currentStep={7}
-                    totalSteps={7}
-                    onPrevious={() => navigateToScreen(7)}
+                    totalSteps={4}
+                    onPrevious={() => navigateToScreen(4)}
                     onNext={() => {
-                      // Set completed action data for sharing
-                      const latestGoal = goals[goals.length - 1];
-                      const selectedVirtueData = virtues.find(
-                        (v) => v.id === latestGoal?.virtueId
-                      );
-                      setCompletedActionData({
-                        title: latestGoal?.title || "My Action",
-                        description:
-                          latestGoal?.description ||
-                          "I completed my action successfully!",
-                        virtueName:
-                          selectedVirtueData?.name || "Personal Growth",
-                      });
-
-                      // Navigate to dashboard and show success toast
+                      // Navigate to dashboard
                       navigateToScreen(0);
-                      setShowSuccessToast(true);
                     }}
                     canGoPrevious={true}
                     canGoNext={true}
@@ -2170,49 +1451,54 @@ function App() {
                   />
                 </div>
 
-                {/* Rate Amount of Change */}
+                {/* Course Completeness */}
                 <div className="bg-white p-6 rounded-xl shadow-md border border-slate-100">
                   <h3 className="text-lg font-medium text-slate-700 mb-6">
-                    Amount of Change
+                    Course Completeness
                   </h3>
 
-                  {/* Timeline */}
-                  <div className="relative">
-                    {/* Items */}
-                    <div className="flex justify-between relative">
-                      {amountChangeOptions.map((option, index) => (
-                        <div
-                          key={option.value}
-                          className="flex flex-col items-center cursor-pointer"
-                          onClick={() => setStep7AmountChange(option.value)}
-                        >
-                          {/* Dot */}
-                          <div
-                            className={`w-4 h-4 rounded-full border-2 transition-colors relative z-10 ${
-                              step7AmountChange === option.value
-                                ? "bg-blue-600 border-blue-600"
-                                : "bg-white border-slate-400"
-                            }`}
-                          ></div>
-
-                          {/* Label */}
-                          <div className="mt-2 text-center">
-                            <div
-                              className={`text-xs font-medium transition-colors ${
-                                step7AmountChange === option.value
-                                  ? "text-blue-600"
-                                  : "text-slate-600"
-                              }`}
-                            >
-                              {option.label}
+                  {/* Progress Bar */}
+                  <div className="space-y-4">
+                    {goals.length > 0 ? (
+                      goals.map((goal) => {
+                        const completeness = getCourseCompleteness(goal);
+                        return (
+                          <div key={goal.id}>
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="text-sm font-medium text-slate-700">
+                                {goal.title}
+                              </span>
+                              <span className="text-sm font-semibold text-slate-900">
+                                {completeness}%
+                              </span>
+                            </div>
+                            <div className="w-full bg-slate-200 rounded-full h-2.5">
+                              <div
+                                className="bg-blue-600 h-2.5 rounded-full transition-all"
+                                style={{ width: `${completeness}%` }}
+                              />
                             </div>
                           </div>
+                        );
+                      })
+                    ) : (
+                      <div>
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-sm font-medium text-slate-700">
+                            No active courses
+                          </span>
+                          <span className="text-sm font-semibold text-slate-900">
+                            0%
+                          </span>
                         </div>
-                      ))}
-                    </div>
-
-                    {/* Line - positioned to intersect the dots */}
-                    <div className="absolute top-2 left-4 right-4 h-0.5 bg-slate-300 z-0"></div>
+                        <div className="w-full bg-slate-200 rounded-full h-2.5">
+                          <div
+                            className="bg-blue-600 h-2.5 rounded-full transition-all"
+                            style={{ width: "0%" }}
+                          />
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -2235,11 +1521,9 @@ function App() {
                   onClick={() => navigateToScreen(1)}
                   className="hover:opacity-80 transition-opacity"
                 >
-                  <img
-                    src="/soulchi-logo.png"
-                    alt="Learning Micro-Academy"
-                    className="h-8"
-                  />
+                  <span className="text-2xl font-bold text-slate-900">
+                    MicroLearn
+                  </span>
                 </button>
               </div>
               <Navigation />
@@ -2251,14 +1535,14 @@ function App() {
           <div className="max-w-md mx-auto md:max-w-[calc(42rem+400px)] lg:max-w-[calc(42rem+400px)]">
             <div className="bg-white rounded-xl shadow-xl overflow-hidden">
               <div className="bg-slate-900 p-6 text-white">
-                <h2 className="text-2xl font-bold">Select SDGs</h2>
+                <h2 className="text-2xl font-bold">Selects</h2>
               </div>
 
               <div className="p-6">
                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-4">
                   <div className="flex flex-col mb-4 lg:mb-0">
                     <h3 className="text-xl font-semibold text-slate-800 mb-3">
-                      Select SDGs
+                      Learning Profile
                     </h3>
                     {/* AI assistance prompt on its own row */}
                     <div className="flex items-center space-x-2">
@@ -2356,19 +1640,24 @@ function App() {
                     >
                       <div className="mb-2 flex justify-center relative">
                         <div
-                          className={`w-20 h-20 rounded-full overflow-hidden overflow-hidden flex items-center justify-center shadow-md ${
+                          className={`w-20 h-20 rounded-full flex items-center justify-center shadow-lg backdrop-blur-md ${
                             selectedSDG === sdg.id
-                              ? "bg-blue-50 border-2 border-blue-500 ring-2 ring-blue-200 ring-offset-2"
+                              ? `bg-white/30 border-2 border-blue-500 ring-2 ring-blue-200 ring-offset-2`
                               : aiSelectedSDG === sdg.id
-                              ? "bg-green-50 border-2 border-green-500 ring-2 ring-green-200 ring-offset-2"
-                              : "bg-white"
+                              ? `bg-white/30 border-2 border-green-500 ring-2 ring-green-200 ring-offset-2`
+                              : `bg-white/20 border border-white/30`
                           }`}
                         >
-                          <img
-                            src={sdg.image}
-                            alt={sdg.title}
-                            className="w-16 h-16 object-cover"
-                          />
+                          {sdg.icon &&
+                            React.createElement(sdg.icon, {
+                              className: `w-10 h-10 ${
+                                selectedSDG === sdg.id
+                                  ? "text-blue-600"
+                                  : aiSelectedSDG === sdg.id
+                                  ? "text-green-600"
+                                  : "text-slate-700"
+                              }`,
+                            })}
                         </div>
                         {selectedSDG === sdg.id && (
                           <div className="absolute -top-2 -right-2 w-7 h-7 bg-blue-500 rounded-full overflow-hidden flex items-center justify-center shadow-lg">
@@ -2402,7 +1691,7 @@ function App() {
                     }}
                   >
                     <div
-                      className="bg-white rounded-xl shadow-2xl border border-slate-200 p-6 w-full max-w-md mx-auto"
+                      className="bg-white rounded-xl shadow-2xl border border-slate-200 p-6 w-full max-w-xl mx-auto"
                       onClick={(e) => e.stopPropagation()}
                     >
                       <div className="flex items-start justify-between mb-4">
@@ -2470,6 +1759,23 @@ function App() {
   const UserResearchScreen = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+        <header>
+          <div className="px-4 md:px-6 py-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <button
+                  onClick={() => navigateToScreen(1)}
+                  className="hover:opacity-80 transition-opacity"
+                >
+                  <span className="text-2xl font-bold text-slate-900">
+                    MicroLearn
+                  </span>
+                </button>
+              </div>
+              <Navigation />
+            </div>
+          </div>
+        </header>
         <div className="max-w-6xl mx-auto px-4 py-8">
           <div className="bg-white rounded-2xl shadow-xl p-8">
             <div className="text-center mb-8">
@@ -3196,7 +2502,7 @@ function App() {
                     <div className="flex items-start space-x-2">
                       <div className="w-2 h-2 bg-blue-600 rounded-full mt-2"></div>
                       <span className="text-sm text-blue-700">
-                        Agnostic users focused on virtue-based development
+                        Agnostic users focused on personal development
                       </span>
                     </div>
                   </div>
@@ -3293,7 +2599,7 @@ function App() {
                       Visual Connections
                     </h4>
                     <p className="text-sm text-red-700">
-                      Make virtue-goal-action-SDG links clear
+                      Make learning-goal-action-SDG links clear
                     </p>
                   </div>
                 </div>
@@ -3313,7 +2619,7 @@ function App() {
                   "Learning Micro-Academy AI",
                   "Share Actions",
                   "Edit Actions",
-                  "Virtue Tracking",
+                  "Progress Tracking",
                   "SDG Alignment",
                 ].map((feature, index) => (
                   <div
@@ -3471,7 +2777,7 @@ function App() {
     );
   };
 
-  // Screen 9: Virtues
+  // Screen 9: Personal Growth Aspects
   const AllVirtuesScreen = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedVirtues, setSelectedVirtues] = useState<string[]>([]);
@@ -3546,12 +2852,6 @@ function App() {
         id: "confidence",
         name: "Confidence",
         description: "I have the strength to face what life brings me.",
-      },
-      {
-        id: "grace",
-        name: "Grace",
-        description:
-          "Grace is our connection to a higher power, a sense of being cared for and supported in all situations. It involves embracing the abundance around us. Grace motivates us to offer unconditional love and kindness to others. By embodying grace and elegance, we naturally attract others and enhance our interactions. Our growth in grace is reflected in how we treat others with respect, kindness, and impeccable manners, and through our willingness to forgive. As we deepen our connection to grace, we become a source of grace for those around us.",
       },
       {
         id: "contentment",
@@ -3683,11 +2983,6 @@ function App() {
         id: "gentleness",
         name: "Gentleness",
         description: "I make it safe for others to be around me.",
-      },
-      {
-        id: "grace",
-        name: "Grace",
-        description: "I trust Grace to carry me through times of trouble.",
       },
       {
         id: "gratitude",
@@ -3960,7 +3255,7 @@ function App() {
       { id: "zeal", name: "Zeal", description: "I work with joyous energy." },
     ];
 
-    // Filter virtues based on search term
+    // Filter personal growth aspects based on search term
     const filteredVirtues = allVirtues.filter(
       (virtue) =>
         virtue.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -3985,11 +3280,9 @@ function App() {
                   onClick={() => navigateToScreen(1)}
                   className="hover:opacity-80 transition-opacity"
                 >
-                  <img
-                    src="/soulchi-logo.png"
-                    alt="Learning Micro-Academy"
-                    className="h-8"
-                  />
+                  <span className="text-2xl font-bold text-slate-900">
+                    MicroLearn
+                  </span>
                 </button>
               </div>
               <Navigation />
@@ -4001,7 +3294,7 @@ function App() {
           <div className="max-w-md mx-auto md:max-w-[calc(42rem+400px)] lg:max-w-[calc(42rem+400px)]">
             <div className="bg-white rounded-xl shadow-xl overflow-hidden">
               <div className="bg-slate-900 p-6 text-white">
-                <h2 className="text-2xl font-bold">Virtues</h2>
+                <h2 className="text-2xl font-bold">Personal Growth Aspects</h2>
               </div>
 
               <div className="p-6">
@@ -4010,7 +3303,7 @@ function App() {
                   <div className="relative">
                     <input
                       type="text"
-                      placeholder="Search virtues by name or description..."
+                      placeholder="Search personal growth aspects by name or description..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                       className="w-full px-4 py-3 pl-10 border border-slate-200 rounded-md focus:ring-2 focus:ring-slate-900 focus:border-transparent transition-all text-sm"
@@ -4039,10 +3332,10 @@ function App() {
                     {searchTerm ? (
                       <span>
                         Showing {filteredVirtues.length} of {allVirtues.length}{" "}
-                        virtues
+                        aspects
                       </span>
                     ) : (
-                      <span>All {allVirtues.length} virtues</span>
+                      <span>All {allVirtues.length} aspects</span>
                     )}
                   </div>
                   {selectedVirtues.length > 0 && (
@@ -4103,7 +3396,7 @@ function App() {
                     {selectedVirtues.length > 0 && (
                       <div className="text-center">
                         <p className="text-sm text-slate-600 mb-2">
-                          You've selected {selectedVirtues.length} virtue
+                          You've selected {selectedVirtues.length} aspect
                           {selectedVirtues.length !== 1 ? "s" : ""}
                         </p>
                         <div className="flex flex-wrap justify-center gap-2 max-w-md">
@@ -4140,7 +3433,7 @@ function App() {
                       {selectedVirtues.length > 0
                         ? `Continue with ${
                             selectedVirtues.length
-                          } Selected Virtue${
+                          } Selected Aspect${
                             selectedVirtues.length !== 1 ? "s" : ""
                           }`
                         : "Continue to Goal Setting"}
@@ -4166,11 +3459,9 @@ function App() {
                 onClick={() => navigateToScreen(1)}
                 className="hover:opacity-80 transition-opacity"
               >
-                <img
-                  src="/soulchi-logo.png"
-                  alt="Learning Micro-Academy"
-                  className="h-8"
-                />
+                <span className="text-2xl font-bold text-slate-900">
+                  MicroLearn
+                </span>
               </button>
             </div>
             <Navigation />
@@ -4194,11 +3485,9 @@ function App() {
                 onClick={() => navigateToScreen(1)}
                 className="hover:opacity-80 transition-opacity"
               >
-                <img
-                  src="/soulchi-logo.png"
-                  alt="Learning Micro-Academy"
-                  className="h-8"
-                />
+                <span className="text-2xl font-bold text-slate-900">
+                  MicroLearn
+                </span>
               </button>
             </div>
             <Navigation />
@@ -4244,11 +3533,9 @@ function App() {
                   onClick={() => navigateToScreen(0)}
                   className="hover:opacity-80 transition-opacity"
                 >
-                  <img
-                    src="/soulchi-logo.png"
-                    alt="Learning Micro-Academy"
-                    className="h-8"
-                  />
+                  <span className="text-2xl font-bold text-slate-900">
+                    MicroLearn
+                  </span>
                 </button>
               </div>
               <Navigation />
@@ -4261,10 +3548,10 @@ function App() {
             {/* Page Title */}
             <div className="mb-6">
               <h2 className="text-2xl font-bold text-slate-900 mb-2">
-                Your Virtue Journey
+                Learning Metrics
               </h2>
               <p className="text-slate-600">
-                Archive of all actions you've created and completed
+                Track all your learning goals and courses
               </p>
             </div>
 
@@ -4274,7 +3561,7 @@ function App() {
                 <div className="flex items-center space-x-2 mb-2">
                   <Target className="h-5 w-5 text-slate-600" />
                   <span className="text-sm font-medium text-slate-600">
-                    Total Actions
+                    Total Goals
                   </span>
                 </div>
                 <p className="text-2xl font-bold text-slate-900">
@@ -4303,29 +3590,24 @@ function App() {
                 </div>
                 <p className="text-2xl font-bold text-slate-900">2</p>
               </div>
+              <div className="bg-white p-4 rounded-xl shadow-md border border-slate-100">
+                <div className="flex items-center space-x-2 mb-2">
+                  <BookOpen className="h-5 w-5 text-green-500" />
+                  <span className="text-sm font-medium text-slate-600">
+                    Completed Courses
+                  </span>
+                </div>
+                <p className="text-2xl font-bold text-slate-900">
+                  {userState.preferences.completedCourses?.length || 0}
+                </p>
+              </div>
             </div>
 
-            {/* Actions Archive */}
+            {/* Learning Goals Archive */}
             <div className="space-y-6">
-              {goals.length === 0 ? (
-                <div className="text-center py-12">
-                  <Target className="h-12 w-12 text-slate-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-medium text-slate-900 mb-2">
-                    No actions yet
-                  </h3>
-                  <p className="text-slate-600 mb-4">
-                    Start your journey by creating your first action
-                  </p>
-                  <button
-                    onClick={() => navigateToScreen(11)}
-                    className="bg-slate-900 hover:bg-slate-800 text-white py-2 px-6 rounded-full font-medium transition-colors"
-                  >
-                    Save
-                  </button>
-                </div>
-              ) : (
+              {goals.length > 0 && (
                 <div className="space-y-8">
-                  {/* In Progress Actions */}
+                  {/* In Progress Goals */}
                   {goals.filter((goal) => !goal.completed).length > 0 && (
                     <div>
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -4339,8 +3621,9 @@ function App() {
                               <div className="flex items-start justify-between mb-4">
                                 <div className="flex-1">
                                   <h3 className="font-semibold text-slate-900 text-lg mb-2">
-                                    {virtues.find((v) => v.id === goal.virtueId)
-                                      ?.name || "Unknown"}
+                                    {learningStyles.find(
+                                      (v) => v.id === goal.learningStyleId
+                                    )?.name || "Unknown"}
                                   </h3>
                                   <p className="text-sm text-slate-600 mb-1">
                                     {goal.title}
@@ -4358,7 +3641,7 @@ function App() {
                                   </p>
                                 </div>
                                 <div className="ml-4 flex items-center space-x-2">
-                                  <div className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
+                                  <div className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800 whitespace-nowrap">
                                     Action created
                                   </div>
                                   <button
@@ -4405,76 +3688,36 @@ function App() {
                                       "No description available."}
                                   </p>
 
-                                  {/* Amount of Change Timeline */}
+                                  {/* Course Completeness */}
                                   <div className="mt-4 pt-3 border-t border-slate-100">
-                                    <div className="flex items-center justify-between mb-3">
+                                    <div className="flex items-center justify-between mb-2">
                                       <span className="text-xs font-medium text-slate-700">
-                                        Amount of Change
+                                        Course Completeness
+                                      </span>
+                                      <span className="text-xs font-semibold text-slate-900">
+                                        {getCourseCompleteness(goal)}%
                                       </span>
                                     </div>
-                                    <div className="relative">
-                                      {/* Timeline line */}
-                                      <div className="absolute top-1.5 left-0 right-0 h-0.5 bg-slate-200"></div>
-
-                                      {/* Timeline items */}
-                                      <div className="flex justify-between">
-                                        {[
-                                          "No Change",
-                                          "Slight Change",
-                                          "Moderate Change",
-                                          "Significant Change",
-                                          "Dramatic Change",
-                                        ].map((changeType) => (
-                                          <div
-                                            key={changeType}
-                                            className="flex flex-col items-center"
-                                          >
-                                            <div
-                                              className={`w-3 h-3 rounded-full border-2 z-10 transition-all ${
-                                                selectedAmountChange[
-                                                  goal.id
-                                                ] === changeType
-                                                  ? "bg-blue-600 border-blue-600"
-                                                  : "bg-white border-slate-300"
-                                              }`}
-                                            ></div>
-                                            <button
-                                              onClick={() =>
-                                                setSelectedAmountChange(
-                                                  (prev) => ({
-                                                    ...prev,
-                                                    [goal.id]:
-                                                      prev[goal.id] ===
-                                                      changeType
-                                                        ? null
-                                                        : changeType,
-                                                  })
-                                                )
-                                              }
-                                              className={`mt-2 text-xs font-medium transition-colors text-center ${
-                                                selectedAmountChange[
-                                                  goal.id
-                                                ] === changeType
-                                                  ? "text-blue-600"
-                                                  : "text-slate-500 hover:text-slate-700"
-                                              }`}
-                                            >
-                                              {changeType}
-                                            </button>
-                                          </div>
-                                        ))}
-                                      </div>
+                                    <div className="w-full bg-slate-200 rounded-full h-2">
+                                      <div
+                                        className="bg-blue-600 h-2 rounded-full transition-all"
+                                        style={{
+                                          width: `${getCourseCompleteness(
+                                            goal
+                                          )}%`,
+                                        }}
+                                      />
                                     </div>
                                   </div>
 
                                   <div className="mt-4 pt-3 border-t border-slate-100 space-y-2 text-sm text-slate-600">
                                     <div className="flex items-center space-x-2">
                                       <span className="font-medium">
-                                        Virtue:
+                                        Learning Style:
                                       </span>
                                       <span>
-                                        {virtues.find(
-                                          (v) => v.id === goal.virtueId
+                                        {learningStyles.find(
+                                          (v) => v.id === goal.learningStyleId
                                         )?.name || "Unknown"}
                                       </span>
                                     </div>
@@ -4510,27 +3753,83 @@ function App() {
                     </div>
                   )}
 
-                  {/* Completed Actions grouped by Virtue */}
+                  {/* Completed Courses */}
+                  {userState.preferences.completedCourses &&
+                    userState.preferences.completedCourses.length > 0 && (
+                      <div className="mb-8">
+                        <h3 className="text-lg font-semibold text-slate-900 mb-4">
+                          Completed Courses
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                          {userState.preferences.completedCourses
+                            .map((courseId) =>
+                              courses.find((c) => c.id === courseId)
+                            )
+                            .filter((course) => course !== undefined)
+                            .map((course) => (
+                              <div
+                                key={course!.id}
+                                className="bg-white p-4 rounded-xl shadow-md border border-slate-100 hover:shadow-md transition-shadow"
+                              >
+                                <div className="flex items-start justify-between mb-3">
+                                  <div className="flex-1">
+                                    <h5 className="font-medium text-slate-900 mb-1">
+                                      {course!.title}
+                                    </h5>
+                                    <p className="text-xs text-slate-600 mb-2">
+                                      {course!.category}
+                                    </p>
+                                  </div>
+                                  <div className="ml-2 flex items-center space-x-2">
+                                    <div className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 whitespace-nowrap">
+                                      Completed
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                  <div className="flex items-center gap-2 text-xs text-slate-500">
+                                    <Clock className="w-3 h-3" />
+                                    {course!.duration}
+                                  </div>
+                                  <button
+                                    onClick={() => {
+                                      setSelectedCourseId(course!.id);
+                                      navigateToScreen(21);
+                                    }}
+                                    className="text-xs text-blue-600 hover:text-blue-800 font-medium transition-colors"
+                                  >
+                                    View Course
+                                  </button>
+                                </div>
+                              </div>
+                            ))}
+                        </div>
+                      </div>
+                    )}
+
+                  {/* Completed Goals grouped by Learning Style */}
                   {goals.filter((goal) => goal.completed).length > 0 && (
                     <div>
                       <h3 className="text-lg font-semibold text-slate-900 mb-4">
-                        Completed Actions
+                        Completed Goals
                       </h3>
-                      {virtues.map((virtue) => {
-                        const completedGoalsForVirtue = goals.filter(
+                      {learningStyles.map((learningStyle) => {
+                        const completedGoalsForLearningStyle = goals.filter(
                           (goal) =>
-                            goal.completed && goal.virtueId === virtue.id
+                            goal.completed &&
+                            goal.learningStyleId === learningStyle.id
                         );
 
-                        if (completedGoalsForVirtue.length === 0) return null;
+                        if (completedGoalsForLearningStyle.length === 0)
+                          return null;
 
                         return (
-                          <div key={virtue.id} className="mb-6">
+                          <div key={learningStyle.id} className="mb-6">
                             <h4 className="text-lg font-semibold text-slate-700 mb-3">
-                              {virtue.name}
+                              {learningStyle.name}
                             </h4>
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                              {completedGoalsForVirtue.map((goal) => (
+                              {completedGoalsForLearningStyle.map((goal) => (
                                 <div
                                   key={goal.id}
                                   className="bg-white p-4 rounded-xl shadow-md border border-slate-100 hover:shadow-md transition-shadow"
@@ -4538,14 +3837,14 @@ function App() {
                                   <div className="flex items-start justify-between mb-3">
                                     <div className="flex-1">
                                       <h5 className="font-medium text-slate-900 mb-1">
-                                        {virtue.name}
+                                        {learningStyle.name}
                                       </h5>
                                       <p className="text-xs text-slate-600 mb-2">
                                         {goal.title}
                                       </p>
                                     </div>
                                     <div className="ml-2 flex items-center space-x-2">
-                                      <div className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
+                                      <div className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 whitespace-nowrap">
                                         Completed
                                       </div>
                                       <button
@@ -4648,7 +3947,7 @@ function App() {
       boolean | null
     >(null);
     const [showCodeLabels, setShowCodeLabels] = useState(false);
-    const [showGraceModal, setShowGraceModal] = useState(false);
+    const [showExtendedModal, setShowExtendedModal] = useState(false);
 
     return (
       <div className="min-h-screen bg-slate-50">
@@ -4660,11 +3959,9 @@ function App() {
                   onClick={() => navigateToScreen(1)}
                   className="hover:opacity-80 transition-opacity"
                 >
-                  <img
-                    src="/soulchi-logo.png"
-                    alt="Learning Micro-Academy"
-                    className="h-8"
-                  />
+                  <span className="text-2xl font-bold text-slate-900">
+                    MicroLearn
+                  </span>
                 </button>
               </div>
               <div className="flex items-center space-x-4">
@@ -5075,10 +4372,10 @@ function App() {
                 </div>
               </div>
 
-              {/* Virtue Icons */}
+              {/* Learning Style Icons */}
               <div className="mt-8">
                 <h3 className="text-lg font-semibold text-slate-900 mb-4">
-                  Virtue Icons
+                  Learning Style Icons
                 </h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
                   <div className="text-center">
@@ -5499,7 +4796,7 @@ function App() {
                 )}
                 <div className="max-w-md">
                   <AIRecommendationCard
-                    recommendation="Affordable and Clean Energy aligns with your personal values and actions."
+                    recommendation="Affordable and Clean Energy aligns with the subject matter."
                     onAccept={() => console.log("Recommendation accepted")}
                     onTryAnother={() => console.log("Try another clicked")}
                   />
@@ -5525,7 +4822,7 @@ function App() {
                         </div>
                         <div>
                           <h4 className="text-lg font-semibold text-slate-900">
-                            Grace
+                            Intro to UX
                           </h4>
                           {showCodeLabels && (
                             <div className="text-xs text-slate-500 mb-1">
@@ -5533,14 +4830,14 @@ function App() {
                             </div>
                           )}
                           <p className="text-xs text-slate-600">
-                            Practice Daily Meditation
+                            Complete UX Fundamentals Course
                           </p>
                           {showCodeLabels && (
                             <div className="text-xs text-slate-500 mb-1">
                               &lt;p&gt; - text-xs (0.75rem)
                             </div>
                           )}
-                          <p className="text-xs text-slate-500">30 Minutes</p>
+                          <p className="text-xs text-slate-500">4 Weeks</p>
                           {showCodeLabels && (
                             <div className="text-xs text-slate-500">
                               &lt;p&gt; - text-xs (0.75rem)
@@ -5549,7 +4846,7 @@ function App() {
                         </div>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <div className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
+                        <div className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800 whitespace-nowrap">
                           Action created
                         </div>
                         {showCodeLabels && (
@@ -5588,59 +4885,27 @@ function App() {
                     {designSystemCardExpanded && (
                       <div className="mt-3 pt-3 border-t border-slate-100">
                         <p className="text-sm text-slate-600 mb-3">
-                          Develop a consistent meditation practice to improve
-                          mindfulness and reduce stress. Start with 10 minutes
-                          daily and gradually increase to 30 minutes.
+                          Complete the UX design fundamentals course to build
+                          practical skills in user research, wireframing, and
+                          prototyping. Dedicate 30 minutes daily to progress
+                          through the lessons and hands-on exercises.
                         </p>
 
-                        {/* Amount of Change Timeline */}
+                        {/* Course Completeness */}
                         <div className="mt-4 pt-3 border-t border-slate-100">
-                          <div className="flex items-center justify-between mb-3">
+                          <div className="flex items-center justify-between mb-2">
                             <span className="text-xs font-medium text-slate-700">
-                              Amount of Change
+                              Course Completeness
+                            </span>
+                            <span className="text-xs font-semibold text-slate-900">
+                              0%
                             </span>
                           </div>
-                          <div className="relative">
-                            {/* Timeline line */}
-                            <div className="absolute top-1.5 left-0 right-0 h-0.5 bg-slate-200"></div>
-
-                            {/* Timeline items */}
-                            <div className="flex justify-between">
-                              <div className="flex flex-col items-center">
-                                <div className="w-3 h-3 rounded-full border-2 z-10 transition-all bg-blue-600 border-blue-600"></div>
-                                <button className="mt-2 text-xs font-medium transition-colors text-center text-blue-600">
-                                  No Change
-                                </button>
-                              </div>
-
-                              <div className="flex flex-col items-center">
-                                <div className="w-3 h-3 rounded-full border-2 z-10 transition-all bg-white border-slate-300"></div>
-                                <button className="mt-2 text-xs font-medium transition-colors text-center text-slate-600 hover:text-slate-900">
-                                  Slight Change
-                                </button>
-                              </div>
-
-                              <div className="flex flex-col items-center">
-                                <div className="w-3 h-3 rounded-full border-2 z-10 transition-all bg-white border-slate-300"></div>
-                                <button className="mt-2 text-xs font-medium transition-colors text-center text-slate-600 hover:text-slate-900">
-                                  Moderate Change
-                                </button>
-                              </div>
-
-                              <div className="flex flex-col items-center">
-                                <div className="w-3 h-3 rounded-full border-2 z-10 transition-all bg-white border-slate-300"></div>
-                                <button className="mt-2 text-xs font-medium transition-colors text-center text-slate-600 hover:text-slate-900">
-                                  Significant Change
-                                </button>
-                              </div>
-
-                              <div className="flex flex-col items-center">
-                                <div className="w-3 h-3 rounded-full border-2 z-10 transition-all bg-white border-slate-300"></div>
-                                <button className="mt-2 text-xs font-medium transition-colors text-center text-slate-600 hover:text-slate-900">
-                                  Dramatic Change
-                                </button>
-                              </div>
-                            </div>
+                          <div className="w-full bg-slate-200 rounded-full h-2">
+                            <div
+                              className="bg-blue-600 h-2 rounded-full transition-all"
+                              style={{ width: "0%" }}
+                            />
                           </div>
                         </div>
                       </div>
@@ -5735,36 +5000,10 @@ function App() {
                         )}
                       </div>
 
-                      {/* Video Player */}
-                      <div className="mt-4">
-                        <div className="relative w-full h-48 bg-slate-200 object-cover overflow-hidden max-w-full">
-                          <video
-                            key="main-video"
-                            className="w-full h-full object-cover max-w-full max-h-full"
-                            autoPlay
-                            muted
-                            loop
-                            playsInline
-                            webkit-playsinline="true"
-                            poster="/drone-water.jpg"
-                            style={{ maxWidth: "100%", maxHeight: "100%" }}
-                          >
-                            <source src="/drone-water.mp4" type="video/mp4" />
-                            Your browser does not support the video tag.
-                          </video>
-                          {showCodeLabels && (
-                            <div className="text-xs text-slate-500 mt-2">
-                              &lt;video&gt; - Media element with auto-play and
-                              loop
-                            </div>
-                          )}
-                        </div>
-                      </div>
-
                       {/* Read More Button */}
                       <div className="mt-4">
                         <button
-                          onClick={() => setShowGraceModal(true)}
+                          onClick={() => setShowExtendedModal(true)}
                           className="text-blue-600 hover:text-blue-700 font-medium text-sm underline block mt-2 p-2 border border-blue-300 rounded"
                         >
                           Read more
@@ -5802,11 +5041,10 @@ function App() {
                       </div>
                     )}
                     <p className="text-slate-700 leading-relaxed mb-4">
-                      Grace is our connection to a higher power, a sense of
-                      being cared for and supported in all situations. It
-                      involves embracing the abundance around us. Grace
-                      motivates us to offer unconditional love and kindness to
-                      others.
+                      Personal growth is our connection to continuous learning
+                      and development. It involves embracing opportunities for
+                      improvement and self-discovery. Personal growth motivates
+                      us to offer our best selves to others.
                     </p>
                     {showCodeLabels && (
                       <div className="text-xs text-slate-500 mb-2">
@@ -5814,7 +5052,7 @@ function App() {
                       </div>
                     )}
                     <button
-                      onClick={() => setShowGraceModal(true)}
+                      onClick={() => setShowExtendedModal(true)}
                       className="text-blue-600 hover:text-blue-700 font-medium text-sm underline"
                     >
                       Read more
@@ -5874,17 +5112,17 @@ function App() {
           </div>
         </div>
 
-        {/* Grace Modal for Design System */}
-        {showGraceModal && (
+        {/* Extended Definition Modal for Design System */}
+        {showExtendedModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 overflow-hidden flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
               <div className="p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-2xl font-bold text-slate-900">
-                    Grace - Extended Definition
+                    Extended Definition
                   </h3>
                   <button
-                    onClick={() => setShowGraceModal(false)}
+                    onClick={() => setShowExtendedModal(false)}
                     className="text-slate-400 hover:text-slate-600 transition-colors"
                   >
                     <svg
@@ -5905,16 +5143,16 @@ function App() {
                 <div className="space-y-6">
                   <div>
                     <h4 className="text-lg font-semibold text-slate-900 mb-3">
-                      Grace Affirmations
+                      Personal Growth Affirmations
                     </h4>
                     <ul className="space-y-2 text-slate-700">
                       <li className="flex items-start">
                         <span className="text-blue-600 mr-2">•</span>I trust
-                        that grace will guide me through challenges.
+                        that personal growth will guide me through challenges.
                       </li>
                       <li className="flex items-start">
                         <span className="text-blue-600 mr-2">•</span>I remain
-                        open to the abundance life offers.
+                        open to the opportunities life offers.
                       </li>
                       <li className="flex items-start">
                         <span className="text-blue-600 mr-2">•</span>I show
@@ -5922,39 +5160,29 @@ function App() {
                       </li>
                       <li className="flex items-start">
                         <span className="text-blue-600 mr-2">•</span>I approach
-                        life with grace and courtesy.
+                        life with curiosity and openness.
                       </li>
                       <li className="flex items-start">
                         <span className="text-blue-600 mr-2">•</span>I embrace
-                        forgiveness.
+                        continuous learning.
                       </li>
                       <li className="flex items-start">
                         <span className="text-blue-600 mr-2">•</span>I
-                        communicate and act with gentleness and respect.
+                        communicate and act with respect and understanding.
                       </li>
                     </ul>
                   </div>
 
                   <div className="bg-blue-50 p-4 rounded-lg">
                     <p className="text-slate-700 italic mb-2">
-                      "I am grateful for the gift of Grace. It supports and
-                      enriches my life."
-                    </p>
-                  </div>
-
-                  <div className="bg-slate-50 p-4 rounded-lg border-l-4 border-blue-500">
-                    <p className="text-slate-700 italic">
-                      "Grace is not part of consciousness; it is the amount of
-                      light in our souls, not knowledge nor reason"
-                    </p>
-                    <p className="text-slate-600 text-sm mt-2">
-                      ~ Pope Francis
+                      "I am grateful for opportunities to grow. They support and
+                      enrich my life."
                     </p>
                   </div>
                 </div>
                 <div className="mt-6 pt-4 border-t border-slate-200">
                   <button
-                    onClick={() => setShowGraceModal(false)}
+                    onClick={() => setShowExtendedModal(false)}
                     className="w-full bg-slate-900 hover:bg-slate-800 text-white py-3 px-6 rounded-full font-medium transition-colors"
                   >
                     Close
@@ -5968,16 +5196,83 @@ function App() {
     );
   };
 
+  // Onboarding workflow
+  const handleOnboardingComplete = () => {
+    setOnboardingStep(null);
+    navigateToScreen(0); // Go to dashboard
+  };
+
+  const handleOnboardingNext = () => {
+    if (onboardingStep === null) return;
+    if (onboardingStep === 1) {
+      setOnboardingStep(2);
+    } else if (onboardingStep === 2) {
+      setOnboardingStep(4); // Skip step 3 (goals), go directly to dashboard
+    } else if (onboardingStep === 4) {
+      handleOnboardingComplete();
+    }
+  };
+
+  const handleOnboardingBack = () => {
+    if (onboardingStep === null || onboardingStep === 1) return;
+    if (onboardingStep === 4) {
+      setOnboardingStep(2); // Skip step 3 (goals), go back to step 2
+    } else {
+      setOnboardingStep(onboardingStep - 1);
+    }
+  };
+
+  // Show onboarding for new users
+  if (user.isNewUser && onboardingStep !== null) {
+    return (
+      <div className="pb-20 md:pb-0">
+        {onboardingStep === 1 && (
+          <OnboardingWelcomeScreen onNext={handleOnboardingNext} />
+        )}
+        {onboardingStep === 2 && (
+          <OnboardingAssessmentScreen
+            onNext={handleOnboardingNext}
+            onBack={handleOnboardingBack}
+            onComplete={(data) => {
+              // Save assessment data to user profile
+              const updatedState: UserState = {
+                ...userState,
+                preferences: {
+                  ...userState.preferences,
+                  onboardingData: {
+                    ...userState.preferences.onboardingData,
+                    subjects: data.subjects,
+                    proficiencyLevel: data.proficiencyLevel,
+                  },
+                },
+              };
+              setUserState(updatedState);
+              saveUserState(updatedState);
+            }}
+          />
+        )}
+        {onboardingStep === 4 && (
+          <OnboardingDashboardScreen onComplete={handleOnboardingComplete} />
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className="pb-20 md:pb-0">
       {currentScreen === 0 && <HomeDashboardScreenComponent />}
-      {currentScreen === 1 && <WelcomeScreen />}
-      {currentScreen === 2 && <VirtueSelectionScreen />}
+      {currentScreen === 1 && (
+        <WelcomeScreen
+          onStartOnboarding={() => {
+            if (user.isNewUser) {
+              setOnboardingStep(1);
+            }
+          }}
+        />
+      )}
+      {currentScreen === 2 && <LearningStyleSelectionScreen />}
       {currentScreen === 3 && <GoalCreationScreen />}
       {currentScreen === 4 && <GoalConfirmationScreen />}
-      {currentScreen === 5 && <DescribeSituationScreen />}
-      {currentScreen === 6 && <Step5Screen />}
-      {currentScreen === 7 && <Step6Screen />}
       {currentScreen === 8 && <Step7Screen />}
       {currentScreen === 9 && <JourneyViewScreen />}
       {currentScreen === 10 && <ProgressSubmissionScreen />}
@@ -5986,95 +5281,20 @@ function App() {
       {currentScreen === 13 && <UserResearchScreen />}
       {currentScreen === 17 && <ActionJourneyScreen />}
       {currentScreen === 20 && <DesignSystemScreen />}
-      {currentScreen === 21 && <CourseLibraryScreen onBack={() => navigateToScreen(1)} />}
-
-      {/* Grace Modal */}
-      {graceModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 overflow-hidden flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-2xl font-bold text-slate-900">
-                  Grace - Extended Definition
-                </h3>
-                <button
-                  onClick={() => setGraceModalOpen(false)}
-                  className="text-slate-400 hover:text-slate-600 transition-colors"
-                >
-                  <svg
-                    className="w-6 h-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </button>
-              </div>
-              <div className="space-y-6">
-                <div>
-                  <h4 className="text-lg font-semibold text-slate-900 mb-3">
-                    Grace Affirmations
-                  </h4>
-                  <ul className="space-y-2 text-slate-700">
-                    <li className="flex items-start">
-                      <span className="text-blue-600 mr-2">•</span>I trust that
-                      grace will guide me through challenges.
-                    </li>
-                    <li className="flex items-start">
-                      <span className="text-blue-600 mr-2">•</span>I remain open
-                      to the abundance life offers.
-                    </li>
-                    <li className="flex items-start">
-                      <span className="text-blue-600 mr-2">•</span>I show
-                      compassion and kindness to others.
-                    </li>
-                    <li className="flex items-start">
-                      <span className="text-blue-600 mr-2">•</span>I approach
-                      life with grace and courtesy.
-                    </li>
-                    <li className="flex items-start">
-                      <span className="text-blue-600 mr-2">•</span>I embrace
-                      forgiveness.
-                    </li>
-                    <li className="flex items-start">
-                      <span className="text-blue-600 mr-2">•</span>I communicate
-                      and act with gentleness and respect.
-                    </li>
-                  </ul>
-                </div>
-
-                <div className="bg-blue-50 p-4 rounded-lg">
-                  <p className="text-slate-700 italic mb-2">
-                    "I am grateful for the gift of Grace. It supports and
-                    enriches my life."
-                  </p>
-                </div>
-
-                <div className="bg-slate-50 p-4 rounded-lg border-l-4 border-blue-500">
-                  <p className="text-slate-700 italic">
-                    "Grace is not part of consciousness; it is the amount of
-                    light in our souls, not knowledge nor reason"
-                  </p>
-                  <p className="text-slate-600 text-sm mt-2">~ Pope Francis</p>
-                </div>
-              </div>
-              <div className="mt-6 pt-4 border-t border-slate-200">
-                <button
-                  onClick={() => setGraceModalOpen(false)}
-                  className="w-full bg-slate-900 hover:bg-slate-800 text-white py-3 px-6 rounded-full font-medium transition-colors"
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+      {currentScreen === 21 && (
+        <CourseLibraryScreen
+          onBack={() => {
+            setSelectedCourseId(undefined);
+            navigateToScreen(1);
+          }}
+          Navigation={Navigation}
+          userState={userState}
+          onCourseComplete={() => {
+            // Refresh user state after course completion
+            setUserState(getUserState());
+          }}
+          initialCourseId={selectedCourseId}
+        />
       )}
     </div>
   );

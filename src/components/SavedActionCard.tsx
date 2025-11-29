@@ -12,8 +12,8 @@ import { CompletedAction } from "../types";
 
 interface SavedActionCardProps {
   completedAction: CompletedAction;
-  onArchive?: (id: string) => void;
-  onDelete?: (id: string) => void;
+  onArchive?: (_id: string) => void;
+  onDelete?: (_id: string) => void;
   className?: string;
 }
 

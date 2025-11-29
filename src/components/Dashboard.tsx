@@ -5,7 +5,7 @@ import { Virtue, Goal, UserState } from "../types";
 import { virtues, sdgGoals } from "../data";
 import { getHeadingFontClass, clearGoalCreationState } from "../utils";
 import { AIInput } from "./AIInput";
-import { SoulchiHelpButton } from "./SoulchiHelpButton";
+import { HelpButton } from "./HelpButton";
 import { AddActionButton } from "./AddActionButton";
 import { ActionCard } from "./ActionCard";
 import { SaveCompletedActionModal } from "./SaveCompletedActionModal";
@@ -217,7 +217,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                   </clipPath>
                 </defs>
               </svg>
-              <img src="/soulchi-logo.png" alt="Learning Micro-Academy" className="h-8" />
+              <span className="text-2xl font-bold text-slate-900">MicroLearn</span>
             </Link>
             {/* Navigation component would go here */}
           </div>
@@ -248,7 +248,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
         <DashboardVirtueOfTheWeek
           selectedFont={selectedFont}
           getHeadingFontClass={getHeadingFontClass}
-          openGraceModal={() => {}}
         />
 
         {/* User Stats */}
@@ -269,7 +268,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                   selectedFont
                 )}`}
               >
-                My Virtue Actions
+                My Learning Actions
               </h3>
               <AddActionButton
                 onClick={() => {
@@ -378,8 +377,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                                 {goal.title}
                               </h4>
                               <p className="text-sm text-slate-600 leading-normal">
-                                Aspect of Life:{" "}
-                                {virtue?.name || "Unknown Virtue"}
+                                {virtue?.name || "Unknown Learning Style"}
                               </p>
                               <p className="text-sm text-slate-500 leading-normal">
                                 {goal.title.includes("5 Minute")
@@ -558,11 +556,11 @@ export const Dashboard: React.FC<DashboardProps> = ({
                           {/* Timeline items */}
                           <div className="relative flex flex-col space-y-6">
                             {[
-                              { title: "No Change", level: 0 },
-                              { title: "Slight Change", level: 1 },
-                              { title: "Moderate Change", level: 2 },
-                              { title: "Significant Change", level: 3 },
-                              { title: "Dramatic Change", level: 4 },
+                              { title: "None", level: 0 },
+                              { title: "Slight", level: 1 },
+                              { title: "Moderate", level: 2 },
+                              { title: "Significant", level: 3 },
+                              { title: "Dramatic", level: 4 },
                             ].map((milestone, index) => (
                               <div
                                 key={index}
@@ -603,11 +601,11 @@ export const Dashboard: React.FC<DashboardProps> = ({
                           {/* Timeline items */}
                           <div className="relative flex justify-between items-start">
                             {[
-                              { title: "No Change", level: 0 },
-                              { title: "Slight Change", level: 1 },
-                              { title: "Moderate Change", level: 2 },
-                              { title: "Significant Change", level: 3 },
-                              { title: "Dramatic Change", level: 4 },
+                              { title: "None", level: 0 },
+                              { title: "Slight", level: 1 },
+                              { title: "Moderate", level: 2 },
+                              { title: "Significant", level: 3 },
+                              { title: "Dramatic", level: 4 },
                             ].map((milestone, index) => (
                               <div
                                 key={index}

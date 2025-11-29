@@ -1,7 +1,7 @@
 import React from "react";
 
 interface AppHeaderProps {
-  navigateToScreen: (screen: number) => void;
+  navigateToScreen: (_screen: number) => void;
   Navigation: React.ComponentType;
 }
 
@@ -18,11 +18,9 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
               onClick={() => navigateToScreen(1)}
               className="hover:opacity-80 transition-opacity"
             >
-              <img
-                src="/soulchi-logo.png"
-                alt="Learning Micro-Academy"
-                className="h-8"
-              />
+              <span className="text-2xl font-bold text-slate-900">
+                MicroLearn
+              </span>
             </button>
           </div>
           <Navigation />

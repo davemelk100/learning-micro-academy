@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Check, X, Plus } from "lucide-react";
 import { Virtue } from "../types";
@@ -9,19 +9,19 @@ interface VirtueSelectionScreenProps {
   selectedSDGs: string[];
   currentSelectedSDG: string;
   selectedVirtue: Virtue | null;
-  setSelectedVirtue: (virtue: Virtue | null) => void;
-  navigateToScreen: (screen: number) => void;
+  setSelectedVirtue: (_virtue: Virtue | null) => void;
+  navigateToScreen: (_screen: number) => void;
   selectedFont: string;
   aiConversationOpen: boolean;
   conversationInputRef: React.RefObject<HTMLInputElement>;
-  setAiConversationOpen: (open: boolean) => void;
+  setAiConversationOpen: (_open: boolean) => void;
   setAiConversationMessages: (
-    messages: Array<{ role: "user" | "ai"; message: string }>
+    _messages: Array<{ role: "user" | "ai"; message: string }>
   ) => void;
-  setAiConversationInput: (input: string) => void;
+  setAiConversationInput: (_input: string) => void;
   aiConversationMessages: Array<{ role: "user" | "ai"; message: string }>;
   aiConversationInput: string;
-  handleAIConversation: (input: string) => void;
+  handleAIConversation: (_input: string) => void;
   nextButtonPulse: boolean;
   virtues: Virtue[];
 }
@@ -44,7 +44,7 @@ export const VirtueSelectionScreen: React.FC<VirtueSelectionScreenProps> = ({
   nextButtonPulse,
   virtues,
 }) => {
-  const [isListView, setIsListView] = useState(false);
+  const [_isListView] = useState(false);
 
   // Redirect to SDGs screen if no SDG is selected
   useEffect(() => {
@@ -108,7 +108,9 @@ export const VirtueSelectionScreen: React.FC<VirtueSelectionScreenProps> = ({
                     </clipPath>
                   </defs>
                 </svg>
-                <img src="/soulchi-logo.png" alt="Learning Micro-Academy" className="h-8" />
+                <span className="text-2xl font-bold text-slate-900">
+                  MicroLearn
+                </span>
               </Link>
             </div>
             {/* Navigation component would go here */}
@@ -139,7 +141,7 @@ export const VirtueSelectionScreen: React.FC<VirtueSelectionScreenProps> = ({
                       selectedFont
                     )}`}
                   >
-                    Aspects of life
+                    Learning Styles
                   </h3>
                   <button
                     onClick={() => selectedVirtue && navigateToScreen(3)}
@@ -165,7 +167,7 @@ export const VirtueSelectionScreen: React.FC<VirtueSelectionScreenProps> = ({
                         selectedFont
                       )}`}
                     >
-                      Aspects of life
+                      Learning Styles
                     </h3>
                     <button
                       onClick={() => selectedVirtue && navigateToScreen(3)}
@@ -257,12 +259,12 @@ export const VirtueSelectionScreen: React.FC<VirtueSelectionScreenProps> = ({
                 <div className="mb-4 p-3 bg-white border border-slate-200 rounded-lg">
                   <p className="text-sm leading-normal">
                     Please select a Sustainable Development Goal first to enable
-                    virtue selection.{" "}
+                    learning style selection.{" "}
                     <button
                       onClick={() => navigateToScreen(8)}
                       className="text-blue-600 hover:text-blue-800 underline font-medium"
                     >
-                      Select SDG
+                      Select
                     </button>
                   </p>
                 </div>

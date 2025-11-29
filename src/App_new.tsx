@@ -1,29 +1,17 @@
 import React, { useState, useEffect, useRef } from "react";
 import {
   BrowserRouter as Router,
-  Routes,
-  Route,
   useNavigate,
   useLocation,
-  Link,
 } from "react-router-dom";
 
 // Import types and utilities
-import { Virtue, Goal, UserState, UserPreferences } from "./types";
-import { virtues, sdgGoals, fontOptions } from "./data";
+import { Virtue, Goal, UserState } from "./types";
 import {
   saveUserState,
   getUserState,
-  clearGoalCreationState,
   getFontClass,
-  getHeadingFontClass,
-  defaultUserPreferences,
 } from "./utils";
-
-// Import components
-import { FontSelector } from "./components/FontSelector";
-import { SoulchiHelpButton as HelpButton } from "./components/SoulchiHelpButton";
-import { AIInput } from "./components/AIInput";
 import { Dashboard } from "./components/Dashboard";
 import { SDGSelectionScreen } from "./components/SDGSelectionScreen";
 import { VirtueSelectionScreen } from "./components/VirtueSelectionScreen";
@@ -121,18 +109,14 @@ function AppContent() {
   const [goals, setGoals] = useState<Goal[]>(savedState.goals);
   const [newGoal, setNewGoal] = useState(savedState.preferences.newGoal);
   const [user] = useState({ name: "Najuma", isNewUser: false });
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
-  const [isLoadingAIAssistance, setIsLoadingAIAssistance] = useState(false);
-  const [selectedFont, setSelectedFont] = useState("philosopher-mulish");
-  const [fontDropdownOpen, setFontDropdownOpen] = useState(false);
+  const [selectedFont] = useState("philosopher-mulish");
   const [aiConversationOpen, setAiConversationOpen] = useState<boolean>(false);
   const [aiConversationMessages, setAiConversationMessages] = useState<
     Array<{ role: "user" | "ai"; message: string }>
   >([]);
   const [aiConversationInput, setAiConversationInput] = useState<string>("");
   const conversationInputRef = useRef<HTMLInputElement>(null);
-  const [animatingSDG, setAnimatingSDG] = useState<string | null>(null);
+  const [animatingSDG] = useState<string | null>(null);
 
   // User stats
   const [userStats] = useState({
