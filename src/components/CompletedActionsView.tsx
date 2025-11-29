@@ -201,13 +201,13 @@ export const CompletedActionsView: React.FC<CompletedActionsViewProps> = ({
               />
             </div>
 
-            {/* Virtue Filter */}
+            {/* Learning Style Filter */}
             <select
               value={selectedVirtue}
               onChange={(e) => setSelectedVirtue(e.target.value)}
               className="px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
-              <option value="all">All Virtues</option>
+              <option value="all">All Learning Styles</option>
               {getVirtueOptions().map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}

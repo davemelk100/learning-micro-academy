@@ -5,11 +5,11 @@ export const VirtueOfTheWeek: React.FC = () => {
   return (
     <div
       className="bg-slate-50 object-cover p-4 text-[#0f172a] border border-slate-100"
-      style={{ minHeight: "320px" }}
+      style={{ minHeight: "200px" }}
     >
       <div className="flex items-center justify-between">
         <div className="flex-1">
-          <div className="flex items-center mb-4">
+          <div className="flex items-center mb-3">
             <span className="mr-2">
               <Sparkles className="h-5 w-5 text-blue-500" />
             </span>
@@ -17,17 +17,22 @@ export const VirtueOfTheWeek: React.FC = () => {
               Featured Course
             </h3>
           </div>
-          <h3 className="text-2xl font-bold mb-3 text-[#0f172a]">
+          <h3 className="text-2xl font-bold mb-2 text-[#0f172a]">
             Intro to UX
           </h3>
           <div className="relative">
-            <p className="text-[#0f172a] text-sm leading-relaxed mb-4 text-slate-600">
+            <p className="text-[#0f172a] text-sm leading-relaxed text-slate-600 mb-4">
               Master the fundamentals of user experience design in this
               comprehensive course. Learn how to create intuitive interfaces,
               conduct user research, and build products that people love.
               Perfect for designers, developers, and product managers looking to
               enhance their UX skills.
             </p>
+            <img
+              src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&h=400&fit=crop"
+              alt="Learning Environment"
+              className="w-full h-48 object-cover rounded-lg"
+            />
           </div>
         </div>
       </div>

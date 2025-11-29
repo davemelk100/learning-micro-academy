@@ -503,7 +503,7 @@ function App() {
       setAiSelectedSDG(selectedSDG.id);
       setAiSelectionReason(
         reasons[selectedSDG.id as keyof typeof reasons] ||
-          `${selectedSDG.title} aligns with your personal values and actions.`
+          `${selectedSDG.title} aligns with the subject matter.`
       );
       setIsLoadingAIAssistance(false);
     }, 2000);
@@ -714,7 +714,7 @@ function App() {
           <div className="max-w-md mx-auto md:max-w-[calc(42rem+400px)] lg:max-w-[calc(42rem+400px)]">
             <div className="bg-white rounded-xl shadow-xl overflow-hidden">
               <div className="bg-slate-900 p-6 text-white">
-                <h2 className="text-2xl font-bold">Select Aspect of Life</h2>
+                <h2 className="text-2xl font-bold">Select Learning Style</h2>
               </div>
 
               <div className="p-6">
@@ -722,7 +722,7 @@ function App() {
                   <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
                     <div className="flex flex-col mb-4 lg:mb-0">
                       <h3 className="text-xl font-semibold text-slate-800 mb-3">
-                        Select Aspect of Life
+                        Select Learning Style
                       </h3>
                       {/* AI assistance prompt on its own row */}
                       <div className="flex items-center space-x-2">
@@ -1376,7 +1376,7 @@ function App() {
         <div className="max-w-md mx-auto md:max-w-[calc(42rem+400px)] lg:max-w-[calc(42rem+400px)]">
           <div className="text-left mb-4">
             <p className="text-slate-600 text-base font-medium">
-              Your Grace-based goal is ready
+              Your goal is ready
             </p>
           </div>
           <div className="bg-white rounded-xl shadow-xl overflow-hidden">
@@ -1428,7 +1428,7 @@ function App() {
                     </div>
                   </div>
 
-                  {/* Virtue Circle */}
+                  {/* Learning Style Circle */}
                   <div className="text-center flex flex-col items-center">
                     <div className="bg-white border-2 border-slate-200 rounded-full p-4 w-28 h-28 flex flex-col items-center justify-center shadow-md">
                       {selectedLearningStyle && (
@@ -1473,7 +1473,7 @@ function App() {
                 <div className="mt-16 text-center">
                   <p className="text-sm text-slate-600 leading-relaxed max-w-md mx-auto">
                     Your goal connects <strong>global impact</strong> (SDG) with{" "}
-                    <strong>personal growth</strong> (Virtue) to create{" "}
+                    <strong>personal growth</strong> (Learning Style) to create{" "}
                     <strong>meaningful action</strong> that benefits both you
                     and the world.
                   </p>
@@ -1544,7 +1544,7 @@ function App() {
               <div className="p-6">
                 {/* Page Title */}
                 <h3 className="text-xl font-semibold text-slate-900 mb-6">
-                  Describe a situation where you exhibited grace.
+                  Describe a situation where you demonstrated personal growth.
                 </h3>
 
                 {/* Pagination */}
@@ -1741,14 +1741,14 @@ function App() {
     step5TextareaRef,
   ]);
 
-  // Screen 7: Step 6 - Rate Amount of Change
+  // Screen 7: Step 6 - Rate Learning Progress
   const Step6Screen = () => {
     const amountChangeOptions = [
-      { value: 0, label: "No Change" },
-      { value: 1, label: "Slight Change" },
-      { value: 2, label: "Moderate Change" },
-      { value: 3, label: "Significant Change" },
-      { value: 4, label: "Dramatic Change" },
+      { value: 0, label: "None" },
+      { value: 1, label: "Slight" },
+      { value: 2, label: "Moderate" },
+      { value: 3, label: "Significant" },
+      { value: 4, label: "Dramatic" },
     ];
 
     return (
@@ -1778,7 +1778,7 @@ function App() {
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <h2 className="text-2xl font-bold">
-                      Rate Amount of Change
+                      Rate Learning Progress
                     </h2>
                   </div>
                 </div>
@@ -1799,10 +1799,10 @@ function App() {
                   />
                 </div>
 
-                {/* Rate Amount of Change */}
+                {/* Rate Learning Progress */}
                 <div className="bg-white p-6 rounded-xl shadow-md border border-slate-100">
                   <h3 className="text-lg font-medium text-slate-700 mb-6">
-                    Amount of Change
+                    Learning Progress
                   </h3>
 
                   {/* Timeline */}
@@ -1852,14 +1852,14 @@ function App() {
     );
   };
 
-  // Screen 8: Step 7 - Rate Amount of Change
+  // Screen 8: Step 7 - Rate Learning Progress
   const Step7Screen = () => {
     const amountChangeOptions = [
-      { value: 0, label: "No Change" },
-      { value: 1, label: "Slight Change" },
-      { value: 2, label: "Moderate Change" },
-      { value: 3, label: "Significant Change" },
-      { value: 4, label: "Dramatic Change" },
+      { value: 0, label: "None" },
+      { value: 1, label: "Slight" },
+      { value: 2, label: "Moderate" },
+      { value: 3, label: "Significant" },
+      { value: 4, label: "Dramatic" },
     ];
 
     return (
@@ -1889,7 +1889,7 @@ function App() {
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <h2 className="text-2xl font-bold">
-                      Rate Amount of Change
+                      Rate Learning Progress
                     </h2>
                   </div>
                 </div>
@@ -1913,10 +1913,10 @@ function App() {
                   />
                 </div>
 
-                {/* Rate Amount of Change */}
+                {/* Rate Learning Progress */}
                 <div className="bg-white p-6 rounded-xl shadow-md border border-slate-100">
                   <h3 className="text-lg font-medium text-slate-700 mb-6">
-                    Amount of Change
+                    Learning Progress
                   </h3>
 
                   {/* Timeline */}
@@ -2147,7 +2147,7 @@ function App() {
                     }}
                   >
                     <div
-                      className="bg-white rounded-xl shadow-2xl border border-slate-200 p-6 w-full max-w-md mx-auto"
+                      className="bg-white rounded-xl shadow-2xl border border-slate-200 p-6 w-full max-w-xl mx-auto"
                       onClick={(e) => e.stopPropagation()}
                     >
                       <div className="flex items-start justify-between mb-4">
@@ -2958,7 +2958,7 @@ function App() {
                     <div className="flex items-start space-x-2">
                       <div className="w-2 h-2 bg-blue-600 rounded-full mt-2"></div>
                       <span className="text-sm text-blue-700">
-                        Agnostic users focused on virtue-based development
+                        Agnostic users focused on personal development
                       </span>
                     </div>
                   </div>
@@ -3055,7 +3055,7 @@ function App() {
                       Visual Connections
                     </h4>
                     <p className="text-sm text-red-700">
-                      Make virtue-goal-action-SDG links clear
+                      Make learning-goal-action-SDG links clear
                     </p>
                   </div>
                 </div>
@@ -3075,7 +3075,7 @@ function App() {
                   "Learning Micro-Academy AI",
                   "Share Actions",
                   "Edit Actions",
-                  "Virtue Tracking",
+                  "Progress Tracking",
                   "SDG Alignment",
                 ].map((feature, index) => (
                   <div
@@ -3233,7 +3233,7 @@ function App() {
     );
   };
 
-  // Screen 9: Virtues
+  // Screen 9: Personal Growth Aspects
   const AllVirtuesScreen = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedVirtues, setSelectedVirtues] = useState<string[]>([]);
@@ -3308,12 +3308,6 @@ function App() {
         id: "confidence",
         name: "Confidence",
         description: "I have the strength to face what life brings me.",
-      },
-      {
-        id: "grace",
-        name: "Grace",
-        description:
-          "Grace is our connection to a higher power, a sense of being cared for and supported in all situations. It involves embracing the abundance around us. Grace motivates us to offer unconditional love and kindness to others. By embodying grace and elegance, we naturally attract others and enhance our interactions. Our growth in grace is reflected in how we treat others with respect, kindness, and impeccable manners, and through our willingness to forgive. As we deepen our connection to grace, we become a source of grace for those around us.",
       },
       {
         id: "contentment",
@@ -3445,11 +3439,6 @@ function App() {
         id: "gentleness",
         name: "Gentleness",
         description: "I make it safe for others to be around me.",
-      },
-      {
-        id: "grace",
-        name: "Grace",
-        description: "I trust Grace to carry me through times of trouble.",
       },
       {
         id: "gratitude",
@@ -3722,7 +3711,7 @@ function App() {
       { id: "zeal", name: "Zeal", description: "I work with joyous energy." },
     ];
 
-    // Filter virtues based on search term
+    // Filter personal growth aspects based on search term
     const filteredVirtues = allVirtues.filter(
       (virtue) =>
         virtue.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -3761,7 +3750,7 @@ function App() {
           <div className="max-w-md mx-auto md:max-w-[calc(42rem+400px)] lg:max-w-[calc(42rem+400px)]">
             <div className="bg-white rounded-xl shadow-xl overflow-hidden">
               <div className="bg-slate-900 p-6 text-white">
-                <h2 className="text-2xl font-bold">Virtues</h2>
+                <h2 className="text-2xl font-bold">Personal Growth Aspects</h2>
               </div>
 
               <div className="p-6">
@@ -3770,7 +3759,7 @@ function App() {
                   <div className="relative">
                     <input
                       type="text"
-                      placeholder="Search virtues by name or description..."
+                      placeholder="Search personal growth aspects by name or description..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                       className="w-full px-4 py-3 pl-10 border border-slate-200 rounded-md focus:ring-2 focus:ring-slate-900 focus:border-transparent transition-all text-sm"
@@ -3799,10 +3788,10 @@ function App() {
                     {searchTerm ? (
                       <span>
                         Showing {filteredVirtues.length} of {allVirtues.length}{" "}
-                        virtues
+                        aspects
                       </span>
                     ) : (
-                      <span>All {allVirtues.length} virtues</span>
+                      <span>All {allVirtues.length} aspects</span>
                     )}
                   </div>
                   {selectedVirtues.length > 0 && (
@@ -3863,7 +3852,7 @@ function App() {
                     {selectedVirtues.length > 0 && (
                       <div className="text-center">
                         <p className="text-sm text-slate-600 mb-2">
-                          You've selected {selectedVirtues.length} virtue
+                          You've selected {selectedVirtues.length} aspect
                           {selectedVirtues.length !== 1 ? "s" : ""}
                         </p>
                         <div className="flex flex-wrap justify-center gap-2 max-w-md">
@@ -3900,7 +3889,7 @@ function App() {
                       {selectedVirtues.length > 0
                         ? `Continue with ${
                             selectedVirtues.length
-                          } Selected Virtue${
+                          } Selected Aspect${
                             selectedVirtues.length !== 1 ? "s" : ""
                           }`
                         : "Continue to Goal Setting"}
@@ -4015,7 +4004,7 @@ function App() {
             {/* Page Title */}
             <div className="mb-6">
               <h2 className="text-2xl font-bold text-slate-900 mb-2">
-                Your Virtue Journey
+                Your Personal Growth Journey
               </h2>
               <p className="text-slate-600">
                 Archive of all actions you've created and completed
@@ -4160,11 +4149,11 @@ function App() {
                                       "No description available."}
                                   </p>
 
-                                  {/* Amount of Change Timeline */}
+                                  {/* Learning Progress Timeline */}
                                   <div className="mt-4 pt-3 border-t border-slate-100">
                                     <div className="flex items-center justify-between mb-3">
                                       <span className="text-xs font-medium text-slate-700">
-                                        Amount of Change
+                                        Learning Progress
                                       </span>
                                     </div>
                                     <div className="relative">
@@ -4174,11 +4163,11 @@ function App() {
                                       {/* Timeline items */}
                                       <div className="flex justify-between">
                                         {[
-                                          "No Change",
-                                          "Slight Change",
-                                          "Moderate Change",
-                                          "Significant Change",
-                                          "Dramatic Change",
+                                          "None",
+                                          "Slight",
+                                          "Moderate",
+                                          "Significant",
+                                          "Dramatic",
                                         ].map((changeType) => (
                                           <div
                                             key={changeType}
@@ -4405,7 +4394,7 @@ function App() {
       boolean | null
     >(null);
     const [showCodeLabels, setShowCodeLabels] = useState(false);
-    const [showGraceModal, setShowGraceModal] = useState(false);
+    const [showExtendedModal, setShowExtendedModal] = useState(false);
 
     return (
       <div className="min-h-screen bg-slate-50">
@@ -4830,10 +4819,10 @@ function App() {
                 </div>
               </div>
 
-              {/* Virtue Icons */}
+              {/* Learning Style Icons */}
               <div className="mt-8">
                 <h3 className="text-lg font-semibold text-slate-900 mb-4">
-                  Virtue Icons
+                  Learning Style Icons
                 </h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
                   <div className="text-center">
@@ -5254,7 +5243,7 @@ function App() {
                 )}
                 <div className="max-w-md">
                   <AIRecommendationCard
-                    recommendation="Affordable and Clean Energy aligns with your personal values and actions."
+                    recommendation="Affordable and Clean Energy aligns with the subject matter."
                     onAccept={() => console.log("Recommendation accepted")}
                     onTryAnother={() => console.log("Try another clicked")}
                   />
@@ -5280,7 +5269,7 @@ function App() {
                         </div>
                         <div>
                           <h4 className="text-lg font-semibold text-slate-900">
-                            Grace
+                            Intro to UX
                           </h4>
                           {showCodeLabels && (
                             <div className="text-xs text-slate-500 mb-1">
@@ -5288,14 +5277,14 @@ function App() {
                             </div>
                           )}
                           <p className="text-xs text-slate-600">
-                            Practice Daily Meditation
+                            Complete UX Fundamentals Course
                           </p>
                           {showCodeLabels && (
                             <div className="text-xs text-slate-500 mb-1">
                               &lt;p&gt; - text-xs (0.75rem)
                             </div>
                           )}
-                          <p className="text-xs text-slate-500">30 Minutes</p>
+                          <p className="text-xs text-slate-500">4 Weeks</p>
                           {showCodeLabels && (
                             <div className="text-xs text-slate-500">
                               &lt;p&gt; - text-xs (0.75rem)
@@ -5343,16 +5332,17 @@ function App() {
                     {designSystemCardExpanded && (
                       <div className="mt-3 pt-3 border-t border-slate-100">
                         <p className="text-sm text-slate-600 mb-3">
-                          Develop a consistent meditation practice to improve
-                          mindfulness and reduce stress. Start with 10 minutes
-                          daily and gradually increase to 30 minutes.
+                          Complete the UX design fundamentals course to build
+                          practical skills in user research, wireframing, and
+                          prototyping. Dedicate 30 minutes daily to progress
+                          through the lessons and hands-on exercises.
                         </p>
 
-                        {/* Amount of Change Timeline */}
+                        {/* Learning Progress Timeline */}
                         <div className="mt-4 pt-3 border-t border-slate-100">
                           <div className="flex items-center justify-between mb-3">
                             <span className="text-xs font-medium text-slate-700">
-                              Amount of Change
+                              Learning Progress
                             </span>
                           </div>
                           <div className="relative">
@@ -5364,35 +5354,35 @@ function App() {
                               <div className="flex flex-col items-center">
                                 <div className="w-3 h-3 rounded-full border-2 z-10 transition-all bg-blue-600 border-blue-600"></div>
                                 <button className="mt-2 text-xs font-medium transition-colors text-center text-blue-600">
-                                  No Change
+                                  None
                                 </button>
                               </div>
 
                               <div className="flex flex-col items-center">
                                 <div className="w-3 h-3 rounded-full border-2 z-10 transition-all bg-white border-slate-300"></div>
                                 <button className="mt-2 text-xs font-medium transition-colors text-center text-slate-600 hover:text-slate-900">
-                                  Slight Change
+                                  Slight
                                 </button>
                               </div>
 
                               <div className="flex flex-col items-center">
                                 <div className="w-3 h-3 rounded-full border-2 z-10 transition-all bg-white border-slate-300"></div>
                                 <button className="mt-2 text-xs font-medium transition-colors text-center text-slate-600 hover:text-slate-900">
-                                  Moderate Change
+                                  Moderate
                                 </button>
                               </div>
 
                               <div className="flex flex-col items-center">
                                 <div className="w-3 h-3 rounded-full border-2 z-10 transition-all bg-white border-slate-300"></div>
                                 <button className="mt-2 text-xs font-medium transition-colors text-center text-slate-600 hover:text-slate-900">
-                                  Significant Change
+                                  Significant
                                 </button>
                               </div>
 
                               <div className="flex flex-col items-center">
                                 <div className="w-3 h-3 rounded-full border-2 z-10 transition-all bg-white border-slate-300"></div>
                                 <button className="mt-2 text-xs font-medium transition-colors text-center text-slate-600 hover:text-slate-900">
-                                  Dramatic Change
+                                  Dramatic
                                 </button>
                               </div>
                             </div>
@@ -5493,7 +5483,7 @@ function App() {
                       {/* Read More Button */}
                       <div className="mt-4">
                         <button
-                          onClick={() => setShowGraceModal(true)}
+                          onClick={() => setShowExtendedModal(true)}
                           className="text-blue-600 hover:text-blue-700 font-medium text-sm underline block mt-2 p-2 border border-blue-300 rounded"
                         >
                           Read more
@@ -5531,11 +5521,10 @@ function App() {
                       </div>
                     )}
                     <p className="text-slate-700 leading-relaxed mb-4">
-                      Grace is our connection to a higher power, a sense of
-                      being cared for and supported in all situations. It
-                      involves embracing the abundance around us. Grace
-                      motivates us to offer unconditional love and kindness to
-                      others.
+                      Personal growth is our connection to continuous learning
+                      and development. It involves embracing opportunities for
+                      improvement and self-discovery. Personal growth motivates
+                      us to offer our best selves to others.
                     </p>
                     {showCodeLabels && (
                       <div className="text-xs text-slate-500 mb-2">
@@ -5543,7 +5532,7 @@ function App() {
                       </div>
                     )}
                     <button
-                      onClick={() => setShowGraceModal(true)}
+                      onClick={() => setShowExtendedModal(true)}
                       className="text-blue-600 hover:text-blue-700 font-medium text-sm underline"
                     >
                       Read more
@@ -5603,17 +5592,17 @@ function App() {
           </div>
         </div>
 
-        {/* Grace Modal for Design System */}
-        {showGraceModal && (
+        {/* Extended Definition Modal for Design System */}
+        {showExtendedModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 overflow-hidden flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
               <div className="p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-2xl font-bold text-slate-900">
-                    Grace - Extended Definition
+                    Extended Definition
                   </h3>
                   <button
-                    onClick={() => setShowGraceModal(false)}
+                    onClick={() => setShowExtendedModal(false)}
                     className="text-slate-400 hover:text-slate-600 transition-colors"
                   >
                     <svg
@@ -5634,16 +5623,16 @@ function App() {
                 <div className="space-y-6">
                   <div>
                     <h4 className="text-lg font-semibold text-slate-900 mb-3">
-                      Grace Affirmations
+                      Personal Growth Affirmations
                     </h4>
                     <ul className="space-y-2 text-slate-700">
                       <li className="flex items-start">
                         <span className="text-blue-600 mr-2">•</span>I trust
-                        that grace will guide me through challenges.
+                        that personal growth will guide me through challenges.
                       </li>
                       <li className="flex items-start">
                         <span className="text-blue-600 mr-2">•</span>I remain
-                        open to the abundance life offers.
+                        open to the opportunities life offers.
                       </li>
                       <li className="flex items-start">
                         <span className="text-blue-600 mr-2">•</span>I show
@@ -5651,39 +5640,29 @@ function App() {
                       </li>
                       <li className="flex items-start">
                         <span className="text-blue-600 mr-2">•</span>I approach
-                        life with grace and courtesy.
+                        life with curiosity and openness.
                       </li>
                       <li className="flex items-start">
                         <span className="text-blue-600 mr-2">•</span>I embrace
-                        forgiveness.
+                        continuous learning.
                       </li>
                       <li className="flex items-start">
                         <span className="text-blue-600 mr-2">•</span>I
-                        communicate and act with gentleness and respect.
+                        communicate and act with respect and understanding.
                       </li>
                     </ul>
                   </div>
 
                   <div className="bg-blue-50 p-4 rounded-lg">
                     <p className="text-slate-700 italic mb-2">
-                      "I am grateful for the gift of Grace. It supports and
-                      enriches my life."
-                    </p>
-                  </div>
-
-                  <div className="bg-slate-50 p-4 rounded-lg border-l-4 border-blue-500">
-                    <p className="text-slate-700 italic">
-                      "Grace is not part of consciousness; it is the amount of
-                      light in our souls, not knowledge nor reason"
-                    </p>
-                    <p className="text-slate-600 text-sm mt-2">
-                      ~ Pope Francis
+                      "I am grateful for opportunities to grow. They support and
+                      enrich my life."
                     </p>
                   </div>
                 </div>
                 <div className="mt-6 pt-4 border-t border-slate-200">
                   <button
-                    onClick={() => setShowGraceModal(false)}
+                    onClick={() => setShowExtendedModal(false)}
                     className="w-full bg-slate-900 hover:bg-slate-800 text-white py-3 px-6 rounded-full font-medium transition-colors"
                   >
                     Close

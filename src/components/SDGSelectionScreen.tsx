@@ -88,7 +88,7 @@ export const SDGSelectionScreen: React.FC<SDGSelectionScreenProps> = ({
 
       <div className="p-4 md:p-8">
         <div className="max-w-md mx-auto sm:max-w-lg md:max-w-[calc(42rem+400px)] lg:max-w-[calc(42rem+400px)]">
-          {/* Virtue of the Week */}
+          {/* Featured Course */}
           <div className="mb-3 text-left">
             <h1
               className={`text-2xl font-bold text-slate-900 ${getHeadingFontClass(

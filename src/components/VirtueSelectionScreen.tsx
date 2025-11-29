@@ -141,7 +141,7 @@ export const VirtueSelectionScreen: React.FC<VirtueSelectionScreenProps> = ({
                       selectedFont
                     )}`}
                   >
-                    Aspects of life
+                    Learning Styles
                   </h3>
                   <button
                     onClick={() => selectedVirtue && navigateToScreen(3)}
@@ -167,7 +167,7 @@ export const VirtueSelectionScreen: React.FC<VirtueSelectionScreenProps> = ({
                         selectedFont
                       )}`}
                     >
-                      Aspects of life
+                      Learning Styles
                     </h3>
                     <button
                       onClick={() => selectedVirtue && navigateToScreen(3)}
@@ -259,7 +259,7 @@ export const VirtueSelectionScreen: React.FC<VirtueSelectionScreenProps> = ({
                 <div className="mb-4 p-3 bg-white border border-slate-200 rounded-lg">
                   <p className="text-sm leading-normal">
                     Please select a Sustainable Development Goal first to enable
-                    virtue selection.{" "}
+                    learning style selection.{" "}
                     <button
                       onClick={() => navigateToScreen(8)}
                       className="text-blue-600 hover:text-blue-800 underline font-medium"

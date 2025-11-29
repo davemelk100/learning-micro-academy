@@ -22,7 +22,7 @@ export const VirtueProgress: React.FC<VirtueProgressProps> = ({
           onClick={() => navigateToScreen(17)}
           className="text-xl font-semibold text-slate-900 hover:text-blue-600 transition-colors text-left"
         >
-          Your Virtue Journey
+          Your Learning Journey
         </button>
         <button
           onClick={() => navigateToScreen(6)}

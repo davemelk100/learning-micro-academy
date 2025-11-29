@@ -27,7 +27,7 @@ export const ActionsOverview: React.FC<ActionsOverviewProps> = ({
           onClick={() => navigateToScreen(17)}
           className="text-lg md:text-xl font-semibold text-slate-900 hover:text-blue-600 transition-colors text-left"
         >
-          Your Virtue Journey
+          Your Learning Journey
         </button>
         <button
           onClick={() => navigateToScreen(11)}
@@ -48,12 +48,12 @@ export const ActionsOverview: React.FC<ActionsOverviewProps> = ({
                 </div>
                 <div>
                   <h4 className="text-lg font-semibold text-slate-900">
-                    Grace
+                    Intro to UX
                   </h4>
                   <p className="text-xs text-slate-600">
-                    Practice Daily Meditation
+                    Complete UX Fundamentals Course
                   </p>
-                  <p className="text-xs text-slate-500">30 Minutes</p>
+                  <p className="text-xs text-slate-500">4 Weeks</p>
                 </div>
               </div>
               <div className="flex items-center space-x-2">
@@ -100,16 +100,17 @@ export const ActionsOverview: React.FC<ActionsOverviewProps> = ({
             {expandedCards.has("sample-card") && (
               <div className="mt-4 pt-3 border-t border-slate-100">
                 <p className="text-sm text-slate-600 mb-3">
-                  Develop a consistent meditation practice to improve
-                  mindfulness and reduce stress. Start with 10 minutes daily and
-                  gradually increase to 30 minutes.
+                  Complete the UX design fundamentals course to build practical
+                  skills in user research, wireframing, and prototyping.
+                  Dedicate 30 minutes daily to progress through the lessons and
+                  hands-on exercises.
                 </p>
 
-                {/* Amount of Change Timeline */}
+                {/* Learning Progress Timeline */}
                 <div className="mt-4 pt-3 border-t border-slate-100">
                   <div className="flex items-center justify-between mb-3">
                     <span className="text-xs font-medium text-slate-700">
-                      Amount of Change
+                      Learning Progress
                     </span>
                   </div>
                   <div className="relative">
@@ -119,11 +120,11 @@ export const ActionsOverview: React.FC<ActionsOverviewProps> = ({
                     {/* Timeline items */}
                     <div className="flex justify-between">
                       {[
-                        "No Change",
-                        "Slight Change",
-                        "Moderate Change",
-                        "Significant Change",
-                        "Dramatic Change",
+                        "None",
+                        "Slight",
+                        "Moderate",
+                        "Significant",
+                        "Dramatic",
                       ].map((changeType) => (
                         <div
                           key={changeType}

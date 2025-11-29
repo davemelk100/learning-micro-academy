@@ -95,7 +95,7 @@ export const SaveCompletedActionModal: React.FC<
             <h4 className="font-semibold text-slate-900 mb-2">{goal.title}</h4>
             <p className="text-sm text-slate-600 mb-2">{goal.description}</p>
             <div className="flex items-center space-x-4 text-xs text-slate-500">
-              <span>Virtue: {virtue.name}</span>
+              <span>Learning Style: {virtue.name}</span>
               <span>•</span>
               <span>Completed: {new Date().toLocaleDateString()}</span>
             </div>
