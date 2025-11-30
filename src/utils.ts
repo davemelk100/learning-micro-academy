@@ -6,9 +6,6 @@ const STORAGE_KEY = "learning-micro-academy-user-state";
 export const defaultUserPreferences: UserPreferences = {
   name: "Najuma",
   selectedFont: "philosopher-mulish",
-  selectedSDGs: [],
-  currentSelectedSDG: "",
-  hasCompletedSDGSetup: false,
 };
 
 export const saveUserState = async (state: UserState) => {
@@ -95,9 +92,6 @@ export const clearUserState = () => {
 export const clearGoalCreationState = (): UserPreferences => {
   return {
     ...defaultUserPreferences,
-    selectedVirtue: null,
-    selectedSDGs: [],
-    currentSelectedSDG: "",
     newGoal: {
       title: "5 minute action",
       description:

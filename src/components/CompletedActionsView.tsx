@@ -23,7 +23,8 @@ export const CompletedActionsView: React.FC<CompletedActionsViewProps> = ({
   );
   const [filteredActions, setFilteredActions] = useState<CompletedAction[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedVirtue, setSelectedVirtue] = useState<string>("all");
+  const [selectedLearningStyle, setSelectedLearningStyle] =
+    useState<string>("all");
   const [sortBy, setSortBy] = useState<"date" | "impact" | "title">("date");
   const [isLoading, setIsLoading] = useState(true);
 
@@ -34,7 +35,7 @@ export const CompletedActionsView: React.FC<CompletedActionsViewProps> = ({
   useEffect(() => {
     filterAndSortActions();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [completedActions, searchTerm, selectedVirtue, sortBy]);
+  }, [completedActions, searchTerm, selectedLearningStyle, sortBy]);
 
   const loadCompletedActions = async () => {
     try {
@@ -66,10 +67,10 @@ export const CompletedActionsView: React.FC<CompletedActionsViewProps> = ({
       );
     }
 
-    // Filter by virtue
-    if (selectedVirtue !== "all") {
+    // Filter by learning style
+    if (selectedLearningStyle !== "all") {
       filtered = filtered.filter(
-        (action) => action.virtueId === selectedVirtue
+        (action) => action.learningStyleId === selectedLearningStyle
       );
     }
 
@@ -202,8 +203,8 @@ export const CompletedActionsView: React.FC<CompletedActionsViewProps> = ({
 
             {/* Learning Style Filter */}
             <select
-              value={selectedVirtue}
-              onChange={(e) => setSelectedVirtue(e.target.value)}
+              value={selectedLearningStyle}
+              onChange={(e) => setSelectedLearningStyle(e.target.value)}
               className="px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="all">All Learning Styles</option>
@@ -246,7 +247,7 @@ export const CompletedActionsView: React.FC<CompletedActionsViewProps> = ({
                 No completed actions found
               </h3>
               <p className="text-slate-600">
-                {searchTerm || selectedVirtue !== "all"
+                {searchTerm || selectedLearningStyle !== "all"
                   ? "Try adjusting your search or filters"
                   : "Complete some actions to see them here"}
               </p>

@@ -192,25 +192,6 @@ export const SavedActionCard: React.FC<SavedActionCardProps> = ({
               </div>
             )}
 
-            {/* SDG Goals */}
-            {completedAction.sdgIds && completedAction.sdgIds.length > 0 && (
-              <div>
-                <h4 className="text-sm font-medium text-slate-700 mb-2">
-                  Related SDG Goals:
-                </h4>
-                <div className="flex flex-wrap gap-2">
-                  {completedAction.sdgIds.map((sdgId) => (
-                    <span
-                      key={sdgId}
-                      className="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-lg"
-                    >
-                      SDG {sdgId}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-
             {/* Timestamps */}
             <div className="text-xs text-slate-400 space-y-1">
               <p>Created: {formatDate(completedAction.createdAt)}</p>

@@ -102,9 +102,6 @@ function App() {
       emailUpdates: true,
       language: "en",
       selectedLearningStyle: null,
-      selectedSDGs: [],
-      currentSelectedSDG: "",
-      hasCompletedSDGSetup: false,
       hasCompletedOnboarding: false,
       newGoal: {
         title: "",
@@ -162,7 +159,6 @@ function App() {
     name: appContent.defaults.guestName,
     isNewUser: true,
   };
-  const [, setOnboardingStep] = useState<number | null>(null);
   const [isLoadingGoalSuggestions, setIsLoadingGoalSuggestions] =
     useState(false);
   const [showGoalSuggestions, setShowGoalSuggestions] = useState(false);
@@ -282,7 +278,6 @@ function App() {
       setAiLearningStyleSelectionReason(
         formatText(reasonTemplate, {
           learningStyleName: selectedLearningStyle.name,
-          sdgTitle: "your learning goals",
         })
       );
       setIsLoadingAIAssistance(false);
@@ -616,7 +611,6 @@ function App() {
                         const goal: Goal = {
                           id: Date.now().toString(),
                           learningStyleId: selectedLearningStyle!.id,
-                          sdgIds: [],
                           title: newGoal.title,
                           description: newGoal.description,
                           progress: 0,
@@ -624,7 +618,7 @@ function App() {
                           completed: false,
                         };
                         setGoals([...goals, goal]);
-                        navigateToScreen(8);
+                        navigateToScreen(0);
                       } else if (selectedAIAction) {
                         const selectedCourse = courses.find(
                           (c) => c.id === selectedAIAction
@@ -637,7 +631,6 @@ function App() {
                         const goal: Goal = {
                           id: Date.now().toString(),
                           learningStyleId: selectedLearningStyle!.id,
-                          sdgIds: [],
                           title: selectedCourse.title,
                           description: selectedCourse.description,
                           progress: 0,
@@ -645,7 +638,7 @@ function App() {
                           completed: false,
                         };
                         setGoals([...goals, goal]);
-                        navigateToScreen(8);
+                        navigateToScreen(0);
                       }
                     }}
                     previousLabel={appContent.pagination.back}
@@ -757,7 +750,7 @@ function App() {
         <WelcomeScreen
           onStartOnboarding={() => {
             if (displayUser.isNewUser) {
-              setOnboardingStep(1);
+              navigateToScreen(2);
             }
           }}
           navigateToScreen={navigateToScreen}

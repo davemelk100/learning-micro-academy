@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Edit3, X, Sparkles, Star } from "lucide-react";
 import { Virtue, Goal, UserState, UserPreferences } from "../types";
-import { virtues, sdgGoals } from "../data";
+import { virtues } from "../data";
 import { getHeadingFontClass, clearGoalCreationState } from "../utils";
 import { AIInput } from "./AIInput";
 import { AddActionButton } from "./AddActionButton";
@@ -27,9 +27,9 @@ interface DashboardProps {
   };
   selectedFont: string;
   navigate: (path: string) => void;
-  setSelectedVirtue: (virtue: Virtue | null) => void;
-  setSelectedSDGs: (sdgs: string[]) => void;
-  setCurrentSelectedSDG: (sdg: string) => void;
+  setSelectedVirtue?: (virtue: Virtue | null) => void;
+  setSelectedSDGs?: (sdgs: string[]) => void;
+  setCurrentSelectedSDG?: (sdg: string) => void;
   setNewGoal: (goal: UserPreferences["newGoal"]) => void;
   setGoals: (goals: Goal[]) => void;
   saveUserState: (state: UserState) => void;
@@ -254,9 +254,9 @@ export const Dashboard: React.FC<DashboardProps> = ({
               onClick={() => {
                 // Clear goal creation state for fresh start
                 const clearedState = clearGoalCreationState();
-                setSelectedVirtue(null);
-                setSelectedSDGs([]);
-                setCurrentSelectedSDG("");
+                setSelectedVirtue?.(null);
+                setSelectedSDGs?.([]);
+                setCurrentSelectedSDG?.("");
                 setNewGoal(clearedState.newGoal);
                 saveUserState({
                   preferences: clearedState,
@@ -325,9 +325,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
                                   selectedLearningStyle: null,
                                   name: user.name,
                                   selectedFont: selectedFont,
-                                  selectedSDGs: [],
-                                  currentSelectedSDG: "",
-                                  hasCompletedSDGSetup: false,
                                   hasCompletedOnboarding: false,
                                   newGoal: {
                                     title: "",
@@ -372,26 +369,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
                                 : goal.title.includes("1 Hour")
                                 ? "1 Hour"
                                 : "Time varies"}
-                            </p>
-                            <p className="text-base text-slate-600 leading-normal">
-                              <abbr
-                                title="Sustainable Development Goals"
-                                style={{
-                                  textDecoration: "underline dotted",
-                                  textDecorationThickness: "1px",
-                                  textUnderlineOffset: "3px",
-                                  textDecorationColor:
-                                    "rgba(100, 116, 139, 0.4)",
-                                }}
-                              >
-                                SDG
-                              </abbr>
-                              :{" "}
-                              {goal.sdgIds && goal.sdgIds.length > 0
-                                ? sdgGoals.find((sdg) =>
-                                    goal.sdgIds.includes(sdg.id)
-                                  )?.title || "Zero Hunger"
-                                : "Zero Hunger"}
                             </p>
                           </div>
                         </div>
@@ -684,9 +661,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
                                   selectedLearningStyle: null,
                                   name: user.name,
                                   selectedFont: selectedFont,
-                                  selectedSDGs: [],
-                                  currentSelectedSDG: "",
-                                  hasCompletedSDGSetup: false,
                                   hasCompletedOnboarding: false,
                                   newGoal: {
                                     title: "",

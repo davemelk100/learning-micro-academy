@@ -31,7 +31,6 @@ function AppContent() {
   });
   const [user] = useState({ name: "Najuma", isNewUser: false });
   const [selectedFont] = useState("philosopher-mulish");
-  const [_isLoadingAIAssistance, setIsLoadingAIAssistance] = useState(false);
 
   const [userStats] = useState({
     totalGoals: 12,
@@ -64,9 +63,6 @@ function AppContent() {
         selectedLearningStyle: null,
         name: user.name,
         selectedFont,
-        selectedSDGs: [],
-        currentSelectedSDG: "",
-        hasCompletedSDGSetup: false,
         hasCompletedOnboarding: false,
         newGoal,
         lastUpdated: new Date().toISOString(),
@@ -87,11 +83,7 @@ function AppContent() {
       goals={goals}
       userStats={userStats}
       selectedFont={selectedFont}
-      setIsLoadingAIAssistance={setIsLoadingAIAssistance}
       navigate={navigate}
-      setSelectedVirtue={() => {}}
-      setSelectedSDGs={() => {}}
-      setCurrentSelectedSDG={() => {}}
       setNewGoal={setNewGoal}
       setGoals={setGoals}
       saveUserState={saveUserState}
@@ -101,7 +93,6 @@ function AppContent() {
       currentProgressLevel={1}
       showProgressDefinition={true}
       progressDefinitions={[]}
-      newGoal={newGoal}
     />
   );
 

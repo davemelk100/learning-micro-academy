@@ -54,7 +54,7 @@ export const DashboardActions: React.FC<DashboardActionsProps> = ({
       {goals
         .filter((goal) => !goal.completed)
         .map((goal) => {
-          const virtue = virtues.find((v) => v.id === goal.virtueId);
+          const virtue = virtues.find((v) => v.id === goal.learningStyleId);
           if (!virtue) return null;
           return (
             <ActionCard
@@ -77,12 +77,10 @@ export const DashboardActions: React.FC<DashboardActionsProps> = ({
                     notifications: true,
                     emailUpdates: true,
                     language: "en",
-                    selectedVirtue: null,
+                    selectedLearningStyle: null,
                     name: user.name,
                     selectedFont: selectedFont,
-                    selectedSDGs: [],
-                    currentSelectedSDG: "",
-                    hasCompletedSDGSetup: false,
+                    hasCompletedOnboarding: false,
                     newGoal: {
                       title: "",
                       description: "",
@@ -90,6 +88,7 @@ export const DashboardActions: React.FC<DashboardActionsProps> = ({
                     },
                     lastUpdated: new Date().toISOString(),
                     darkMode: false,
+                    progressIntensity: 5,
                   },
                   goals: goals.map((g) =>
                     g.id === goalToToggle.id ? updatedGoal : g
@@ -127,7 +126,9 @@ export const DashboardActions: React.FC<DashboardActionsProps> = ({
               {goals
                 .filter((goal) => goal.completed)
                 .map((goal) => {
-                  const virtue = virtues.find((v) => v.id === goal.virtueId);
+                  const virtue = virtues.find(
+                    (v) => v.id === goal.learningStyleId
+                  );
                   if (!virtue) return null;
 
                   return (
@@ -154,12 +155,10 @@ export const DashboardActions: React.FC<DashboardActionsProps> = ({
                             notifications: true,
                             emailUpdates: true,
                             language: "en",
-                            selectedVirtue: null,
+                            selectedLearningStyle: null,
                             name: user.name,
                             selectedFont: selectedFont,
-                            selectedSDGs: [],
-                            currentSelectedSDG: "",
-                            hasCompletedSDGSetup: false,
+                            hasCompletedOnboarding: false,
                             newGoal: {
                               title: "",
                               description: "",
@@ -167,6 +166,7 @@ export const DashboardActions: React.FC<DashboardActionsProps> = ({
                             },
                             lastUpdated: new Date().toISOString(),
                             darkMode: false,
+                            progressIntensity: 5,
                           },
                           goals: goals.map((g) =>
                             g.id === goalToToggle.id ? updatedGoal : g

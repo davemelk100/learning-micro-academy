@@ -1,4 +1,5 @@
 import { Navigation } from "../components/Navigation";
+import { UserState } from "../types";
 
 interface WelcomeScreenProps {
   onStartOnboarding?: () => void;
@@ -7,8 +8,8 @@ interface WelcomeScreenProps {
   currentScreen: number;
   setShowAuthModal: (show: boolean) => void;
   setShowProfileModal: (show: boolean) => void;
-  getUserState: () => Promise<any>;
-  setUserState: (state: any) => void;
+  getUserState: () => Promise<UserState>;
+  setUserState: (state: UserState) => void;
 }
 
 export const WelcomeScreen = ({

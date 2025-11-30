@@ -84,7 +84,7 @@ export const databaseService = new LocalDatabaseService();
 // Helper function to create a CompletedAction from a Goal
 export const createCompletedActionFromGoal = (
   goal: Record<string, unknown>,
-  virtueName: string,
+  learningStyleName: string,
   additionalData?: {
     completionNotes?: string;
     impactRating?: number;
@@ -100,9 +100,8 @@ export const createCompletedActionFromGoal = (
     originalGoalId: goal.id,
     title: goal.title,
     description: goal.description,
-    virtueId: goal.virtueId,
-    virtueName,
-    sdgIds: goal.sdgIds || [],
+    learningStyleId: goal.learningStyleId,
+    learningStyleName: learningStyleName,
     completedAt: now,
     completionNotes: additionalData?.completionNotes || "",
     impactRating: additionalData?.impactRating,
