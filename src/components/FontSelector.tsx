@@ -23,7 +23,7 @@ export const FontSelector: React.FC<FontSelectorProps> = ({
         <span className={selectedFontOption?.className}>
           {selectedFontOption?.name}
         </span>
-        <ChevronDown className="h-3 w-3" />
+        <ChevronDown className="h-5 w-5" />
       </button>
 
       {isOpen && (

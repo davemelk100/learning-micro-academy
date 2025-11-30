@@ -47,7 +47,7 @@ export const AIRecommendationCard: React.FC<AIRecommendationCardProps> = ({
           onClick={onTryAnother}
           className="bg-slate-100 hover:bg-slate-200 text-slate-700 px-6 py-2 rounded-lg font-medium transition-colors border border-slate-200 flex items-center space-x-2"
         >
-          <RefreshCw className="h-4 w-4" />
+          <RefreshCw className="h-5 w-5" />
           <span>Try Another</span>
         </button>
       </div>

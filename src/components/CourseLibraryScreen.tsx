@@ -13,7 +13,8 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { UserState } from "../types";
-import { saveUserState } from "../utils";
+import { saveUserState, markdownToHtml } from "../utils";
+import { Quiz } from "./Quiz";
 
 interface CourseLibraryScreenProps {
   onBack: () => void;
@@ -21,6 +22,7 @@ interface CourseLibraryScreenProps {
   Navigation?: React.ComponentType;
   userState?: UserState;
   onCourseComplete?: () => void;
+  onStateUpdate?: (updatedState: UserState) => void;
   initialCourseId?: string;
 }
 
@@ -29,9 +31,12 @@ export const CourseLibraryScreen: React.FC<CourseLibraryScreenProps> = ({
   Navigation,
   userState,
   onCourseComplete,
+  onStateUpdate,
   initialCourseId,
 }) => {
   const completedCourses = userState?.preferences?.completedCourses || [];
+  const quizResults = userState?.preferences?.quizResults || {};
+  const courseProgress = userState?.preferences?.courseProgress || {};
 
   // Initialize with initialCourseId if provided
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(
@@ -45,6 +50,17 @@ export const CourseLibraryScreen: React.FC<CourseLibraryScreenProps> = ({
       e.stopPropagation(); // Prevent card click when clicking button
     }
     if (!userState) return;
+
+    // Check if quiz has been passed (80% threshold)
+    const quizResult = quizResults[courseId];
+    const hasPassedQuiz = quizResult?.passed === true;
+
+    if (!hasPassedQuiz) {
+      alert(
+        "You must pass the course quiz (80% or higher) before marking the course as complete."
+      );
+      return;
+    }
 
     const isCompleted = completedCourses.includes(courseId);
     const updatedCompletedCourses = isCompleted
@@ -65,12 +81,112 @@ export const CourseLibraryScreen: React.FC<CourseLibraryScreenProps> = ({
     }
   };
 
+  const handleQuizComplete = (
+    courseId: string,
+    score: number,
+    total: number
+  ) => {
+    if (!userState || !selectedCourse) return;
+
+    const percentage = Math.round((score / total) * 100);
+    const passed = percentage >= 80;
+
+    const updatedQuizResults = {
+      ...quizResults,
+      [courseId]: {
+        passed,
+        score,
+        total,
+      },
+    };
+
+    // Mark quiz lesson as completed when quiz is taken
+    const currentProgress = courseProgress[courseId] || {
+      completedLessons: [],
+    };
+    const quizLesson = selectedCourse.lessons.find((l) => l.type === "quiz");
+    let updatedProgress = { ...courseProgress };
+
+    if (
+      quizLesson &&
+      !currentProgress.completedLessons.includes(quizLesson.id)
+    ) {
+      updatedProgress = {
+        ...courseProgress,
+        [courseId]: {
+          completedLessons: [
+            ...currentProgress.completedLessons,
+            quizLesson.id,
+          ],
+          lastAccessed: new Date().toISOString(),
+        },
+      };
+    }
+
+    const updatedState: UserState = {
+      ...userState,
+      preferences: {
+        ...userState.preferences,
+        quizResults: updatedQuizResults,
+        courseProgress: updatedProgress,
+      },
+    };
+
+    saveUserState(updatedState);
+
+    // Update parent state if callback provided
+    if (onStateUpdate) {
+      onStateUpdate(updatedState);
+    }
+
+    if (passed) {
+      // Optionally show a success message
+      console.log(`Quiz passed! You can now mark the course as complete.`);
+    }
+  };
+
   const isCourseCompleted = (courseId: string) => {
     return completedCourses.includes(courseId);
   };
   const [selectedLesson, setSelectedLesson] = useState<CourseLesson | null>(
     null
   );
+
+  // Track lesson completion when lesson is viewed
+  const handleLessonSelect = (lesson: CourseLesson, course: Course) => {
+    setSelectedLesson(lesson);
+
+    // Mark lesson as completed when viewed (for non-quiz lessons)
+    if (userState && lesson.type !== "quiz") {
+      const currentProgress = courseProgress[course.id] || {
+        completedLessons: [],
+      };
+      if (!currentProgress.completedLessons.includes(lesson.id)) {
+        const updatedProgress = {
+          ...courseProgress,
+          [course.id]: {
+            completedLessons: [...currentProgress.completedLessons, lesson.id],
+            lastAccessed: new Date().toISOString(),
+          },
+        };
+
+        const updatedState: UserState = {
+          ...userState,
+          preferences: {
+            ...userState.preferences,
+            courseProgress: updatedProgress,
+          },
+        };
+
+        saveUserState(updatedState);
+
+        // Update parent state if callback provided
+        if (onStateUpdate) {
+          onStateUpdate(updatedState);
+        }
+      }
+    }
+  };
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [selectedLevel, setSelectedLevel] = useState<string>("All");
@@ -144,7 +260,7 @@ export const CourseLibraryScreen: React.FC<CourseLibraryScreenProps> = ({
               <span className="text-sm text-slate-500 mb-2 block">
                 {selectedCourse.title}
               </span>
-              <h1 className="text-3xl font-bold text-slate-900 mb-4">
+              <h1 className="text-4xl font-bold text-slate-900 mb-4">
                 {selectedLesson.title}
               </h1>
               <div className="flex items-center gap-4 text-sm text-slate-600">
@@ -159,11 +275,25 @@ export const CourseLibraryScreen: React.FC<CourseLibraryScreenProps> = ({
               </div>
             </div>
 
-            <div className="prose max-w-none">
-              <div className="whitespace-pre-wrap text-slate-700 leading-relaxed">
-                {selectedLesson.content}
+            {selectedLesson.type === "quiz" &&
+            selectedLesson.questions &&
+            selectedCourse ? (
+              <Quiz
+                questions={selectedLesson.questions}
+                onComplete={(score, total) => {
+                  handleQuizComplete(selectedCourse.id, score, total);
+                }}
+              />
+            ) : (
+              <div className="prose max-w-none">
+                <div
+                  className="text-slate-700 leading-relaxed"
+                  dangerouslySetInnerHTML={{
+                    __html: markdownToHtml(selectedLesson.content),
+                  }}
+                />
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>
@@ -208,7 +338,7 @@ export const CourseLibraryScreen: React.FC<CourseLibraryScreenProps> = ({
                   <span className="text-sm text-slate-500 mb-2 block">
                     {selectedCourse.category}
                   </span>
-                  <h1 className="text-3xl font-bold text-slate-900 mb-2">
+                  <h1 className="text-4xl font-bold text-slate-900 mb-2">
                     {selectedCourse.title}
                   </h1>
                   <p className="text-slate-700 mb-4">
@@ -219,25 +349,16 @@ export const CourseLibraryScreen: React.FC<CourseLibraryScreenProps> = ({
 
               <div className="flex flex-wrap items-center gap-4 text-sm">
                 <div className="flex items-center gap-1 text-slate-600">
-                  <Clock className="w-4 h-4" />
-                  {selectedCourse.duration}
-                </div>
-                <div className="flex items-center gap-1 text-slate-600">
                   <Users className="w-4 h-4" />
                   {selectedCourse.level}
                 </div>
-                {selectedCourse.instructor && (
-                  <div className="text-slate-600">
-                    Instructor: {selectedCourse.instructor}
-                  </div>
-                )}
               </div>
 
               <div className="flex flex-wrap gap-2 mt-4">
                 {selectedCourse.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="px-3 py-1 bg-slate-100 text-slate-700 rounded-full text-xs font-medium"
+                    className="px-3 py-1 bg-slate-100 text-slate-700 rounded-lg text-xs font-medium"
                   >
                     {tag}
                   </span>
@@ -245,61 +366,105 @@ export const CourseLibraryScreen: React.FC<CourseLibraryScreenProps> = ({
               </div>
               {userState && (
                 <div className="mt-6">
-                  <button
-                    onClick={(e) => handleToggleComplete(selectedCourse.id, e)}
-                    className={`flex items-center gap-2 px-6 py-3 rounded-full font-medium transition-colors ${
-                      isCourseCompleted(selectedCourse.id)
-                        ? "bg-green-100 text-green-700 hover:bg-green-200"
-                        : "bg-slate-900 text-white hover:bg-slate-800"
-                    }`}
-                  >
-                    {isCourseCompleted(selectedCourse.id) ? (
+                  {(() => {
+                    const quizResult = quizResults[selectedCourse.id];
+                    const hasPassedQuiz = quizResult?.passed === true;
+                    const isCompleted = isCourseCompleted(selectedCourse.id);
+                    const canComplete = hasPassedQuiz || isCompleted;
+
+                    return (
                       <>
-                        <CheckCircle2 className="w-5 h-5" />
-                        Completed
+                        {!hasPassedQuiz && !isCompleted && (
+                          <div className="mb-4 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+                            <p className="text-sm text-amber-800">
+                              <strong>Note:</strong> You must pass the course
+                              quiz (80% or higher) before you can mark this
+                              course as complete.
+                            </p>
+                          </div>
+                        )}
+                        <button
+                          onClick={(e) =>
+                            handleToggleComplete(selectedCourse.id, e)
+                          }
+                          disabled={!canComplete}
+                          className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-colors ${
+                            isCompleted
+                              ? "bg-green-100 text-green-700 hover:bg-green-200"
+                              : canComplete
+                              ? "bg-slate-900 text-white hover:bg-slate-800"
+                              : "bg-slate-300 text-slate-500 cursor-not-allowed"
+                          }`}
+                        >
+                          {isCompleted ? (
+                            <>
+                              <CheckCircle2 className="w-5 h-5" />
+                              Completed
+                            </>
+                          ) : (
+                            <>
+                              <Check className="w-5 h-5" />
+                              Mark as Complete
+                            </>
+                          )}
+                        </button>
                       </>
-                    ) : (
-                      <>
-                        <Check className="w-5 h-5" />
-                        Mark as Complete
-                      </>
-                    )}
-                  </button>
+                    );
+                  })()}
                 </div>
               )}
             </div>
 
             <div className="p-8">
-              <h2 className="text-xl font-bold text-slate-900 mb-4">
+              <h2 className="text-lg font-bold text-slate-900 mb-4">
                 Course Lessons
               </h2>
               <div className="space-y-3">
-                {selectedCourse.lessons.map((lesson, index) => (
-                  <button
-                    key={lesson.id}
-                    onClick={() => setSelectedLesson(lesson)}
-                    className="w-full text-left p-4 rounded-lg border border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-all flex items-center justify-between group"
-                  >
-                    <div className="flex items-center gap-4 flex-1">
-                      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 font-medium">
-                        {index + 1}
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          {getLessonIcon(lesson.type)}
-                          <h3 className="font-semibold text-slate-900 group-hover:text-slate-700">
-                            {lesson.title}
-                          </h3>
+                {selectedCourse.lessons.map((lesson, index) => {
+                  const progress = courseProgress[selectedCourse.id];
+                  const isCompleted =
+                    progress?.completedLessons.includes(lesson.id) || false;
+
+                  return (
+                    <button
+                      key={lesson.id}
+                      onClick={() => handleLessonSelect(lesson, selectedCourse)}
+                      className="w-full text-left p-4 rounded-lg border border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-all flex items-center justify-between group"
+                    >
+                      <div className="flex items-center gap-4 flex-1">
+                        <div
+                          className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-medium ${
+                            isCompleted
+                              ? "bg-green-100 text-green-700"
+                              : "bg-slate-100 text-slate-600"
+                          }`}
+                        >
+                          {isCompleted ? (
+                            <Check className="w-4 h-4" />
+                          ) : (
+                            index + 1
+                          )}
                         </div>
-                        <div className="flex items-center gap-2 text-sm text-slate-500">
-                          <Clock className="w-3 h-3" />
-                          {lesson.duration}
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            {getLessonIcon(lesson.type)}
+                            <h3 className="font-semibold text-slate-900 group-hover:text-slate-700">
+                              {lesson.title}
+                            </h3>
+                            {isCompleted && (
+                              <CheckCircle2 className="w-4 h-4 text-green-600" />
+                            )}
+                          </div>
+                          <div className="flex items-center gap-2 text-sm text-slate-500">
+                            <Clock className="w-3 h-3" />
+                            {lesson.duration}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-slate-600 transition-colors" />
-                  </button>
-                ))}
+                      <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-slate-600 transition-colors" />
+                    </button>
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -341,7 +506,7 @@ export const CourseLibraryScreen: React.FC<CourseLibraryScreenProps> = ({
 
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="text-4xl font-bold text-slate-900 mb-2">
+              <h1 className="text-2xl font-bold text-slate-900 mb-2">
                 Course Library
               </h1>
               <p className="text-slate-600">
@@ -393,57 +558,51 @@ export const CourseLibraryScreen: React.FC<CourseLibraryScreenProps> = ({
               onClick={() => setSelectedCourse(course)}
               className="bg-white rounded-xl shadow-sm hover:shadow-md transition-all cursor-pointer overflow-hidden border border-slate-200"
             >
-              <div className="p-6">
-                <div className="flex items-start justify-between mb-4">
-                  <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">
+              <div className="p-5">
+                <div className="flex items-start justify-between mb-3">
+                  <span className="text-xs font-medium text-slate-500 uppercase tracking-wide">
                     {course.category}
                   </span>
-                  <div className="flex items-center gap-2">
-                    {isCourseCompleted(course.id) && (
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-green-50 text-green-700 rounded-full text-xs font-medium">
-                        <CheckCircle2 className="w-3.5 h-3.5" />
-                        Completed
-                      </span>
-                    )}
-                    {!isCourseCompleted(course.id) && (
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white text-slate-500 rounded-full text-xs font-medium border border-slate-200">
-                        <Check className="w-3.5 h-3.5 text-green-600" />
-                        Begin
-                      </span>
-                    )}
-                  </div>
+                  {isCourseCompleted(course.id) && (
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-green-50 text-green-700 rounded-lg text-xs font-medium border border-green-200">
+                      <CheckCircle2 className="w-3 h-3" />
+                      Completed
+                    </span>
+                  )}
                 </div>
-                <h3 className="text-lg font-bold text-slate-900 mb-2 leading-tight">
+
+                <h3 className="text-lg font-bold text-slate-900 mb-2.5 leading-snug">
                   {course.title}
                 </h3>
-                <p className="text-sm text-slate-600 mb-5 line-clamp-2 leading-relaxed">
+
+                <p className="text-lg text-slate-600 mb-4 line-clamp-2 leading-relaxed">
                   {course.description}
                 </p>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4 text-xs text-slate-500">
-                    <div className="flex items-center gap-1.5">
-                      <Clock className="w-3.5 h-3.5" />
-                      <span>{course.duration}</span>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <BookOpen className="w-3.5 h-3.5" />
+
+                <div className="flex items-center justify-between pt-4 border-t border-slate-100">
+                  <div className="flex items-center gap-3 text-xs text-slate-600">
+                    <div className="flex items-center gap-1">
+                      <BookOpen className="w-3.5 h-3.5 text-slate-400" />
                       <span>
                         {course.lessons.length}{" "}
                         {course.lessons.length === 1 ? "lesson" : "lessons"}
                       </span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-1.5">
+                </div>
+
+                {course.tags && course.tags.length > 0 && (
+                  <div className="flex items-center gap-1.5 mt-3 flex-wrap">
                     {course.tags.slice(0, 3).map((tag) => (
                       <span
                         key={tag}
-                        className="px-2.5 py-1 bg-slate-50 text-slate-700 rounded-full text-xs font-medium"
+                        className="px-2 py-0.5 bg-slate-50 text-slate-600 rounded-md text-xs font-medium border border-slate-200"
                       >
                         {tag}
                       </span>
                     ))}
                   </div>
-                </div>
+                )}
               </div>
             </div>
           ))}

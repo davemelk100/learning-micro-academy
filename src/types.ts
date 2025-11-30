@@ -3,6 +3,7 @@ import React from "react";
 export interface LearningStyle {
   id: string;
   name: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   icon: React.ComponentType<any>;
   color: string;
   iconColor: string;
@@ -81,6 +82,15 @@ export interface UserPreferences {
     }>;
   };
   completedCourses?: string[]; // Array of course IDs
+  quizResults?: {
+    [courseId: string]: { passed: boolean; score: number; total: number };
+  }; // Quiz completion status
+  courseProgress?: {
+    [courseId: string]: {
+      completedLessons: string[]; // Array of lesson IDs
+      lastAccessed?: string; // ISO timestamp
+    };
+  }; // Course progress tracking
 }
 
 export interface UserState {

@@ -91,11 +91,11 @@ export const SDGSelectionScreen: React.FC<SDGSelectionScreenProps> = ({
           {/* Featured Course */}
           <div className="mb-3 text-left">
             <h1
-              className={`text-2xl font-bold text-slate-900 ${getHeadingFontClass(
+              className={`text-4xl font-bold text-slate-900 ${getHeadingFontClass(
                 selectedFont
               )}`}
             >
-              Featured Course: Design Systems
+              Featured Course
             </h1>
           </div>
 
@@ -124,7 +124,7 @@ export const SDGSelectionScreen: React.FC<SDGSelectionScreenProps> = ({
                       }
                     }}
                     disabled={selectedSDGs.length === 0}
-                    className={`px-4 py-2 rounded-full font-medium text-sm transition-all ${
+                    className={`px-4 py-2 rounded-lg font-medium text-sm transition-all ${
                       selectedSDGs.length > 0
                         ? "bg-button-dark hover:bg-slate-800 text-white shadow-lg"
                         : "bg-slate-200 text-slate-400 cursor-not-allowed"
@@ -155,7 +155,7 @@ export const SDGSelectionScreen: React.FC<SDGSelectionScreenProps> = ({
                         }
                       }}
                       disabled={selectedSDGs.length === 0}
-                      className={`px-4 py-2 rounded-full font-medium text-sm transition-all ${
+                      className={`px-4 py-2 rounded-lg font-medium text-sm transition-all ${
                         selectedSDGs.length > 0
                           ? "bg-button-dark hover:bg-slate-800 text-white shadow-lg"
                           : "bg-slate-200 text-slate-400 cursor-not-allowed"

@@ -48,7 +48,7 @@ export const OnboardingWelcomeScreen: React.FC<
 
         <button
           onClick={onNext}
-          className="w-full md:w-auto px-8 py-4 bg-slate-900 hover:bg-slate-800 text-white rounded-full transition-all duration-200 font-medium shadow-lg hover:shadow-xl text-lg flex items-center justify-center gap-2 mx-auto"
+          className="w-full md:w-auto px-8 py-4 bg-slate-900 hover:bg-slate-800 text-white rounded-lg transition-all duration-200 font-medium shadow-lg hover:shadow-xl text-lg flex items-center justify-center gap-2 mx-auto"
         >
           Get Started
           <ArrowRight className="w-5 h-5" />

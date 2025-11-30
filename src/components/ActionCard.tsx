@@ -29,13 +29,13 @@ export const ActionCard: React.FC<ActionCardProps> = ({
   const getStatusBadge = () => {
     if (isCompleted) {
       return (
-        <div className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 whitespace-nowrap">
+        <div className="inline-flex items-center px-2 py-1 rounded-lg text-xs font-medium bg-green-100 text-green-800 whitespace-nowrap">
           Completed
         </div>
       );
     }
     return (
-      <div className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800 whitespace-nowrap">
+      <div className="inline-flex items-center px-2 py-1 rounded-lg text-xs font-medium bg-amber-100 text-amber-800 whitespace-nowrap">
         In Progress
       </div>
     );
@@ -122,7 +122,7 @@ export const ActionCard: React.FC<ActionCardProps> = ({
             {onToggleComplete && (
               <button
                 onClick={() => onToggleComplete(goal)}
-                className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
+                className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
                   isCompleted
                     ? "bg-slate-100 text-slate-600 hover:bg-slate-200"
                     : "bg-green-100 text-green-700 hover:bg-green-200"
@@ -149,16 +149,16 @@ export const ActionCard: React.FC<ActionCardProps> = ({
                   };
                   onSaveToDatabase(completedAction);
                 }}
-                className="px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-700 hover:bg-purple-200 transition-colors flex items-center space-x-1"
+                className="px-3 py-1 rounded-lg text-xs font-medium bg-purple-100 text-purple-700 hover:bg-purple-200 transition-colors flex items-center space-x-1"
               >
-                <Database className="h-3 w-3" />
+                <Database className="h-5 w-5" />
                 <span>Save to DB</span>
               </button>
             )}
             {onEdit && (
               <button
                 onClick={() => onEdit(goal)}
-                className="px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700 hover:bg-blue-200 transition-colors"
+                className="px-3 py-1 rounded-lg text-xs font-medium bg-blue-100 text-blue-700 hover:bg-blue-200 transition-colors"
               >
                 Edit
               </button>
@@ -166,7 +166,7 @@ export const ActionCard: React.FC<ActionCardProps> = ({
             {onDelete && (
               <button
                 onClick={() => onDelete(goal)}
-                className="px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700 hover:bg-red-200 transition-colors"
+                className="px-3 py-1 rounded-lg text-xs font-medium bg-red-100 text-red-700 hover:bg-red-200 transition-colors"
               >
                 Delete
               </button>

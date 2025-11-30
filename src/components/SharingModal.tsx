@@ -103,7 +103,7 @@ export const SharingModal: React.FC<SharingModalProps> = ({
           <div className="bg-slate-50 rounded-lg p-4 mb-6">
             <h3 className="font-semibold text-slate-900 mb-2">{actionTitle}</h3>
             <p className="text-sm text-slate-600 mb-2">{actionDescription}</p>
-            <span className="inline-block px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full">
+            <span className="inline-block px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-lg">
               {virtueName}
             </span>
           </div>

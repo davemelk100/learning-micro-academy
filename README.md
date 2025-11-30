@@ -11,7 +11,6 @@ Learning Micro-Academy is a modern learning platform designed to help learners e
 - Web Development
 - Product Strategy
 - Data Analytics
-- Sustainability Practices
 - And many more learning topics
 
 ## Features

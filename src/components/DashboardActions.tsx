@@ -1,6 +1,6 @@
 import React from "react";
 import { ActionCard } from "./ActionCard";
-import { Goal } from "../types";
+import { Goal, Virtue, UserState } from "../types";
 import { virtues } from "../data";
 
 interface DashboardActionsProps {
@@ -12,9 +12,9 @@ interface DashboardActionsProps {
   openEditGoalModal: (_goal: Goal) => void;
   openDeleteModal: (_goal: Goal) => void;
   setGoals: (_goals: Goal[]) => void;
-  saveUserState: (_state: any) => void;
+  saveUserState: (_state: UserState) => void;
   user: { name: string };
-  handleOpenSaveModal: (_goal: any, _virtue: any) => void;
+  handleOpenSaveModal: (_goal: Goal, _virtue: Virtue) => void;
 }
 
 export const DashboardActions: React.FC<DashboardActionsProps> = ({

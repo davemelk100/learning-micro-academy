@@ -1,10 +1,27 @@
 import React from "react";
 import { Sparkles } from "lucide-react";
 
-export const VirtueOfTheWeek: React.FC = () => {
+interface VirtueOfTheWeekProps {
+  onNavigateToCourse?: (courseId: string) => void;
+}
+
+export const VirtueOfTheWeek: React.FC<VirtueOfTheWeekProps> = ({
+  onNavigateToCourse,
+}) => {
+  const handleClick = () => {
+    if (onNavigateToCourse) {
+      onNavigateToCourse("intro-to-ux");
+    }
+  };
+
   return (
     <div
-      className="bg-slate-50 object-cover p-4 text-[#0f172a] border border-slate-100"
+      onClick={handleClick}
+      className={`bg-slate-50 p-4 md:p-6 border border-slate-100 rounded-xl text-[#0f172a] ${
+        onNavigateToCourse
+          ? "cursor-pointer hover:bg-slate-100 hover:border-slate-300 transition-all"
+          : ""
+      }`}
       style={{ minHeight: "200px" }}
     >
       <div className="flex items-center justify-between">
@@ -21,7 +38,7 @@ export const VirtueOfTheWeek: React.FC = () => {
             Intro to UX
           </h3>
           <div className="relative">
-            <p className="text-[#0f172a] text-sm leading-relaxed text-slate-600 mb-4">
+            <p className="text-[#0f172a] text-md leading-relaxed text-slate-600 mb-4">
               Master the fundamentals of user experience design in this
               comprehensive course. Learn how to create intuitive interfaces,
               conduct user research, and build products that people love.

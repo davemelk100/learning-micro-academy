@@ -123,7 +123,7 @@ export const VirtueSelectionScreen: React.FC<VirtueSelectionScreenProps> = ({
           {/* Virtue of the Week */}
           <div className="mb-3 text-left">
             <h1
-              className={`text-2xl font-bold text-slate-900 ${getHeadingFontClass(
+              className={`text-4xl font-bold text-slate-900 ${getHeadingFontClass(
                 selectedFont
               )}`}
             >
@@ -146,7 +146,7 @@ export const VirtueSelectionScreen: React.FC<VirtueSelectionScreenProps> = ({
                   <button
                     onClick={() => selectedVirtue && navigateToScreen(3)}
                     disabled={!selectedVirtue}
-                    className={`px-6 py-2 rounded-full font-medium text-sm transition-all ${
+                    className={`px-6 py-2 rounded-lg font-medium text-sm transition-all ${
                       selectedVirtue
                         ? `bg-button-dark hover:bg-slate-800 text-white shadow-lg ${
                             nextButtonPulse ? "animate-pulse" : ""
@@ -172,7 +172,7 @@ export const VirtueSelectionScreen: React.FC<VirtueSelectionScreenProps> = ({
                     <button
                       onClick={() => selectedVirtue && navigateToScreen(3)}
                       disabled={!selectedVirtue}
-                      className={`px-6 py-2 rounded-full font-medium text-sm transition-all ${
+                      className={`px-6 py-2 rounded-lg font-medium text-sm transition-all ${
                         selectedVirtue
                           ? `bg-button-dark hover:bg-slate-800 text-white shadow-lg ${
                               nextButtonPulse ? "animate-pulse" : ""
@@ -317,9 +317,9 @@ export const VirtueSelectionScreen: React.FC<VirtueSelectionScreenProps> = ({
                           }`}
                         >
                           {isSelected ? (
-                            <Check className="h-4 w-4" />
+                            <Check className="h-5 w-5" />
                           ) : (
-                            <Plus className="h-4 w-4" />
+                            <Plus className="h-5 w-5" />
                           )}
                         </button>
                       </div>
@@ -339,7 +339,7 @@ export const VirtueSelectionScreen: React.FC<VirtueSelectionScreenProps> = ({
                 <button
                   onClick={() => selectedVirtue && navigateToScreen(3)}
                   disabled={!selectedVirtue}
-                  className={`px-6 py-2 rounded-full font-medium text-sm transition-all ${
+                  className={`px-6 py-2 rounded-lg font-medium text-sm transition-all ${
                     selectedVirtue
                       ? `bg-button-dark hover:bg-slate-800 text-white shadow-lg ${
                           nextButtonPulse ? "animate-pulse" : ""

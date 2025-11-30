@@ -17,7 +17,7 @@ export const DashboardVirtueOfTheWeek: React.FC<
       >
         Featured Course: <span className="text-blue-600">Intro to UX</span>
       </h3>
-      <p className="text-slate-700 leading-relaxed mb-4">
+      <p className="text-xl text-slate-700 leading-relaxed mb-4">
         Master the fundamentals of user experience design. Learn how to create intuitive interfaces, conduct user research, and build products that people love.
       </p>
     </div>

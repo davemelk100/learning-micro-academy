@@ -54,7 +54,7 @@ export const OnboardingGoalsScreen: React.FC<OnboardingGoalsScreenProps> = ({
     <div className="min-h-screen flex flex-col items-center justify-center bg-warm-white px-4 py-8">
       <div className="max-w-2xl w-full">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-900 mb-3">
+          <h1 className="text-4xl font-bold text-slate-900 mb-3">
             Set Your Learning Goals
           </h1>
           <p className="text-slate-700">
@@ -71,7 +71,7 @@ export const OnboardingGoalsScreen: React.FC<OnboardingGoalsScreenProps> = ({
               </p>
               <button
                 onClick={() => setShowAddForm(true)}
-                className="px-6 py-3 bg-slate-900 text-white rounded-full hover:bg-slate-800 transition-colors font-medium flex items-center gap-2 mx-auto"
+                className="px-6 py-3 bg-slate-900 text-white rounded-lg hover:bg-slate-800 transition-colors font-medium flex items-center gap-2 mx-auto"
               >
                 <Plus className="w-5 h-5" />
                 Add Learning Goal
@@ -185,7 +185,7 @@ export const OnboardingGoalsScreen: React.FC<OnboardingGoalsScreenProps> = ({
         <div className="flex justify-between mt-8">
           <button
             onClick={onBack}
-            className="px-6 py-3 border-2 border-slate-300 rounded-full hover:bg-slate-50 transition-colors font-medium flex items-center gap-2"
+            className="px-6 py-3 border-2 border-slate-300 rounded-lg hover:bg-slate-50 transition-colors font-medium flex items-center gap-2"
           >
             <ArrowLeft className="w-5 h-5" />
             Back
@@ -193,7 +193,7 @@ export const OnboardingGoalsScreen: React.FC<OnboardingGoalsScreenProps> = ({
           <button
             onClick={handleNext}
             disabled={goals.length === 0}
-            className="px-6 py-3 bg-slate-900 text-white rounded-full hover:bg-slate-800 transition-colors font-medium disabled:bg-slate-300 disabled:cursor-not-allowed flex items-center gap-2"
+            className="px-6 py-3 bg-slate-900 text-white rounded-lg hover:bg-slate-800 transition-colors font-medium disabled:bg-slate-300 disabled:cursor-not-allowed flex items-center gap-2"
           >
             Continue
             <ArrowRight className="w-5 h-5" />

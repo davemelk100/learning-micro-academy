@@ -5,15 +5,15 @@ interface OnboardingDashboardScreenProps {
   onComplete: () => void;
 }
 
-export const OnboardingDashboardScreen: React.FC<OnboardingDashboardScreenProps> = ({
-  onComplete,
-}) => {
+export const OnboardingDashboardScreen: React.FC<
+  OnboardingDashboardScreenProps
+> = ({ onComplete }) => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-warm-white px-4 py-8">
       <div className="max-w-3xl w-full">
         <div className="text-center mb-8">
           <CheckCircle className="w-16 h-16 text-green-600 mx-auto mb-4" />
-          <h1 className="text-3xl font-bold text-slate-900 mb-3">
+          <h1 className="text-4xl font-bold text-slate-900 mb-3">
             Your Learning Dashboard
           </h1>
           <p className="text-slate-700">
@@ -29,11 +29,9 @@ export const OnboardingDashboardScreen: React.FC<OnboardingDashboardScreenProps>
             <div className="flex items-start gap-3 p-4 bg-slate-50 rounded-lg">
               <TrendingUp className="w-6 h-6 text-blue-600 flex-shrink-0 mt-1" />
               <div>
-                <h3 className="font-semibold text-slate-900 mb-1">
-                  Learning Metrics
-                </h3>
-                <p className="text-sm text-slate-600">
-                  Monitor your proficiency, skills mastered, and completion rates
+                <p className="text-lg text-slate-600">
+                  Monitor your proficiency, skills mastered, and completion
+                  rates
                 </p>
               </div>
             </div>
@@ -44,8 +42,9 @@ export const OnboardingDashboardScreen: React.FC<OnboardingDashboardScreenProps>
                 <h3 className="font-semibold text-slate-900 mb-1">
                   Goal Tracking
                 </h3>
-                <p className="text-sm text-slate-600">
-                  Set and track your learning objectives with measurable milestones
+                <p className="text-lg text-slate-600">
+                  Set and track your learning objectives with measurable
+                  milestones
                 </p>
               </div>
             </div>
@@ -56,7 +55,7 @@ export const OnboardingDashboardScreen: React.FC<OnboardingDashboardScreenProps>
                 <h3 className="font-semibold text-slate-900 mb-1">
                   Performance Analytics
                 </h3>
-                <p className="text-sm text-slate-600">
+                <p className="text-lg text-slate-600">
                   Analyze your progress with detailed performance insights
                 </p>
               </div>
@@ -68,7 +67,7 @@ export const OnboardingDashboardScreen: React.FC<OnboardingDashboardScreenProps>
                 <h3 className="font-semibold text-slate-900 mb-1">
                   Progress Intensity
                 </h3>
-                <p className="text-sm text-slate-600">
+                <p className="text-lg text-slate-600">
                   Customize your learning pace and curriculum difficulty
                 </p>
               </div>
@@ -79,7 +78,7 @@ export const OnboardingDashboardScreen: React.FC<OnboardingDashboardScreenProps>
         <div className="text-center">
           <button
             onClick={onComplete}
-            className="px-8 py-4 bg-slate-900 hover:bg-slate-800 text-white rounded-full transition-all duration-200 font-medium shadow-lg hover:shadow-xl text-lg"
+            className="px-8 py-4 bg-slate-900 hover:bg-slate-800 text-white rounded-lg transition-all duration-200 font-medium shadow-lg hover:shadow-xl text-lg"
           >
             Go to Dashboard
           </button>
@@ -88,4 +87,3 @@ export const OnboardingDashboardScreen: React.FC<OnboardingDashboardScreenProps>
     </div>
   );
 };
-

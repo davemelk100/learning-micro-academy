@@ -28,13 +28,13 @@ export const Pagination: React.FC<PaginationProps> = ({
       <button
         onClick={onPrevious}
         disabled={!canGoPrevious}
-        className={`flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+        className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
           canGoPrevious
             ? "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
             : "text-slate-400 cursor-not-allowed"
         }`}
       >
-        <ChevronLeft className="h-4 w-4" />
+        <ChevronLeft className="h-5 w-5" />
         <span>{previousLabel}</span>
       </button>
 
@@ -63,14 +63,14 @@ export const Pagination: React.FC<PaginationProps> = ({
       <button
         onClick={onNext}
         disabled={!canGoNext}
-        className={`flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+        className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
           canGoNext
             ? "bg-blue-600 hover:bg-blue-700 text-white shadow-md"
             : "bg-slate-200 text-slate-400 cursor-not-allowed"
         }`}
       >
         <span>{nextLabel}</span>
-        <ChevronRight className="h-4 w-4" />
+        <ChevronRight className="h-5 w-5" />
       </button>
     </div>
   );

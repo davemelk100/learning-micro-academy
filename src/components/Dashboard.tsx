@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Award, Target, Heart, Edit3, X, Sparkles, Star } from "lucide-react";
+import { Edit3, X, Sparkles, Star } from "lucide-react";
 import { Virtue, Goal, UserState } from "../types";
 import { virtues, sdgGoals } from "../data";
 import { getHeadingFontClass, clearGoalCreationState } from "../utils";
 import { AIInput } from "./AIInput";
-import { HelpButton } from "./HelpButton";
 import { AddActionButton } from "./AddActionButton";
 import { ActionCard } from "./ActionCard";
 import { SaveCompletedActionModal } from "./SaveCompletedActionModal";
@@ -13,11 +12,8 @@ import { CompletedActionsView } from "./CompletedActionsView";
 import { SavedActionCard } from "./SavedActionCard";
 import { UserStats } from "./UserStats";
 import { DashboardVirtueOfTheWeek } from "./DashboardVirtueOfTheWeek";
-import { DashboardActions } from "./DashboardActions";
-import { SavedActionsSection } from "./SavedActionsSection";
 import {
-  databaseService,
-  createCompletedActionFromGoal,
+  databaseService
 } from "../services/databaseService";
 import { CompletedAction } from "../types";
 
@@ -56,7 +52,7 @@ interface DashboardProps {
   progressModalOpen: boolean;
   selectedGoalForProgress: Goal | null;
   progressUpdate: { amount: number; notes: string };
-  setProgressUpdate: (update: any) => void;
+  setProgressUpdate: (update: { amount: number; notes: string }) => void;
   updateGoalProgress: (goalId: string, amount: number, notes: string) => void;
   setSelectedGoalForProgress: (goal: Goal | null) => void;
 }
@@ -229,7 +225,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
         <div className="mb-6 md:mb-8">
           <div className="flex items-center mb-2">
             <span className="mr-3">
-              <Sparkles className="h-6 w-6 text-blue-500" />
+              <Sparkles className="h-5 w-5 text-blue-500" />
             </span>
             <h2
               className={`text-2xl font-bold text-slate-900 ${getHeadingFontClass(
@@ -257,11 +253,11 @@ export const Dashboard: React.FC<DashboardProps> = ({
           getHeadingFontClass={getHeadingFontClass}
         />
 
-          {/* Goals Overview */}
-          <div
-            className="bg-white rounded-lg border border-slate-100"
-            style={{ minHeight: "320px" }}
-          >
+        {/* Goals Overview */}
+        <div
+          className="bg-white rounded-lg border border-slate-100"
+          style={{ minHeight: "320px" }}
+        >
             <div className="flex items-center justify-between mb-4">
               <h3
                 className={`text-lg font-semibold text-slate-900 ${getHeadingFontClass(
@@ -376,10 +372,10 @@ export const Dashboard: React.FC<DashboardProps> = ({
                               >
                                 {goal.title}
                               </h4>
-                              <p className="text-sm text-slate-600 leading-normal">
+                              <p className="text-base text-slate-600 leading-normal">
                                 {virtue?.name || "Unknown Learning Style"}
                               </p>
-                              <p className="text-sm text-slate-500 leading-normal">
+                              <p className="text-base text-slate-500 leading-normal">
                                 {goal.title.includes("5 Minute")
                                   ? "5 Minutes"
                                   : goal.title.includes("15 Minute")
@@ -390,7 +386,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                                   ? "1 Hour"
                                   : "Time varies"}
                               </p>
-                              <p className="text-sm text-slate-600 leading-normal">
+                              <p className="text-base text-slate-600 leading-normal">
                                 <abbr
                                   title="Sustainable Development Goals"
                                   style={{
@@ -431,14 +427,14 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         </div>
                       </div>
 
-                      <p className="text-sm text-slate-600 leading-normal mb-3">
+                      <p className="text-base text-slate-600 leading-normal mb-3">
                         {goal.description}
                       </p>
 
                       {/* Community Action Data */}
                       {goal.communityActionData && (
                         <div className="mb-3 p-3 bg-slate-50 rounded-xl border border-slate-200">
-                          <h5 className="text-sm font-medium text-slate-800 mb-2">
+                          <h5 className="text-base font-medium text-slate-800 mb-2">
                             Community Action Impact
                           </h5>
                           <div className="space-y-1 text-xs text-slate-600">
@@ -487,7 +483,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                       {/* Community Situation Data */}
                       {goal.communitySituationData && (
                         <div className="mb-3 p-3 bg-slate-50 rounded-xl border border-slate-200">
-                          <h5 className="text-sm font-medium text-slate-800 mb-2">
+                          <h5 className="text-base font-medium text-slate-800 mb-2">
                             Community Situation Impact
                           </h5>
                           <div className="space-y-1 text-xs text-slate-600">
@@ -538,7 +534,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                       {/* Draggable Progress Timeline */}
                       <div className="mt-3 pt-3 border-t border-slate-100">
                         <div className="mb-3">
-                          <h4 className="text-sm font-medium text-slate-700 mb-2">
+                          <h4 className="text-base font-medium text-slate-700 mb-2">
                             Update Progress
                           </h4>
                           <p className="text-xs text-slate-500 leading-normal">
@@ -580,7 +576,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
                                 {/* Milestone label */}
                                 <div
-                                  className={`text-sm font-normal leading-normal ${
+                                  className={`text-base font-normal leading-normal ${
                                     currentProgressLevel >= milestone.level
                                       ? "text-emerald-600 font-medium"
                                       : "text-slate-500"
@@ -641,7 +637,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         {/* Progress Definition Display */}
                         {showProgressDefinition && (
                           <div className="mt-4 p-3 bg-white border border-slate-200 rounded-xl">
-                            <p className="text-sm text-emerald-800 leading-normal">
+                            <p className="text-base text-emerald-800 leading-normal">
                               {progressDefinitions[currentProgressLevel]}
                             </p>
                           </div>
@@ -667,7 +663,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                       onClick={() =>
                         setShowCompletedActions(!showCompletedActions)
                       }
-                      className="text-slate-600 hover:text-slate-900 transition-colors text-sm font-medium"
+                      className="text-slate-600 hover:text-slate-900 transition-colors text-base font-medium"
                     >
                       {showCompletedActions ? "Hide" : "Show"} Completed
                     </button>
@@ -754,7 +750,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 </h3>
                 <button
                   onClick={() => setShowSavedActions(!showSavedActions)}
-                  className="text-slate-600 hover:text-slate-900 transition-colors text-sm font-medium"
+                  className="text-slate-600 hover:text-slate-900 transition-colors text-base font-medium"
                 >
                   {showSavedActions ? "Hide" : "Show"} Saved Actions
                 </button>
@@ -780,27 +776,27 @@ export const Dashboard: React.FC<DashboardProps> = ({
         <div className="flex flex-wrap gap-3 mb-6">
           <Link
             to="/progress"
-            className="px-4 py-2 bg-button-dark hover:bg-slate-800 text-white rounded-full text-sm transition-colors"
+            className="px-4 py-2 bg-button-dark hover:bg-slate-800 text-white rounded-lg text-base transition-colors"
           >
             Update Progress
           </Link>
           <Link
             to="/actions"
-            className="px-6 py-2 bg-button-dark hover:bg-slate-800 text-white rounded-full text-sm transition-colors"
+            className="px-6 py-2 bg-button-dark hover:bg-slate-800 text-white rounded-lg text-base transition-colors"
           >
             Save
           </Link>
           <Link
             to="/edit-actions"
-            className="px-4 py-2 bg-button-dark hover:bg-slate-800 text-white rounded-full text-sm transition-colors"
+            className="px-4 py-2 bg-button-dark hover:bg-slate-800 text-white rounded-lg text-base transition-colors"
           >
             Update Action
           </Link>
           <button
             onClick={() => setShowCompletedActionsView(true)}
-            className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-full text-sm transition-colors flex items-center space-x-2"
+            className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-base transition-colors flex items-center space-x-2"
           >
-            <Star className="h-4 w-4" />
+            <Star className="h-5 w-5" />
             <span>View Database</span>
           </button>
         </div>
