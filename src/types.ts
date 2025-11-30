@@ -16,7 +16,6 @@ export type Virtue = LearningStyle;
 export interface Goal {
   id: string;
   learningStyleId: string;
-  sdgIds: string[];
   title: string;
   description: string;
   progress: number;
@@ -51,9 +50,9 @@ export interface UserPreferences {
   emailUpdates: boolean;
   language: string;
   selectedLearningStyle: string | null;
-  selectedSDGs: string[];
-  currentSelectedSDG: string;
-  hasCompletedSDGSetup: boolean;
+  selectedSDGs?: string[];
+  currentSelectedSDG?: string;
+  hasCompletedSDGSetup?: boolean;
   hasCompletedOnboarding: boolean;
   newGoal: {
     title: string;
@@ -151,7 +150,6 @@ export interface CompletedAction {
   description: string;
   learningStyleId: string;
   learningStyleName: string;
-  sdgIds: string[];
   completedAt: string;
   completionNotes?: string;
   impactRating?: number; // 1-5 scale

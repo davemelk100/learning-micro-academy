@@ -111,15 +111,15 @@ export const SavedActionCard: React.FC<SavedActionCardProps> = ({
           </div>
 
           {/* Actions */}
-          <div className="flex items-center space-x-2 ml-4">
+          <div className="flex items-center space-x-2 ml-4 self-start">
             <button
               onClick={() => setIsExpanded(!isExpanded)}
-              className="p-2 text-slate-400 hover:text-slate-600 transition-colors"
+              className="p-2 text-slate-400 hover:text-slate-600 transition-colors flex items-center"
             >
               {isExpanded ? (
-                <ChevronUp className="h-5 w-5" />
+                <ChevronUp className="h-8 w-8" />
               ) : (
-                <ChevronDown className="h-5 w-5" />
+                <ChevronDown className="h-8 w-8" />
               )}
             </button>
           </div>
@@ -189,25 +189,6 @@ export const SavedActionCard: React.FC<SavedActionCardProps> = ({
                 <p className="text-sm text-slate-600 bg-slate-50 p-3 rounded-lg">
                   {completedAction.nextSteps}
                 </p>
-              </div>
-            )}
-
-            {/* SDG Goals */}
-            {completedAction.sdgIds && completedAction.sdgIds.length > 0 && (
-              <div>
-                <h4 className="text-sm font-medium text-slate-700 mb-2">
-                  Related SDG Goals:
-                </h4>
-                <div className="flex flex-wrap gap-2">
-                  {completedAction.sdgIds.map((sdgId) => (
-                    <span
-                      key={sdgId}
-                      className="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-lg"
-                    >
-                      SDG {sdgId}
-                    </span>
-                  ))}
-                </div>
               </div>
             )}
 

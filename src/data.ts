@@ -7,7 +7,7 @@ import {
   Network,
   Users,
 } from "lucide-react";
-import { FontOption, Virtue } from "./types";
+import { Virtue } from "./types";
 
 export const virtues: Virtue[] = [
   {
@@ -165,54 +165,6 @@ export const learningTopics = [
     title: "Creative Skills",
     color: "bg-lime-500",
     innerColor: "bg-lime-700",
-  },
-];
-
-// Keep sdgGoals for backward compatibility if needed elsewhere
-export const sdgGoals = learningTopics;
-
-export const fontOptions: FontOption[] = [
-  {
-    id: "nunito-poppins",
-    name: "Nunito + Poppins",
-    className: "font-poppins",
-    headingClassName: "font-nunito",
-  },
-  {
-    id: "raleway-inter",
-    name: "Raleway + Inter",
-    className: "font-inter",
-    headingClassName: "font-raleway",
-  },
-  {
-    id: "inter-krub",
-    name: "Inter + Krub",
-    className: "font-krub",
-    headingClassName: "font-inter",
-  },
-  {
-    id: "quicksand-bold-regular",
-    name: "Quicksand Bold + Regular",
-    className: "font-quicksand",
-    headingClassName: "font-quicksand font-bold",
-  },
-  {
-    id: "sintony-roboto",
-    name: "Sintony + Roboto",
-    className: "font-roboto",
-    headingClassName: "font-sintony",
-  },
-  {
-    id: "philosopher-mulish",
-    name: "Philosopher + Mulish",
-    className: "font-mulish",
-    headingClassName: "font-philosopher",
-  },
-  {
-    id: "archivo-narrow-geist",
-    name: "Archivo Narrow + Geist",
-    className: "font-geist",
-    headingClassName: "font-archivo-narrow",
   },
 ];
 

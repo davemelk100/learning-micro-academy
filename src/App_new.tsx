@@ -1,20 +1,15 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import {
   BrowserRouter as Router,
+  Routes,
+  Route,
   useNavigate,
-  useLocation,
+  Navigate,
 } from "react-router-dom";
 
-// Import types and utilities
-import { Virtue, Goal, UserState } from "./types";
-import {
-  saveUserState,
-  getUserState,
-  getFontClass,
-} from "./utils";
+import { Goal, UserState } from "./types";
+import { saveUserState, getUserState, getFontClass } from "./utils";
 import { Dashboard } from "./components/Dashboard";
-import { SDGSelectionScreen } from "./components/SDGSelectionScreen";
-import { VirtueSelectionScreen } from "./components/VirtueSelectionScreen";
 
 // Main App Router Component
 function App() {
@@ -25,100 +20,18 @@ function App() {
   );
 }
 
-// Main App Content Component
 function AppContent() {
   const navigate = useNavigate();
-  const location = useLocation();
 
-  // Convert pathname to screen number for backward compatibility
-  const getCurrentScreen = () => {
-    const path = location.pathname;
-    switch (path) {
-      case "/":
-        return 1; // Welcome screen
-      case "/dashboard":
-        return 0; // Dashboard screen
-      case "/welcome":
-        return 1;
-      case "/aspects":
-        return 2;
-      case "/goals":
-        return 3;
-      case "/confirmation":
-        return 4;
-      case "/journey":
-        return 6;
-      case "/progress":
-        return 7;
-      case "/sdgs":
-        return 8;
-      case "/user-research":
-        return 11;
-      case "/journeys":
-        return 12;
-      case "/gtm-plan":
-        return 13;
-      case "/audits":
-        return 14;
-      default:
-        return 1; // Default to welcome screen
-    }
-  };
-
-  const currentScreen = getCurrentScreen();
-
-  // Navigation function that updates URL
-  const navigateToScreen = (screenNumber: number) => {
-    const routes = {
-      0: "/dashboard",
-      1: "/welcome",
-      2: "/aspects",
-      3: "/goals",
-      4: "/confirmation",
-      6: "/journey",
-      7: "/progress",
-      8: "/sdgs",
-      11: "/user-research",
-      12: "/journeys",
-      13: "/gtm-plan",
-      14: "/audits",
-    };
-
-    const route = routes[screenNumber as keyof typeof routes];
-    if (route) {
-      console.log(`Navigating to screen ${screenNumber} -> ${route}`);
-      navigate(route);
-    } else {
-      console.warn(`No route found for screen number: ${screenNumber}`);
-    }
-  };
-
-  // Initialize state from localStorage
-  const savedState = getUserState();
-
-  // State management
-  const [selectedVirtue, setSelectedVirtue] = useState<Virtue | null>(
-    savedState.preferences.selectedVirtue
-  );
-  const [selectedSDGs, setSelectedSDGs] = useState<string[]>(
-    savedState.preferences.selectedSDGs || []
-  );
-  const [currentSelectedSDG, setCurrentSelectedSDG] = useState<string>(
-    savedState.preferences.currentSelectedSDG || ""
-  );
-  const [goals, setGoals] = useState<Goal[]>(savedState.goals);
-  const [newGoal, setNewGoal] = useState(savedState.preferences.newGoal);
+  const [goals, setGoals] = useState<Goal[]>([]);
+  const [newGoal, setNewGoal] = useState({
+    title: "",
+    description: "",
+    target: 0,
+  });
   const [user] = useState({ name: "Najuma", isNewUser: false });
   const [selectedFont] = useState("philosopher-mulish");
-  const [aiConversationOpen, setAiConversationOpen] = useState<boolean>(false);
-  const [aiConversationMessages, setAiConversationMessages] = useState<
-    Array<{ role: "user" | "ai"; message: string }>
-  >([]);
-  const [aiConversationInput, setAiConversationInput] = useState<string>("");
-  const conversationInputRef = useRef<HTMLInputElement>(null);
-  const [animatingSDG] = useState<string | null>(null);
 
-  // User stats
   const [userStats] = useState({
     totalGoals: 12,
     completedGoals: 8,
@@ -127,148 +40,82 @@ function AppContent() {
     currentStreak: 7,
   });
 
-  // AI Conversation handler
-  const handleAIConversation = (input: string) => {
-    if (!input.trim()) return;
+  useEffect(() => {
+    const loadState = async () => {
+      const savedState = await getUserState();
+      if (savedState.goals) {
+        setGoals(savedState.goals);
+      }
+      if (savedState.preferences.newGoal) {
+        setNewGoal(savedState.preferences.newGoal);
+      }
+    };
+    loadState();
+  }, []);
 
-    // Add user message
-    const newMessages = [
-      ...aiConversationMessages,
-      { role: "user" as const, message: input },
-    ];
-    setAiConversationMessages(newMessages);
-    setAiConversationInput("");
-
-    // Simulate AI response
-    setTimeout(() => {
-      setAiConversationMessages([
-        ...newMessages,
-        {
-          role: "ai" as const,
-          message:
-            "Thank you for your question! I'm here to help guide you on your virtue journey.",
-        },
-      ]);
-    }, 1000);
-  };
-
-  // Save user state whenever relevant state changes
   useEffect(() => {
     const userState: UserState = {
       preferences: {
+        theme: "light",
+        notifications: true,
+        emailUpdates: true,
+        language: "en",
+        selectedLearningStyle: null,
         name: user.name,
         selectedFont,
-        selectedSDGs,
-        currentSelectedSDG,
-        hasCompletedSDGSetup: selectedSDGs.length > 0,
+        hasCompletedOnboarding: false,
+        newGoal,
+        lastUpdated: new Date().toISOString(),
+        darkMode: false,
+        progressIntensity: 5,
+        completedCourses: [],
       },
       goals,
       progress: [],
-      currentScreen,
+      currentScreen: 0,
     };
     saveUserState(userState);
-  }, [
-    user.name,
-    selectedFont,
-    selectedSDGs,
-    currentSelectedSDG,
-    goals,
-    currentScreen,
-  ]);
+  }, [user.name, selectedFont, goals, newGoal]);
 
-  // Render different screens based on current screen
-  const renderScreen = () => {
-    switch (currentScreen) {
-      case 0: // Dashboard
-        return (
-          <Dashboard
-            user={user}
-            goals={goals}
-            userStats={userStats}
-            selectedFont={selectedFont}
-            setIsLoadingAIAssistance={setIsLoadingAIAssistance}
-            navigate={navigate}
-            setSelectedVirtue={setSelectedVirtue}
-            setSelectedSDGs={setSelectedSDGs}
-            setCurrentSelectedSDG={setCurrentSelectedSDG}
-            setNewGoal={setNewGoal}
-            setGoals={setGoals}
-            saveUserState={saveUserState}
-            // Additional props for Dashboard functionality
-            openEditGoalModal={() => {}}
-            deleteGoal={() => {}}
-            handleProgressLevelChange={() => {}}
-            currentProgressLevel={1}
-            showProgressDefinition={true}
-            progressDefinitions={[]}
-            editGoalModalOpen={false}
-            selectedGoalForEdit={null}
-            newGoal={newGoal}
-            setEditGoalModalOpen={() => {}}
-            setSelectedGoalForEdit={() => {}}
-            setProgressModalOpen={() => {}}
-            progressModalOpen={false}
-            selectedGoalForProgress={null}
-            progressUpdate={{ amount: 1, notes: "" }}
-            setProgressUpdate={() => {}}
-            updateGoalProgress={() => {}}
-            setSelectedGoalForProgress={() => {}}
-          />
-        );
+  const DashboardComponent = () => (
+    <Dashboard
+      user={user}
+      goals={goals}
+      userStats={userStats}
+      selectedFont={selectedFont}
+      navigate={navigate}
+      setNewGoal={setNewGoal}
+      setGoals={setGoals}
+      saveUserState={saveUserState}
+      openEditGoalModal={() => {}}
+      openDeleteModal={() => {}}
+      handleProgressLevelChange={() => {}}
+      currentProgressLevel={1}
+      showProgressDefinition={true}
+      progressDefinitions={[]}
+    />
+  );
 
-      case 2: // Virtue Selection
-        return (
-          <VirtueSelectionScreen
-            selectedSDGs={selectedSDGs}
-            currentSelectedSDG={currentSelectedSDG}
-            selectedVirtue={selectedVirtue}
-            setSelectedVirtue={setSelectedVirtue}
-            navigateToScreen={navigateToScreen}
-            selectedFont={selectedFont}
-            aiConversationOpen={aiConversationOpen}
-            conversationInputRef={conversationInputRef}
-            setAiConversationOpen={setAiConversationOpen}
-            setAiConversationMessages={setAiConversationMessages}
-            setAiConversationInput={setAiConversationInput}
-            aiConversationMessages={aiConversationMessages}
-            aiConversationInput={aiConversationInput}
-            handleAIConversation={handleAIConversation}
-          />
-        );
-
-      case 8: // SDG Selection
-        return (
-          <SDGSelectionScreen
-            selectedSDGs={selectedSDGs}
-            setSelectedSDGs={setSelectedSDGs}
-            setCurrentSelectedSDG={setCurrentSelectedSDG}
-            navigateToScreen={navigateToScreen}
-            selectedFont={selectedFont}
-            aiConversationOpen={aiConversationOpen}
-            conversationInputRef={conversationInputRef}
-            animatingSDG={animatingSDG}
-          />
-        );
-
-      default:
-        return (
-          <div className="min-h-screen flex items-center justify-center">
-            <div className="text-center">
-              <h1 className="text-4xl font-bold text-slate-900 mb-4">
-                Screen {currentScreen}
-              </h1>
-              <p className="text-slate-600">
-                This screen is not yet implemented in the refactored version.
-              </p>
-            </div>
-          </div>
-        );
-    }
-  };
+  const NotFoundComponent = () => (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="text-center">
+        <h1 className="text-4xl font-bold text-slate-900 mb-4">
+          Page Not Found
+        </h1>
+        <p className="text-slate-600">
+          The page you're looking for doesn't exist.
+        </p>
+      </div>
+    </div>
+  );
 
   return (
     <div className={`min-h-screen bg-warm-white ${getFontClass(selectedFont)}`}>
-      {renderScreen()}
+      <Routes>
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/dashboard" element={<DashboardComponent />} />
+        <Route path="*" element={<NotFoundComponent />} />
+      </Routes>
     </div>
   );
 }
