@@ -106,7 +106,7 @@ export const SaveCompletedActionModal: React.FC<
             {/* Completion Notes */}
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">
-                <FileText className="h-4 w-4 inline mr-1" />
+                <FileText className="h-5 w-5 inline mr-1" />
                 Completion Notes
               </label>
               <textarea
@@ -121,7 +121,7 @@ export const SaveCompletedActionModal: React.FC<
             {/* Impact Rating */}
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">
-                <Star className="h-4 w-4 inline mr-1" />
+                <Star className="h-5 w-5 inline mr-1" />
                 Impact Rating (1-5)
               </label>
               <div className="flex space-x-2">
@@ -147,7 +147,7 @@ export const SaveCompletedActionModal: React.FC<
             {/* Lessons Learned */}
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">
-                <FileText className="h-4 w-4 inline mr-1" />
+                <FileText className="h-5 w-5 inline mr-1" />
                 Lessons Learned
               </label>
               <textarea
@@ -162,7 +162,7 @@ export const SaveCompletedActionModal: React.FC<
             {/* Next Steps */}
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">
-                <ArrowRight className="h-4 w-4 inline mr-1" />
+                <ArrowRight className="h-5 w-5 inline mr-1" />
                 Next Steps
               </label>
               <textarea
@@ -177,7 +177,7 @@ export const SaveCompletedActionModal: React.FC<
             {/* Tags */}
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">
-                <Tag className="h-4 w-4 inline mr-1" />
+                <Tag className="h-5 w-5 inline mr-1" />
                 Tags (comma-separated)
               </label>
               <input

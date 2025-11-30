@@ -123,7 +123,7 @@ export const VirtueSelectionScreen: React.FC<VirtueSelectionScreenProps> = ({
           {/* Virtue of the Week */}
           <div className="mb-3 text-left">
             <h1
-              className={`text-2xl font-bold text-slate-900 ${getHeadingFontClass(
+              className={`text-4xl font-bold text-slate-900 ${getHeadingFontClass(
                 selectedFont
               )}`}
             >
@@ -317,9 +317,9 @@ export const VirtueSelectionScreen: React.FC<VirtueSelectionScreenProps> = ({
                           }`}
                         >
                           {isSelected ? (
-                            <Check className="h-4 w-4" />
+                            <Check className="h-5 w-5" />
                           ) : (
-                            <Plus className="h-4 w-4" />
+                            <Plus className="h-5 w-5" />
                           )}
                         </button>
                       </div>

@@ -91,7 +91,7 @@ export const SDGSelectionScreen: React.FC<SDGSelectionScreenProps> = ({
           {/* Featured Course */}
           <div className="mb-3 text-left">
             <h1
-              className={`text-2xl font-bold text-slate-900 ${getHeadingFontClass(
+              className={`text-4xl font-bold text-slate-900 ${getHeadingFontClass(
                 selectedFont
               )}`}
             >

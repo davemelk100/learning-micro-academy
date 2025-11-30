@@ -84,12 +84,12 @@ export const SavedActionCard: React.FC<SavedActionCardProps> = ({
             {/* Metadata */}
             <div className="flex items-center space-x-4 text-sm text-slate-500 mb-3">
               <span className="flex items-center space-x-1">
-                <Calendar className="h-4 w-4" />
+                <Calendar className="h-5 w-5" />
                 <span>Completed {formatDate(completedAction.completedAt)}</span>
               </span>
               {completedAction.tags && completedAction.tags.length > 0 && (
                 <span className="flex items-center space-x-1">
-                  <Tag className="h-4 w-4" />
+                  <Tag className="h-5 w-5" />
                   <span>{completedAction.tags.length} tags</span>
                 </span>
               )}
@@ -136,7 +136,7 @@ export const SavedActionCard: React.FC<SavedActionCardProps> = ({
                 onClick={() => onArchive(completedAction.id)}
                 className="px-3 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-700 hover:bg-orange-200 transition-colors flex items-center space-x-1"
               >
-                <Archive className="h-3 w-3" />
+                <Archive className="h-5 w-5" />
                 <span>Archive</span>
               </button>
             )}

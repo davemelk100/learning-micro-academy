@@ -2,13 +2,7 @@ import React from "react";
 import { virtues } from "../data";
 import { Heart, Bot, Target } from "lucide-react";
 
-interface VirtueProgressProps {
-  navigateToScreen: (_screen: number) => void;
-}
-
-export const VirtueProgress: React.FC<VirtueProgressProps> = ({
-  navigateToScreen,
-}) => {
+export const VirtueProgress: React.FC = () => {
   const progressData = [
     { virtue: virtues.find((v) => v.id === "community"), progress: 75 },
     { virtue: virtues.find((v) => v.id === "wisdom"), progress: 60 },
@@ -17,17 +11,7 @@ export const VirtueProgress: React.FC<VirtueProgressProps> = ({
 
   return (
     <div className="mb-4">
-      <div className="flex items-center justify-between mb-3">
-        <h3 className="text-base font-semibold text-slate-700">
-          Learning Metrics
-        </h3>
-        <button
-          onClick={() => navigateToScreen(17)}
-          className="text-slate-600 hover:text-slate-900 text-xs font-medium transition-colors"
-        >
-          View All
-        </button>
-      </div>
+      <div className="flex items-center justify-between mb-3"></div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
         {progressData.map((item, index) => {
@@ -60,12 +44,12 @@ export const VirtueProgress: React.FC<VirtueProgressProps> = ({
               className="bg-white p-4 rounded-xl shadow-md border border-slate-100 flex items-center space-x-3"
             >
               <div
-                className={`w-10 h-10 ${bgColorClass} rounded-full flex items-center justify-center`}
+                className={`w-12 h-12 ${bgColorClass} rounded-full flex items-center justify-center`}
               >
                 <IconComponent className={`h-5 w-5 ${iconColorClass}`} />
               </div>
               <div className="flex-1">
-                <p className="text-sm text-slate-600">{virtue.name}</p>
+                <p className="text-lg text-slate-600">{virtue.name}</p>
                 <p className="text-xl font-bold text-slate-900">{progress}%</p>
                 <div className="w-full bg-slate-200 rounded-full h-1.5 mt-1">
                   <div

@@ -21,7 +21,7 @@ export const VirtueOfTheWeek: React.FC = () => {
             Intro to UX
           </h3>
           <div className="relative">
-            <p className="text-[#0f172a] text-sm leading-relaxed text-slate-600 mb-4">
+            <p className="text-[#0f172a] text-xl leading-relaxed text-slate-600 mb-4">
               Master the fundamentals of user experience design in this
               comprehensive course. Learn how to create intuitive interfaces,
               conduct user research, and build products that people love.

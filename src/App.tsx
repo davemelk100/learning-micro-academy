@@ -285,7 +285,7 @@ function App() {
     },
     {
       id: "sdg7",
-      title: "Sustainability",
+      title: "Energy",
       color: "bg-indigo-500",
       innerColor: "bg-indigo-700",
       icon: Globe,
@@ -481,15 +481,15 @@ function App() {
       sdg3: ["Development", "Web", "Analytics"],
       sdg4: ["Design", "UX", "Product"],
       sdg5: ["Product", "Strategy", "Analytics"],
-      sdg7: ["Sustainability", "Energy", "Environment"],
+      sdg7: ["Energy", "Environment"],
       sdg8: ["Product", "Strategy", "Analytics"], // Decent Work - business strategy
       sdg9: ["Development", "Design", "Product"], // Industry Innovation - tech innovation
       sdg10: ["Product", "Strategy", "Analytics"], // Reduced Inequalities - inclusive design
-      sdg11: ["Design", "Product", "Sustainability"], // Sustainable Cities - urban design
-      sdg12: ["Sustainability", "Environment", "Product"], // Responsible Consumption - sustainability
-      sdg13: ["Sustainability", "Energy", "Environment"], // Climate Action - sustainability
-      sdg14: ["Sustainability", "Environment", "Analytics"], // Life Below Water - environmental
-      sdg15: ["Sustainability", "Environment", "Analytics"], // Life on Land - environmental
+      sdg11: ["Design", "Product"], // Sustainable Cities - urban design
+      sdg12: ["Environment", "Product"], // Responsible Consumption
+      sdg13: ["Energy", "Environment"], // Climate Action
+      sdg14: ["Environment", "Analytics"], // Life Below Water - environmental
+      sdg15: ["Environment", "Analytics"], // Life on Land - environmental
       sdg16: ["Product", "Strategy", "Analytics"], // Peace and Justice - governance
       sdg17: ["Product", "Strategy", "Analytics"], // Partnerships - collaboration
     };
@@ -549,7 +549,6 @@ function App() {
         "web-development": `${selectedLearningStyle.name} aligns with ${selectedSDGTitle} by enabling you to build digital solutions that can scale and reach more people.`,
         "product-strategy": `${selectedLearningStyle.name} enhances ${selectedSDGTitle} by teaching strategic thinking and planning for long-term impact.`,
         "data-analytics": `${selectedLearningStyle.name} supports ${selectedSDGTitle} by providing tools to measure impact and make data-driven decisions.`,
-        sustainability: `${selectedLearningStyle.name} aligns with ${selectedSDGTitle} by focusing on sustainable practices and long-term thinking.`,
       };
 
       setAiSelectedLearningStyle(selectedLearningStyle.id);
@@ -620,7 +619,6 @@ function App() {
     const navItems = [
       { label: "Dashboard", action: () => navigateToScreen(0) },
       // { label: "Add Action", action: () => navigateToScreen(11) },
-      { label: "Learning Metrics", action: () => navigateToScreen(17) },
       { label: "Design System", action: () => navigateToScreen(20) },
     ];
 
@@ -633,7 +631,7 @@ function App() {
               onClick={() => {
                 item.action();
               }}
-              className="text-slate-600 hover:text-slate-900 text-sm font-medium transition-colors"
+              className="text-slate-600 hover:text-slate-900 text-lg font-medium transition-colors"
             >
               {item.label}
             </button>
@@ -663,7 +661,7 @@ function App() {
             ) : (
               <button
                 onClick={() => setShowAuthModal(true)}
-                className="bg-slate-900 text-white rounded-full px-4 py-2 shadow-md hover:bg-slate-800 transition-colors text-sm font-medium"
+                className="bg-slate-900 text-white rounded-full px-4 py-2 shadow-md hover:bg-slate-800 transition-colors text-lg font-medium"
               >
                 Login
               </button>
@@ -679,7 +677,6 @@ function App() {
               const isActive =
                 (item.label === "Dashboard" && currentScreen === 0) ||
                 // (item.label === "Add Action" && currentScreen === 8) ||
-                (item.label === "Learning Journey" && currentScreen === 17) ||
                 (item.label === "Design System" && currentScreen === 20);
 
               return (
@@ -713,7 +710,7 @@ function App() {
                     />
                   )}
                   <span
-                    className={`text-xs font-medium ${
+                    className={`text-lg font-medium ${
                       isActive ? "text-blue-600" : ""
                     }`}
                   >
@@ -731,7 +728,7 @@ function App() {
                   title="Profile"
                 >
                   <UserIcon className="h-5 w-5" />
-                  <span className="text-xs font-medium">Profile</span>
+                  <span className="text-lg font-medium">Profile</span>
                 </button>
               ) : (
                 <button
@@ -739,7 +736,7 @@ function App() {
                   className="flex flex-col items-center space-y-1 p-2 text-slate-600 hover:text-slate-900"
                 >
                   <UserIcon className="h-5 w-5" />
-                  <span className="text-xs font-medium">Login</span>
+                  <span className="text-lg font-medium">Login</span>
                 </button>
               )}
             </div>
@@ -780,7 +777,7 @@ function App() {
             <h1 className="text-4xl font-bold text-slate-900 mb-4">
               Learning Micro-Academy
             </h1>
-            <p className="text-base text-slate-700 mb-6">
+            <p className="text-lg text-slate-700 mb-6">
               Bite-sized courses for continuous learning. Explore our
               comprehensive course library.
             </p>
@@ -881,10 +878,10 @@ function App() {
                       </h3>
                       {/* AI assistance prompt on its own row */}
                       <div className="flex items-center space-x-2">
-                        <Sparkles className="h-4 w-4 text-blue-500 animate-bounce transition-all duration-300 hover:scale-110 hover:drop-shadow-lg" />
+                        <Sparkles className="h-5 w-5 text-blue-500 animate-bounce transition-all duration-300 hover:scale-110 hover:drop-shadow-lg" />
                         <button
                           onClick={handleLearningStyleAIAssistanceClick}
-                          className="text-base text-slate-600 hover:text-slate-800 transition-colors cursor-pointer"
+                          className="text-lg text-slate-600 hover:text-slate-800 transition-colors cursor-pointer"
                         >
                           Let Learning Micro-Academy help
                         </button>
@@ -910,10 +907,10 @@ function App() {
                         <Sparkles className="h-5 w-5 text-blue-500 mt-0.5" />
                       </div>
                       <div className="flex-1">
-                        <h4 className="text-sm font-semibold text-blue-900 mb-2">
+                        <h4 className="text-lg font-semibold text-blue-900 mb-2">
                           Learning Micro-Academy AI Recommendation
                         </h4>
-                        <p className="text-sm text-blue-800 mb-3">
+                        <p className="text-lg text-blue-800 mb-3">
                           {aiLearningStyleSelectionReason}
                         </p>
                         <div className="flex space-x-2">
@@ -928,15 +925,15 @@ function App() {
                                 setAiLearningStyleSelectionReason("");
                               }
                             }}
-                            className="text-sm bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 object-cover transition-colors"
+                            className="text-lg bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 object-cover transition-colors"
                           >
                             Accept
                           </button>
                           <button
                             onClick={handleLearningStyleAIAssistanceClick}
-                            className="text-sm bg-slate-200 hover:bg-slate-300 text-slate-700 px-3 py-2 object-cover transition-colors flex items-center space-x-1"
+                            className="text-lg bg-slate-200 hover:bg-slate-300 text-slate-700 px-3 py-2 object-cover transition-colors flex items-center space-x-1"
                           >
-                            <RefreshCw className="h-4 w-4" />
+                            <RefreshCw className="h-5 w-5" />
                             <span>Try Another</span>
                           </button>
                         </div>
@@ -947,7 +944,7 @@ function App() {
 
                 {!selectedSDG && (
                   <div className="mb-4 p-3 bg-amber-50 border border-amber-200 object-cover">
-                    <p className="text-sm text-amber-800">
+                    <p className="text-lg text-amber-800">
                       Please select a Sustainable Development Goal first to
                       enable learning style selection.
                     </p>
@@ -1046,14 +1043,14 @@ function App() {
                           <p
                             className={`${
                               isListView
-                                ? "text-sm font-medium text-slate-800 text-left"
-                                : "text-sm font-medium text-slate-800 leading-tight"
+                                ? "text-lg font-medium text-slate-800 text-left"
+                                : "text-lg font-medium text-slate-800 leading-tight"
                             }`}
                           >
                             {learningStyle.name}
                           </p>
                           {isListView && (
-                            <p className="text-xs text-slate-600 mt-1 text-left">
+                            <p className="text-lg text-slate-600 mt-1 text-left">
                               Click to{" "}
                               {selectedLearningStyle?.id === learningStyle.id
                                 ? "deselect"
@@ -1294,13 +1291,13 @@ function App() {
                                       : "bg-slate-200 text-slate-400 hover:bg-slate-300"
                                   }`}
                                 >
-                                  <Check className="h-4 w-4" />
+                                  <Check className="h-5 w-5" />
                                 </button>
                               </div>
                               <p className="text-sm text-slate-600 mb-3">
                                 {course.description}
                               </p>
-                              <div className="flex items-center gap-3 text-xs text-slate-500">
+                              <div className="flex items-center gap-3 text-lg text-slate-500">
                                 <span>{course.duration}</span>
                                 <span>•</span>
                                 <span>{course.level}</span>
@@ -1350,14 +1347,14 @@ function App() {
       <div className="p-4 md:p-6">
         <div className="max-w-md mx-auto md:max-w-[calc(42rem+400px)] lg:max-w-[calc(42rem+400px)]">
           <div className="text-left mb-4">
-            <p className="text-slate-600 text-base font-medium">
+            <p className="text-slate-600 text-lg font-medium">
               Your goal is ready
             </p>
           </div>
           <div className="bg-white rounded-xl shadow-xl overflow-hidden">
             <div className="bg-slate-900 p-6 text-white text-center">
               <div className="w-16 h-16 bg-white/20 rounded-full overflow-hidden flex items-center justify-center mx-auto mb-4">
-                <Award className="h-8 w-8 text-white" />
+                <Award className="h-5 w-5 text-white" />
               </div>
               <h2 className="text-xl font-bold mb-2">
                 Goal Created Successfully!
@@ -1386,7 +1383,7 @@ function App() {
                               }`}
                             />
                           </div>
-                          <span className="text-sm font-medium text-slate-800 leading-tight">
+                          <span className="text-lg font-medium text-slate-800 leading-tight">
                             {
                               sustainableDevelopmentGoals.find(
                                 (s) => s.id === selectedSDG.split(",")[0]
@@ -1397,7 +1394,7 @@ function App() {
                       )}
                     </div>
                     <div className="text-center mt-2">
-                      <span className="text-xs font-medium text-slate-600  px-3 py-1 rounded-full">
+                      <span className="text-lg font-medium text-slate-600  px-3 py-1 rounded-full">
                         Step 1: Global Impact
                       </span>
                     </div>
@@ -1413,14 +1410,14 @@ function App() {
                               className: `h-12 w-12 ${selectedLearningStyle.iconColor}`,
                             })}
                           </div>
-                          <span className="text-sm font-medium text-slate-800 leading-tight">
+                          <span className="text-lg font-medium text-slate-800 leading-tight">
                             {selectedLearningStyle?.name}
                           </span>
                         </>
                       )}
                     </div>
                     <div className="text-center mt-2">
-                      <span className="text-xs font-medium text-slate-600  px-3 py-1 rounded-full">
+                      <span className="text-lg font-medium text-slate-600  px-3 py-1 rounded-full">
                         Step 2: Learning Style
                       </span>
                     </div>
@@ -1432,12 +1429,12 @@ function App() {
                       <div className="w-16 h-16 rounded-full overflow-hidden mb-2 overflow-hidden flex items-center justify-center">
                         <Target className="h-10 w-10 text-slate-600" />
                       </div>
-                      <span className="text-sm font-medium text-slate-800 leading-tight">
+                      <span className="text-lg font-medium text-slate-800 leading-tight">
                         {newGoal.title}
                       </span>
                     </div>
                     <div className="text-center mt-2">
-                      <span className="text-xs font-medium text-slate-600  px-3 py-1 rounded-full">
+                      <span className="text-lg font-medium text-slate-600  px-3 py-1 rounded-full">
                         Step 3: Action Plan
                       </span>
                     </div>
@@ -1446,7 +1443,7 @@ function App() {
 
                 {/* Connection Description */}
                 <div className="mt-16 text-center">
-                  <p className="text-sm text-slate-600 leading-relaxed max-w-md mx-auto">
+                  <p className="text-lg text-slate-600 leading-relaxed max-w-md mx-auto">
                     Your goal connects <strong>global impact</strong> (SDG) with{" "}
                     <strong>learning style</strong> to create{" "}
                     <strong>meaningful action</strong> that benefits both you
@@ -1558,10 +1555,10 @@ function App() {
                         return (
                           <div key={goal.id}>
                             <div className="flex items-center justify-between mb-2">
-                              <span className="text-sm font-medium text-slate-700">
+                              <span className="text-lg font-medium text-slate-700">
                                 {goal.title}
                               </span>
-                              <span className="text-sm font-semibold text-slate-900">
+                              <span className="text-lg font-semibold text-slate-900">
                                 {completeness}%
                               </span>
                             </div>
@@ -1639,7 +1636,7 @@ function App() {
                     </h3>
                     {/* AI assistance prompt on its own row */}
                     <div className="flex items-center space-x-2">
-                      <Sparkles className="h-4 w-4 text-blue-500 animate-bounce transition-all duration-300 hover:scale-110 hover:drop-shadow-lg" />
+                      <Sparkles className="h-5 w-5 text-blue-500 animate-bounce transition-all duration-300 hover:scale-110 hover:drop-shadow-lg" />
                       <button
                         onClick={handleSDGAIAssistanceClick}
                         className="text-base text-slate-600 hover:text-slate-800 transition-colors cursor-pointer"
@@ -1682,10 +1679,10 @@ function App() {
                         <Sparkles className="h-5 w-5 text-blue-500 mt-0.5" />
                       </div>
                       <div className="flex-1">
-                        <h4 className="text-sm font-semibold text-blue-900 mb-2">
+                        <h4 className="text-lg font-semibold text-blue-900 mb-2">
                           Learning Micro-Academy AI Recommendation
                         </h4>
-                        <p className="text-sm text-blue-800 mb-3">
+                        <p className="text-lg text-blue-800 mb-3">
                           {aiSelectionReason}
                         </p>
                         <div className="flex space-x-2">
@@ -1695,15 +1692,15 @@ function App() {
                               setAiSelectedSDG(null);
                               setAiSelectionReason("");
                             }}
-                            className="text-sm bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 object-cover transition-colors"
+                            className="text-lg bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 object-cover transition-colors"
                           >
                             Accept
                           </button>
                           <button
                             onClick={handleSDGAIAssistanceClick}
-                            className="text-sm bg-slate-200 hover:bg-slate-300 text-slate-700 px-3 py-2 object-cover transition-colors flex items-center space-x-1"
+                            className="text-lg bg-slate-200 hover:bg-slate-300 text-slate-700 px-3 py-2 object-cover transition-colors flex items-center space-x-1"
                           >
-                            <RefreshCw className="h-4 w-4" />
+                            <RefreshCw className="h-5 w-5" />
                             <span>Try Another</span>
                           </button>
                         </div>
@@ -1767,7 +1764,7 @@ function App() {
                       {/* SDG Popover */}
 
                       <div className="text-center">
-                        <p className="text-sm font-medium text-slate-800 leading-tight">
+                        <p className="text-lg font-medium text-slate-800 leading-tight">
                           {sdg.title}
                         </p>
                       </div>
@@ -1796,7 +1793,7 @@ function App() {
                             <h4 className="text-lg font-semibold text-slate-900">
                               Need help choosing?
                             </h4>
-                            <p className="text-sm text-slate-600">
+                            <p className="text-lg text-slate-600">
                               Let Learning Micro-Academy help you find the
                               perfect SDG
                             </p>
@@ -1812,7 +1809,7 @@ function App() {
                         </button>
                       </div>
 
-                      <p className="text-sm text-slate-600 mb-6 leading-relaxed">
+                      <p className="text-lg text-slate-600 mb-6 leading-relaxed">
                         Our AI can analyze your goals and suggest the most
                         relevant Sustainable Development Goal to help you make a
                         meaningful impact.
@@ -1875,7 +1872,7 @@ function App() {
               <h1 className="text-4xl font-bold text-slate-900 mb-4">
                 Learning Micro-Academy User Research
               </h1>
-              <p className="text-base text-slate-600">
+              <p className="text-lg text-slate-600">
                 Comprehensive user research insights and target audience
                 analysis
               </p>
@@ -1891,7 +1888,7 @@ function App() {
                   {/* Persona Header */}
                   <div className="flex flex-col lg:flex-row gap-4 lg:items-start">
                     <div className="flex-shrink-0">
-                      <div className="bg-purple-600 text-white px-4 py-2 rounded-full text-sm font-medium mb-4">
+                      <div className="bg-purple-600 text-white px-4 py-2 rounded-full text-lg font-medium mb-4">
                         Individual User (Persona 1)
                       </div>
                       <div className="bg-white object-cover p-6 shadow-md">
@@ -2007,7 +2004,7 @@ function App() {
                       <h4 className="font-semibold text-slate-800 mb-2">
                         Motivations in Action
                       </h4>
-                      <ul className="space-y-2 text-sm text-slate-700">
+                      <ul className="space-y-2 text-lg text-slate-700">
                         <li>
                           <strong>Personal Growth:</strong> "I want to feel more
                           connected to my values during chaotic workdays"
@@ -2028,7 +2025,7 @@ function App() {
                       <h4 className="font-semibold text-slate-800 mb-2">
                         Triggers & Incentives
                       </h4>
-                      <ul className="space-y-2 text-sm text-slate-700">
+                      <ul className="space-y-2 text-lg text-slate-700">
                         <li>
                           <strong>Progress Tracking:</strong> "Seeing my 7-day
                           streak of mindful moments gives me a sense of
@@ -2059,7 +2056,7 @@ function App() {
                   {/* Persona Header */}
                   <div className="flex flex-col lg:flex-row gap-4 lg:items-start">
                     <div className="flex-shrink-0">
-                      <div className="bg-green-600 text-white px-4 py-2 rounded-full text-sm font-medium mb-4">
+                      <div className="bg-green-600 text-white px-4 py-2 rounded-full text-lg font-medium mb-4">
                         ORG USER (B2B) (Persona 1)
                       </div>
                       <div className="bg-white object-cover p-6 shadow-md">
@@ -2173,7 +2170,7 @@ function App() {
                       <h4 className="font-semibold text-slate-800 mb-2">
                         Motivations in Action
                       </h4>
-                      <ul className="space-y-2 text-sm text-slate-700">
+                      <ul className="space-y-2 text-lg text-slate-700">
                         <li>
                           <strong>Personal Growth:</strong> "I want to
                           contribute meaningfully to my organization's goals
@@ -2195,7 +2192,7 @@ function App() {
                       <h4 className="font-semibold text-slate-800 mb-2">
                         Triggers & Incentives
                       </h4>
-                      <ul className="space-y-2 text-sm text-slate-700">
+                      <ul className="space-y-2 text-lg text-slate-700">
                         <li>
                           <strong>Progress Tracking:</strong> "Seeing how my
                           actions contribute to team goals makes my work feel
@@ -2228,7 +2225,7 @@ function App() {
                   {/* Persona Header */}
                   <div className="flex flex-col lg:flex-row gap-4 lg:items-start">
                     <div className="flex-shrink-0">
-                      <div className="bg-orange-600 text-white px-4 py-2 rounded-full text-sm font-medium mb-4">
+                      <div className="bg-orange-600 text-white px-4 py-2 rounded-full text-lg font-medium mb-4">
                         Learning Micro-Academy ADMIN USER - INTERNAL (Persona 1)
                       </div>
                       <div className="bg-white object-cover p-6 shadow-md">
@@ -2348,7 +2345,7 @@ function App() {
                     <h4 className="font-semibold text-orange-800 mb-2">
                       Motivations in Action
                     </h4>
-                    <ul className="space-y-2 text-sm text-orange-700">
+                    <ul className="space-y-2 text-lg text-orange-700">
                       <li>
                         <strong>Personal Growth:</strong> "I want to master the
                         platform to provide the best support to all users"
@@ -2369,7 +2366,7 @@ function App() {
                     <h4 className="font-semibold text-orange-800 mb-2">
                       Triggers & Incentives
                     </h4>
-                    <ul className="space-y-2 text-sm text-orange-700">
+                    <ul className="space-y-2 text-lg text-orange-700">
                       <li>
                         <strong>Progress Tracking:</strong> "Seeing platform
                         stability metrics and user satisfaction scores validates
@@ -2400,7 +2397,7 @@ function App() {
                   {/* Persona Header */}
                   <div className="flex flex-col lg:flex-row gap-4 lg:items-start">
                     <div className="flex-shrink-0">
-                      <div className="bg-indigo-600 text-white px-4 py-2 rounded-full text-sm font-medium mb-4">
+                      <div className="bg-indigo-600 text-white px-4 py-2 rounded-full text-lg font-medium mb-4">
                         ORG ADMIN USER (B2B) (Persona 1)
                       </div>
                       <div className="bg-white object-cover p-6 shadow-md">
@@ -2523,7 +2520,7 @@ function App() {
                     <h4 className="font-semibold text-indigo-800 mb-2">
                       Motivations in Action
                     </h4>
-                    <ul className="space-y-2 text-sm text-indigo-700">
+                    <ul className="space-y-2 text-lg text-indigo-700">
                       <li>
                         <strong>Personal Growth:</strong> "I want to demonstrate
                         leadership by successfully implementing values-based
@@ -2544,7 +2541,7 @@ function App() {
                     <h4 className="font-semibold text-indigo-800 mb-2">
                       Triggers & Incentives
                     </h4>
-                    <ul className="space-y-2 text-sm text-indigo-700">
+                    <ul className="space-y-2 text-lg text-indigo-700">
                       <li>
                         <strong>Progress Tracking:</strong> "Seeing team
                         engagement metrics and successful goal completions
@@ -3596,444 +3593,6 @@ function App() {
     </div>
   );
 
-  // Screen 17: Action Journey Archive
-  const ActionJourneyScreen = () => {
-    const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
-    const [_selectedAmountChange, _setSelectedAmountChange] = useState<{
-      [key: string]: string | null;
-    }>({});
-
-    const toggleCardExpansion = (cardId: string) => {
-      setExpandedCards((prev) => {
-        const newSet = new Set(prev);
-        if (newSet.has(cardId)) {
-          newSet.delete(cardId);
-        } else {
-          newSet.add(cardId);
-        }
-        return newSet;
-      });
-    };
-
-    return (
-      <div className="min-h-screen max-w-[1200px] mx-auto bg-warm-white px-4 md:px-0">
-        {/* Header */}
-        <header>
-          <div className="px-4 md:px-6 py-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <button
-                  onClick={() => navigateToScreen(0)}
-                  className="hover:opacity-80 transition-opacity"
-                >
-                  <span className="text-2xl font-bold text-slate-900">
-                    MicroLearn
-                  </span>
-                </button>
-              </div>
-              <Navigation />
-            </div>
-          </div>
-        </header>
-
-        <div className="p-4 md:p-8">
-          <div className="max-w-4xl mx-auto">
-            {/* Page Title */}
-            <div className="mb-6">
-              <h2 className="text-2xl font-bold text-slate-900 mb-2">
-                Learning Metrics
-              </h2>
-              <p className="text-slate-600">
-                Track all your learning goals and courses
-              </p>
-            </div>
-
-            {/* Stats Overview */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 md:mb-8">
-              <div className="bg-white p-4 rounded-xl shadow-md border border-slate-100">
-                <div className="flex items-center space-x-2 mb-2">
-                  <Target className="h-5 w-5 text-slate-600" />
-                  <span className="text-sm font-medium text-slate-600">
-                    Total Goals
-                  </span>
-                </div>
-                <p className="text-2xl font-bold text-slate-900">
-                  {goals.length}
-                </p>
-              </div>
-
-              <div className="bg-white p-4 rounded-xl shadow-md border border-slate-100">
-                <div className="flex items-center space-x-2 mb-2">
-                  <Target className="h-5 w-5 text-blue-500" />
-                  <span className="text-sm font-medium text-slate-600">
-                    In Progress
-                  </span>
-                </div>
-                <p className="text-2xl font-bold text-slate-900">
-                  {goals.filter((goal) => !goal.completed).length}
-                </p>
-              </div>
-
-              <div className="bg-white p-4 rounded-xl shadow-md border border-slate-100">
-                <div className="flex items-center space-x-2 mb-2">
-                  <Flame className="h-5 w-5 text-orange-500" />
-                  <span className="text-sm font-medium text-slate-600">
-                    This Week
-                  </span>
-                </div>
-                <p className="text-2xl font-bold text-slate-900">2</p>
-              </div>
-              <div className="bg-white p-4 rounded-xl shadow-md border border-slate-100">
-                <div className="flex items-center space-x-2 mb-2">
-                  <BookOpen className="h-5 w-5 text-green-500" />
-                  <span className="text-sm font-medium text-slate-600">
-                    Completed Courses
-                  </span>
-                </div>
-                <p className="text-2xl font-bold text-slate-900">
-                  {userState.preferences.completedCourses?.length || 0}
-                </p>
-              </div>
-            </div>
-
-            {/* Learning Goals Archive */}
-            <div className="space-y-6">
-              {goals.length > 0 && (
-                <div className="space-y-8">
-                  {/* In Progress Goals */}
-                  {goals.filter((goal) => !goal.completed).length > 0 && (
-                    <div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {goals
-                          .filter((goal) => !goal.completed)
-                          .map((goal) => (
-                            <div
-                              key={goal.id}
-                              className="bg-white p-6 rounded-xl shadow-md border border-slate-100 hover:shadow-md transition-shadow"
-                            >
-                              <div className="flex items-start justify-between mb-4">
-                                <div className="flex-1">
-                                  <h3 className="font-semibold text-slate-900 text-lg mb-2">
-                                    {learningStyles.find(
-                                      (v) => v.id === goal.learningStyleId
-                                    )?.name || "Unknown"}
-                                  </h3>
-                                  <p className="text-sm text-slate-600 mb-1">
-                                    {goal.title}
-                                  </p>
-                                  <p className="text-sm text-slate-500 mb-3">
-                                    {goal.title.includes("5 Minute")
-                                      ? "5 Minutes"
-                                      : goal.title.includes("15 Minute")
-                                      ? "15 Minutes"
-                                      : goal.title.includes("30 Minute")
-                                      ? "30 Minutes"
-                                      : goal.title.includes("1 Hour")
-                                      ? "1 Hour"
-                                      : "Time varies"}
-                                  </p>
-                                </div>
-                                <div className="ml-4 flex items-center space-x-2">
-                                  <div className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800 whitespace-nowrap">
-                                    Action created
-                                  </div>
-                                  <button
-                                    onClick={() => toggleCardExpansion(goal.id)}
-                                    className="text-slate-400 hover:text-slate-600 transition-colors"
-                                  >
-                                    {expandedCards.has(goal.id) ? (
-                                      <svg
-                                        className="w-4 h-4"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        viewBox="0 0 24 24"
-                                      >
-                                        <path
-                                          strokeLinecap="round"
-                                          strokeLinejoin="round"
-                                          strokeWidth={2}
-                                          d="M19 9l-7 7-7-7"
-                                        />
-                                      </svg>
-                                    ) : (
-                                      <svg
-                                        className="w-4 h-4"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        viewBox="0 0 24 24"
-                                      >
-                                        <path
-                                          strokeLinecap="round"
-                                          strokeLinejoin="round"
-                                          strokeWidth={2}
-                                          d="M9 5l7 7-7 7"
-                                        />
-                                      </svg>
-                                    )}
-                                  </button>
-                                </div>
-                              </div>
-
-                              {expandedCards.has(goal.id) && (
-                                <div className="mt-4 pt-3 border-t border-slate-100">
-                                  <p className="text-sm text-slate-600 mb-3">
-                                    {goal.description ||
-                                      "No description available."}
-                                  </p>
-
-                                  {/* Course Completeness */}
-                                  <div className="mt-4 pt-3 border-t border-slate-100">
-                                    <div className="flex items-center justify-between mb-2">
-                                      <span className="text-xs font-medium text-slate-700">
-                                        Course Completeness
-                                      </span>
-                                      <span className="text-xs font-semibold text-slate-900">
-                                        {getCourseCompleteness(goal)}%
-                                      </span>
-                                    </div>
-                                    <div className="w-full bg-slate-200 rounded-full h-2">
-                                      <div
-                                        className="bg-blue-600 h-2 rounded-full transition-all"
-                                        style={{
-                                          width: `${getCourseCompleteness(
-                                            goal
-                                          )}%`,
-                                        }}
-                                      />
-                                    </div>
-                                  </div>
-
-                                  <div className="mt-4 pt-3 border-t border-slate-100 space-y-2 text-sm text-slate-600">
-                                    <div className="flex items-center space-x-2">
-                                      <span className="font-medium">
-                                        Learning Style:
-                                      </span>
-                                      <span>
-                                        {learningStyles.find(
-                                          (v) => v.id === goal.learningStyleId
-                                        )?.name || "Unknown"}
-                                      </span>
-                                    </div>
-                                    <div className="flex items-center space-x-2">
-                                      <span className="font-medium">SDGs:</span>
-                                      <span>
-                                        {goal.sdgIds
-                                          .map((sdgId) => {
-                                            const sdg = sdgGoals.find(
-                                              (s) => s.id === sdgId
-                                            );
-                                            return sdg ? sdg.title : "Unknown";
-                                          })
-                                          .join(", ")}
-                                      </span>
-                                    </div>
-                                    <div className="flex items-center space-x-2">
-                                      <span className="font-medium">
-                                        Created:
-                                      </span>
-                                      <span>
-                                        {new Date(
-                                          goal.lastUpdated
-                                        ).toLocaleDateString()}
-                                      </span>
-                                    </div>
-                                  </div>
-                                </div>
-                              )}
-                            </div>
-                          ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Completed Courses */}
-                  {userState.preferences.completedCourses &&
-                    userState.preferences.completedCourses.length > 0 && (
-                      <div className="mb-8">
-                        <h3 className="text-lg font-semibold text-slate-900 mb-4">
-                          Completed Courses
-                        </h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                          {userState.preferences.completedCourses
-                            .map((courseId) =>
-                              courses.find((c) => c.id === courseId)
-                            )
-                            .filter((course) => course !== undefined)
-                            .map((course) => (
-                              <div
-                                key={course!.id}
-                                className="bg-white p-4 rounded-xl shadow-md border border-slate-100 hover:shadow-md transition-shadow"
-                              >
-                                <div className="flex items-start justify-between mb-3">
-                                  <div className="flex-1">
-                                    <h5 className="font-medium text-slate-900 mb-1">
-                                      {course!.title}
-                                    </h5>
-                                    <p className="text-xs text-slate-600 mb-2">
-                                      {course!.category}
-                                    </p>
-                                  </div>
-                                  <div className="ml-2 flex items-center space-x-2">
-                                    <div className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 whitespace-nowrap">
-                                      Completed
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className="flex items-center justify-between">
-                                  <div className="flex items-center gap-2 text-xs text-slate-500">
-                                    <Clock className="w-3 h-3" />
-                                    {course!.duration}
-                                  </div>
-                                  <button
-                                    onClick={() => {
-                                      setSelectedCourseId(course!.id);
-                                      navigateToScreen(21);
-                                    }}
-                                    className="text-xs text-blue-600 hover:text-blue-800 font-medium transition-colors"
-                                  >
-                                    View Course
-                                  </button>
-                                </div>
-                              </div>
-                            ))}
-                        </div>
-                      </div>
-                    )}
-
-                  {/* Completed Goals grouped by Learning Style */}
-                  {goals.filter((goal) => goal.completed).length > 0 && (
-                    <div>
-                      <h3 className="text-lg font-semibold text-slate-900 mb-4">
-                        Completed Goals
-                      </h3>
-                      {learningStyles.map((learningStyle) => {
-                        const completedGoalsForLearningStyle = goals.filter(
-                          (goal) =>
-                            goal.completed &&
-                            goal.learningStyleId === learningStyle.id
-                        );
-
-                        if (completedGoalsForLearningStyle.length === 0)
-                          return null;
-
-                        return (
-                          <div key={learningStyle.id} className="mb-6">
-                            <h4 className="text-lg font-semibold text-slate-700 mb-3">
-                              {learningStyle.name}
-                            </h4>
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                              {completedGoalsForLearningStyle.map((goal) => (
-                                <div
-                                  key={goal.id}
-                                  className="bg-white p-4 rounded-xl shadow-md border border-slate-100 hover:shadow-md transition-shadow"
-                                >
-                                  <div className="flex items-start justify-between mb-3">
-                                    <div className="flex-1">
-                                      <h5 className="font-medium text-slate-900 mb-1">
-                                        {learningStyle.name}
-                                      </h5>
-                                      <p className="text-xs text-slate-600 mb-2">
-                                        {goal.title}
-                                      </p>
-                                    </div>
-                                    <div className="ml-2 flex items-center space-x-2">
-                                      <div className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 whitespace-nowrap">
-                                        Completed
-                                      </div>
-                                      <button
-                                        onClick={() =>
-                                          toggleCardExpansion(goal.id)
-                                        }
-                                        className="text-slate-400 hover:text-slate-600 transition-colors"
-                                      >
-                                        {expandedCards.has(goal.id) ? (
-                                          <svg
-                                            className="w-4 h-4"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            viewBox="0 0 24 24"
-                                          >
-                                            <path
-                                              strokeLinecap="round"
-                                              strokeLinejoin="round"
-                                              strokeWidth={2}
-                                              d="M19 9l-7 7-7-7"
-                                            />
-                                          </svg>
-                                        ) : (
-                                          <svg
-                                            className="w-4 h-4"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            viewBox="0 0 24 24"
-                                          >
-                                            <path
-                                              strokeLinecap="round"
-                                              strokeLinejoin="round"
-                                              strokeWidth={2}
-                                              d="M9 5l7 7-7 7"
-                                            />
-                                          </svg>
-                                        )}
-                                      </button>
-                                    </div>
-                                  </div>
-
-                                  {expandedCards.has(goal.id) && (
-                                    <div className="mt-3 pt-3 border-t border-slate-100">
-                                      <p className="text-sm text-slate-600 mb-3">
-                                        {goal.description ||
-                                          "No description available."}
-                                      </p>
-
-                                      <div className="space-y-1 text-xs text-slate-600">
-                                        <div className="flex items-center space-x-2">
-                                          <span className="font-medium">
-                                            SDGs:
-                                          </span>
-                                          <span>
-                                            {goal.sdgIds
-                                              .map((sdgId) => {
-                                                const sdg = sdgGoals.find(
-                                                  (s) => s.id === sdgId
-                                                );
-                                                return sdg
-                                                  ? sdg.title
-                                                  : "Unknown";
-                                              })
-                                              .join(", ")}
-                                          </span>
-                                        </div>
-                                        <div className="flex items-center space-x-2">
-                                          <span className="font-medium">
-                                            Completed:
-                                          </span>
-                                          <span>
-                                            {new Date(
-                                              goal.lastUpdated
-                                            ).toLocaleDateString()}
-                                          </span>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  )}
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
   // Screen 19: Describe an Action
   const DesignSystemScreen = () => {
     const [designSystemToggle, setDesignSystemToggle] = useState<
@@ -4086,411 +3645,329 @@ function App() {
             <h1 className="text-4xl font-bold text-slate-900 mb-8">
               Learning Micro-Academy Design System
             </h1>
+            <div className="bg-white p-4 rounded-xl shadow-md border border-slate-100">
+              {/* Color Palette */}
+              <section className="mb-12">
+                <h2 className="text-2xl font-bold text-slate-900 mb-6">
+                  Color Palette
+                </h2>
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                  <div className="bg-slate-900 p-4 rounded-lg text-white">
+                    <div className="text-sm font-medium">Slate 900</div>
+                    <div className="text-xs opacity-75">#0f172a</div>
+                    <div className="text-xs opacity-60">rgb(15, 23, 42)</div>
+                  </div>
+                  <div className="bg-slate-800 p-4 rounded-lg text-white">
+                    <div className="text-sm font-medium">Slate 800</div>
+                    <div className="text-xs opacity-75">#1e293b</div>
+                    <div className="text-xs opacity-60">rgb(30, 41, 59)</div>
+                  </div>
+                  <div className="bg-slate-700 p-4 rounded-lg text-white">
+                    <div className="text-sm font-medium">Slate 700</div>
+                    <div className="text-xs opacity-75">#334155</div>
+                    <div className="text-xs opacity-60">rgb(51, 65, 85)</div>
+                  </div>
+                  <div className="bg-slate-600 p-4 rounded-lg text-white">
+                    <div className="text-sm font-medium">Slate 600</div>
+                    <div className="text-xs opacity-75">#475569</div>
+                    <div className="text-xs opacity-60">rgb(71, 85, 105)</div>
+                  </div>
+                  <div className="bg-slate-500 p-4 rounded-lg text-white">
+                    <div className="text-sm font-medium">Slate 500</div>
+                    <div className="text-xs opacity-75">#64748b</div>
+                    <div className="text-xs opacity-60">rgb(100, 116, 139)</div>
+                  </div>
+                  <div className="bg-slate-400 p-4 rounded-lg text-white">
+                    <div className="text-sm font-medium">Slate 400</div>
+                    <div className="text-xs opacity-75">#94a3b8</div>
+                    <div className="text-xs opacity-60">rgb(148, 163, 184)</div>
+                  </div>
+                  <div className="bg-slate-300 p-4 rounded-lg text-slate-900">
+                    <div className="text-sm font-medium">Slate 300</div>
+                    <div className="text-xs opacity-75">#cbd5e1</div>
+                    <div className="text-xs opacity-60">rgb(203, 213, 225)</div>
+                  </div>
+                  <div className="bg-slate-200 p-4 rounded-lg text-slate-900">
+                    <div className="text-sm font-medium">Slate 200</div>
+                    <div className="text-xs opacity-75">#e2e8f0</div>
+                    <div className="text-xs opacity-60">rgb(226, 232, 240)</div>
+                  </div>
+                  <div className="bg-slate-100 p-4 rounded-lg text-slate-900">
+                    <div className="text-sm font-medium">Slate 100</div>
+                    <div className="text-xs opacity-75">#f1f5f9</div>
+                    <div className="text-xs opacity-60">rgb(241, 245, 249)</div>
+                  </div>
+                  <div className="bg-slate-50 p-4 rounded-lg text-slate-900">
+                    <div className="text-sm font-medium">Slate 50</div>
+                    <div className="text-xs opacity-75">#f8fafc</div>
+                    <div className="text-xs opacity-60">rgb(248, 250, 252)</div>
+                  </div>
+                  <div className="bg-blue-600 p-4 rounded-lg text-white">
+                    <div className="text-sm font-medium">Blue 600</div>
+                    <div className="text-xs opacity-75">#2563eb</div>
+                    <div className="text-xs opacity-60">rgb(37, 99, 235)</div>
+                  </div>
+                  <div className="bg-emerald-600 p-4 rounded-lg text-white">
+                    <div className="text-sm font-medium">Emerald 600</div>
+                    <div className="text-xs opacity-75">#059669</div>
+                    <div className="text-xs opacity-60">rgb(5, 150, 105)</div>
+                  </div>
+                  <div className="bg-pink-500 p-4 rounded-lg text-white">
+                    <div className="text-sm font-medium">Pink 500</div>
+                    <div className="text-xs opacity-75">#ec4899</div>
+                    <div className="text-xs opacity-60">rgb(236, 72, 153)</div>
+                  </div>
+                  <div className="bg-pink-400 p-4 rounded-lg text-white">
+                    <div className="text-sm font-medium">Pink 400</div>
+                    <div className="text-xs opacity-75">#f472b6</div>
+                    <div className="text-xs opacity-60">rgb(244, 114, 182)</div>
+                  </div>
+                  <div className="bg-emerald-500 p-4 rounded-lg text-white">
+                    <div className="text-sm font-medium">Emerald 500</div>
+                    <div className="text-xs opacity-75">#10b981</div>
+                    <div className="text-xs opacity-60">rgb(16, 185, 129)</div>
+                  </div>
+                  <div className="bg-purple-500 p-4 rounded-lg text-white">
+                    <div className="text-sm font-medium">Purple 500</div>
+                    <div className="text-xs opacity-75">#8b5cf6</div>
+                    <div className="text-xs opacity-60">rgb(139, 92, 246)</div>
+                  </div>
+                  <div className="bg-orange-500 p-4 rounded-lg text-white">
+                    <div className="text-sm font-medium">Orange 500</div>
+                    <div className="text-xs opacity-75">#f97316</div>
+                    <div className="text-xs opacity-60">rgb(249, 115, 22)</div>
+                  </div>
+                  <div className="bg-yellow-500 p-4 rounded-lg text-white">
+                    <div className="text-sm font-medium">Yellow 500</div>
+                    <div className="text-xs opacity-75">#eab308</div>
+                    <div className="text-xs opacity-60">rgb(234, 179, 8)</div>
+                  </div>
+                  <div className="bg-amber-600 p-4 rounded-lg text-white">
+                    <div className="text-sm font-medium">Amber 600</div>
+                    <div className="text-xs opacity-75">#d97706</div>
+                    <div className="text-xs opacity-60">rgb(217, 119, 6)</div>
+                  </div>
+                </div>
+              </section>
 
-            {/* Color Palette */}
-            <section className="mb-12">
-              <h2 className="text-2xl font-bold text-slate-900 mb-6">
-                Color Palette
-              </h2>
-              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                <div className="bg-slate-900 p-4 rounded-lg text-white">
-                  <div className="text-sm font-medium">Slate 900</div>
-                  <div className="text-xs opacity-75">#0f172a</div>
-                  <div className="text-xs opacity-60">rgb(15, 23, 42)</div>
-                </div>
-                <div className="bg-slate-800 p-4 rounded-lg text-white">
-                  <div className="text-sm font-medium">Slate 800</div>
-                  <div className="text-xs opacity-75">#1e293b</div>
-                  <div className="text-xs opacity-60">rgb(30, 41, 59)</div>
-                </div>
-                <div className="bg-slate-700 p-4 rounded-lg text-white">
-                  <div className="text-sm font-medium">Slate 700</div>
-                  <div className="text-xs opacity-75">#334155</div>
-                  <div className="text-xs opacity-60">rgb(51, 65, 85)</div>
-                </div>
-                <div className="bg-slate-600 p-4 rounded-lg text-white">
-                  <div className="text-sm font-medium">Slate 600</div>
-                  <div className="text-xs opacity-75">#475569</div>
-                  <div className="text-xs opacity-60">rgb(71, 85, 105)</div>
-                </div>
-                <div className="bg-slate-500 p-4 rounded-lg text-white">
-                  <div className="text-sm font-medium">Slate 500</div>
-                  <div className="text-xs opacity-75">#64748b</div>
-                  <div className="text-xs opacity-60">rgb(100, 116, 139)</div>
-                </div>
-                <div className="bg-slate-400 p-4 rounded-lg text-white">
-                  <div className="text-sm font-medium">Slate 400</div>
-                  <div className="text-xs opacity-75">#94a3b8</div>
-                  <div className="text-xs opacity-60">rgb(148, 163, 184)</div>
-                </div>
-                <div className="bg-slate-300 p-4 rounded-lg text-slate-900">
-                  <div className="text-sm font-medium">Slate 300</div>
-                  <div className="text-xs opacity-75">#cbd5e1</div>
-                  <div className="text-xs opacity-60">rgb(203, 213, 225)</div>
-                </div>
-                <div className="bg-slate-200 p-4 rounded-lg text-slate-900">
-                  <div className="text-sm font-medium">Slate 200</div>
-                  <div className="text-xs opacity-75">#e2e8f0</div>
-                  <div className="text-xs opacity-60">rgb(226, 232, 240)</div>
-                </div>
-                <div className="bg-slate-100 p-4 rounded-lg text-slate-900">
-                  <div className="text-sm font-medium">Slate 100</div>
-                  <div className="text-xs opacity-75">#f1f5f9</div>
-                  <div className="text-xs opacity-60">rgb(241, 245, 249)</div>
-                </div>
-                <div className="bg-slate-50 p-4 rounded-lg text-slate-900">
-                  <div className="text-sm font-medium">Slate 50</div>
-                  <div className="text-xs opacity-75">#f8fafc</div>
-                  <div className="text-xs opacity-60">rgb(248, 250, 252)</div>
-                </div>
-                <div className="bg-blue-600 p-4 rounded-lg text-white">
-                  <div className="text-sm font-medium">Blue 600</div>
-                  <div className="text-xs opacity-75">#2563eb</div>
-                  <div className="text-xs opacity-60">rgb(37, 99, 235)</div>
-                </div>
-                <div className="bg-emerald-600 p-4 rounded-lg text-white">
-                  <div className="text-sm font-medium">Emerald 600</div>
-                  <div className="text-xs opacity-75">#059669</div>
-                  <div className="text-xs opacity-60">rgb(5, 150, 105)</div>
-                </div>
-                <div className="bg-pink-500 p-4 rounded-lg text-white">
-                  <div className="text-sm font-medium">Pink 500</div>
-                  <div className="text-xs opacity-75">#ec4899</div>
-                  <div className="text-xs opacity-60">rgb(236, 72, 153)</div>
-                </div>
-                <div className="bg-pink-400 p-4 rounded-lg text-white">
-                  <div className="text-sm font-medium">Pink 400</div>
-                  <div className="text-xs opacity-75">#f472b6</div>
-                  <div className="text-xs opacity-60">rgb(244, 114, 182)</div>
-                </div>
-                <div className="bg-emerald-500 p-4 rounded-lg text-white">
-                  <div className="text-sm font-medium">Emerald 500</div>
-                  <div className="text-xs opacity-75">#10b981</div>
-                  <div className="text-xs opacity-60">rgb(16, 185, 129)</div>
-                </div>
-                <div className="bg-purple-500 p-4 rounded-lg text-white">
-                  <div className="text-sm font-medium">Purple 500</div>
-                  <div className="text-xs opacity-75">#8b5cf6</div>
-                  <div className="text-xs opacity-60">rgb(139, 92, 246)</div>
-                </div>
-                <div className="bg-orange-500 p-4 rounded-lg text-white">
-                  <div className="text-sm font-medium">Orange 500</div>
-                  <div className="text-xs opacity-75">#f97316</div>
-                  <div className="text-xs opacity-60">rgb(249, 115, 22)</div>
-                </div>
-                <div className="bg-yellow-500 p-4 rounded-lg text-white">
-                  <div className="text-sm font-medium">Yellow 500</div>
-                  <div className="text-xs opacity-75">#eab308</div>
-                  <div className="text-xs opacity-60">rgb(234, 179, 8)</div>
-                </div>
-                <div className="bg-amber-600 p-4 rounded-lg text-white">
-                  <div className="text-sm font-medium">Amber 600</div>
-                  <div className="text-xs opacity-75">#d97706</div>
-                  <div className="text-xs opacity-60">rgb(217, 119, 6)</div>
-                </div>
-              </div>
-            </section>
+              {/* Typography */}
+              <section className="mb-12">
+                <h2 className="text-2xl font-bold text-slate-900 mb-6">
+                  Typography
+                </h2>
+                <div className="space-y-6">
+                  <div>
+                    <h1 className="text-4xl font-bold text-slate-900 mb-2">
+                      Heading 1 - Mulish Bold (text-4xl / 2.25rem)
+                    </h1>
+                    <p className="text-sm text-slate-600">
+                      Used for main page titles
+                    </p>
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-bold text-slate-900 mb-2">
+                      Heading 2 - Mulish Bold (text-2xl / 1.5rem)
+                    </h2>
+                    <p className="text-sm text-slate-600">
+                      Used for section headers
+                    </p>
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold text-slate-900 mb-2">
+                      Heading 3 - Mulish Semibold (text-xl / 1.25rem)
+                    </h3>
+                    <p className="text-sm text-slate-600">
+                      Used for subsection headers
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="text-lg font-semibold text-slate-900 mb-2">
+                      Heading 4 - Mulish Semibold (text-lg / 1.125rem)
+                    </h4>
+                    <p className="text-sm text-slate-600">
+                      Used for card titles
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-base text-slate-700 mb-2">
+                      Body text - Mulish Regular (text-base / 1rem)
+                    </p>
+                    <p className="text-sm text-slate-600">
+                      Used for main content
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-slate-600 mb-2">
+                      Small text - Mulish Regular (text-sm / 0.875rem)
+                    </p>
+                    <p className="text-sm text-slate-600">
+                      Used for captions and metadata
+                    </p>
+                  </div>
 
-            {/* Typography */}
-            <section className="mb-12">
-              <h2 className="text-2xl font-bold text-slate-900 mb-6">
-                Typography
-              </h2>
-              <div className="space-y-6">
-                <div>
-                  <h1 className="text-4xl font-bold text-slate-900 mb-2">
-                    Heading 1 - Mulish Bold (text-4xl / 2.25rem)
-                  </h1>
-                  <p className="text-sm text-slate-600">
-                    Used for main page titles
-                  </p>
-                </div>
-                <div>
-                  <h2 className="text-2xl font-bold text-slate-900 mb-2">
-                    Heading 2 - Mulish Bold (text-2xl / 1.5rem)
-                  </h2>
-                  <p className="text-sm text-slate-600">
-                    Used for section headers
-                  </p>
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-slate-900 mb-2">
-                    Heading 3 - Mulish Semibold (text-xl / 1.25rem)
-                  </h3>
-                  <p className="text-sm text-slate-600">
-                    Used for subsection headers
-                  </p>
-                </div>
-                <div>
-                  <h4 className="text-lg font-semibold text-slate-900 mb-2">
-                    Heading 4 - Mulish Semibold (text-lg / 1.125rem)
-                  </h4>
-                  <p className="text-sm text-slate-600">Used for card titles</p>
-                </div>
-                <div>
-                  <p className="text-base text-slate-700 mb-2">
-                    Body text - Mulish Regular (text-base / 1rem)
-                  </p>
-                  <p className="text-sm text-slate-600">
-                    Used for main content
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm text-slate-600 mb-2">
-                    Small text - Mulish Regular (text-sm / 0.875rem)
-                  </p>
-                  <p className="text-sm text-slate-600">
-                    Used for captions and metadata
-                  </p>
-                </div>
-
-                {/* Form Field Text Sizes */}
-                <div className="border-t border-slate-200 pt-6 mt-6">
-                  <h3 className="text-lg font-semibold text-slate-900 mb-4">
-                    Form Field Text Sizes
-                  </h3>
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium text-slate-700 mb-2">
-                        Form Label - Mulish Medium (text-sm / 0.875rem)
-                      </label>
-                      <p className="text-sm text-slate-600">
-                        Used for form field labels and input descriptions
-                      </p>
-                    </div>
-                    <div>
-                      <input
-                        type="text"
-                        placeholder="Form Input - Mulish Regular (text-sm / 0.875rem)"
-                        className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                        disabled
-                      />
-                      <p className="text-sm text-slate-600 mt-2">
-                        Used for input fields, textareas, and form controls
-                      </p>
-                    </div>
-                    <div>
-                      <textarea
-                        placeholder="Form Textarea - Mulish Regular (text-sm / 0.875rem)"
-                        rows={2}
-                        className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-sm"
-                        disabled
-                      />
-                      <p className="text-sm text-slate-600 mt-2">
-                        Used for multi-line text input fields
-                      </p>
-                    </div>
-                    <div>
-                      <div className="flex space-x-2">
-                        <button className="px-6 py-3 bg-blue-500 text-white rounded-full text-sm font-bold">
-                          Toggle Button - Mulish Bold (text-sm / 0.875rem)
-                        </button>
-                        <button className="px-6 py-3 border border-slate-300 text-slate-600 rounded-full text-sm font-bold">
-                          Toggle Button - Mulish Bold (text-sm / 0.875rem)
-                        </button>
+                  {/* Form Field Text Sizes */}
+                  <div className="border-t border-slate-200 pt-6 mt-6">
+                    <h3 className="text-lg font-semibold text-slate-900 mb-4">
+                      Form Field Text Sizes
+                    </h3>
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-2">
+                          Form Label - Mulish Medium (text-sm / 0.875rem)
+                        </label>
+                        <p className="text-sm text-slate-600">
+                          Used for form field labels and input descriptions
+                        </p>
                       </div>
-                      <p className="text-sm text-slate-600 mt-2">
-                        Used for toggle buttons and form controls
-                      </p>
+                      <div>
+                        <input
+                          type="text"
+                          placeholder="Form Input - Mulish Regular (text-sm / 0.875rem)"
+                          className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                          disabled
+                        />
+                        <p className="text-sm text-slate-600 mt-2">
+                          Used for input fields, textareas, and form controls
+                        </p>
+                      </div>
+                      <div>
+                        <textarea
+                          placeholder="Form Textarea - Mulish Regular (text-sm / 0.875rem)"
+                          rows={2}
+                          className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-sm"
+                          disabled
+                        />
+                        <p className="text-sm text-slate-600 mt-2">
+                          Used for multi-line text input fields
+                        </p>
+                      </div>
+                      <div>
+                        <div className="flex space-x-2">
+                          <button className="px-6 py-3 bg-blue-500 text-white rounded-full text-sm font-bold">
+                            Toggle Button - Mulish Bold (text-sm / 0.875rem)
+                          </button>
+                          <button className="px-6 py-3 border border-slate-300 text-slate-600 rounded-full text-sm font-bold">
+                            Toggle Button - Mulish Bold (text-sm / 0.875rem)
+                          </button>
+                        </div>
+                        <p className="text-sm text-slate-600 mt-2">
+                          Used for toggle buttons and form controls
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-slate-500">
+                          Form Helper Text - Mulish Regular (text-xs / 0.75rem)
+                        </p>
+                        <p className="text-sm text-slate-600 mt-1">
+                          Used for form validation messages and helper text
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-xs text-slate-500">
-                        Form Helper Text - Mulish Regular (text-xs / 0.75rem)
-                      </p>
-                      <p className="text-sm text-slate-600 mt-1">
-                        Used for form validation messages and helper text
-                      </p>
-                    </div>
                   </div>
                 </div>
-              </div>
-            </section>
+              </section>
 
-            {/* Icons */}
-            <section className="mb-12">
-              <h2 className="text-2xl font-bold text-slate-900 mb-6">
-                <a
-                  href="https://lucide.dev/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 hover:text-blue-800 underline"
-                >
-                  Icons (Lucide React)
-                </a>
-              </h2>
-              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
-                <div className="text-center">
-                  <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-2 shadow-md">
-                    <Target className="h-8 w-8 text-blue-600" />
-                  </div>
-                  <div className="text-xs text-slate-600">Target</div>
-                  <div className="text-xs text-slate-500 font-mono">Target</div>
-                  <div className="text-xs text-slate-500">
-                    Navigation Active
-                  </div>
-                  <div className="text-xs text-slate-400">#2563eb</div>
-                  <div className="text-xs text-slate-400">rgb(37, 99, 235)</div>
-                </div>
-                <div className="text-center">
-                  <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-2 shadow-md">
-                    <Award className="h-8 w-8 text-blue-600" />
-                  </div>
-                  <div className="text-xs text-slate-600">Award</div>
-                  <div className="text-xs text-slate-500 font-mono">Award</div>
-                  <div className="text-xs text-slate-500">
-                    Navigation Active
-                  </div>
-                  <div className="text-xs text-slate-400">#2563eb</div>
-                  <div className="text-xs text-slate-400">rgb(37, 99, 235)</div>
-                </div>
-                <div className="text-center">
-                  <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-2 shadow-md">
-                    <Heart className="h-8 w-8 text-blue-600" />
-                  </div>
-                  <div className="text-xs text-slate-600">Heart</div>
-                  <div className="text-xs text-slate-500 font-mono">Heart</div>
-                  <div className="text-xs text-slate-500">
-                    Navigation Active
-                  </div>
-                  <div className="text-xs text-slate-400">#2563eb</div>
-                  <div className="text-xs text-slate-400">rgb(37, 99, 235)</div>
-                </div>
-                <div className="text-center">
-                  <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-2 shadow-md">
-                    <Sparkles className="h-8 w-8 text-blue-600" />
-                  </div>
-                  <div className="text-xs text-slate-600">Sparkles</div>
-                  <div className="text-xs text-slate-500 font-mono">
-                    Sparkles
-                  </div>
-                  <div className="text-xs text-slate-500">
-                    Navigation Active
-                  </div>
-                  <div className="text-xs text-slate-400">#2563eb</div>
-                  <div className="text-xs text-slate-400">rgb(37, 99, 235)</div>
-                </div>
-                <div className="text-center">
-                  <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-2 shadow-md">
-                    <Sparkles className="h-8 w-8 text-blue-500" />
-                  </div>
-                  <div className="text-xs text-slate-600">Sparkles</div>
-                  <div className="text-xs text-slate-500 font-mono">
-                    Sparkles
-                  </div>
-                  <div className="text-xs text-slate-500">AI Assistance</div>
-                  <div className="text-xs text-slate-400">#3b82f6</div>
-                  <div className="text-xs text-slate-400">
-                    rgb(59, 130, 246)
-                  </div>
-                </div>
-                <div className="text-center">
-                  <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-2 shadow-md">
-                    <Target className="h-8 w-8 text-blue-500" />
-                  </div>
-                  <div className="text-xs text-slate-600">Target</div>
-                  <div className="text-xs text-slate-500 font-mono">Target</div>
-                  <div className="text-xs text-slate-500">
-                    Actions This Week
-                  </div>
-                  <div className="text-xs text-slate-400">#3b82f6</div>
-                  <div className="text-xs text-slate-400">
-                    rgb(59, 130, 246)
-                  </div>
-                </div>
-                <div className="text-center">
-                  <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-2 shadow-md">
-                    <Flame className="h-8 w-8 text-orange-500" />
-                  </div>
-                  <div className="text-xs text-slate-600">Flame</div>
-                  <div className="text-xs text-slate-500 font-mono">Flame</div>
-                  <div className="text-xs text-slate-500">Streak</div>
-                  <div className="text-xs text-slate-400">#f97316</div>
-                  <div className="text-xs text-slate-400">
-                    rgb(249, 115, 22)
-                  </div>
-                </div>
-                <div className="text-center">
-                  <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-2 shadow-md">
-                    <Target className="h-8 w-8 text-slate-600" />
-                  </div>
-                  <div className="text-xs text-slate-600">Target</div>
-                  <div className="text-xs text-slate-500 font-mono">Target</div>
-                  <div className="text-xs text-slate-500">Actions Total</div>
-                  <div className="text-xs text-slate-400">#475569</div>
-                  <div className="text-xs text-slate-400">rgb(71, 85, 105)</div>
-                </div>
-                <div className="text-center">
-                  <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-2 shadow-md">
-                    <Award className="h-8 w-8 text-emerald-600" />
-                  </div>
-                  <div className="text-xs text-slate-600">Award</div>
-                  <div className="text-xs text-slate-500 font-mono">Award</div>
-                  <div className="text-xs text-slate-500">Success Modal</div>
-                  <div className="text-xs text-slate-400">#059669</div>
-                  <div className="text-xs text-slate-400">rgb(5, 150, 105)</div>
-                </div>
-                <div className="text-center">
-                  <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-2 shadow-md">
-                    <Award className="h-8 w-8 text-amber-600" />
-                  </div>
-                  <div className="text-xs text-slate-600">Award</div>
-                  <div className="text-xs text-slate-500 font-mono">Award</div>
-                  <div className="text-xs text-slate-500">Points Tile</div>
-                  <div className="text-xs text-slate-400">#d97706</div>
-                  <div className="text-xs text-slate-400">rgb(217, 119, 6)</div>
-                </div>
-                <div className="text-center">
-                  <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-2 shadow-md">
-                    <Target className="h-8 w-8 text-slate-400" />
-                  </div>
-                  <div className="text-xs text-slate-600">Target</div>
-                  <div className="text-xs text-slate-500 font-mono">Target</div>
-                  <div className="text-xs text-slate-500">Empty State</div>
-                  <div className="text-xs text-slate-400">#94a3b8</div>
-                  <div className="text-xs text-slate-400">
-                    rgb(148, 163, 184)
-                  </div>
-                </div>
-                <div className="text-center">
-                  <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-2 shadow-md">
-                    <Target className="h-8 w-8 text-pink-400" />
-                  </div>
-                  <div className="text-xs text-slate-600">Target</div>
-                  <div className="text-xs text-slate-500 font-mono">Target</div>
-                  <div className="text-xs text-slate-500">Action Card</div>
-                  <div className="text-xs text-slate-400">#f472b6</div>
-                  <div className="text-xs text-slate-400">
-                    rgb(244, 114, 182)
-                  </div>
-                </div>
-              </div>
-
-              {/* Learning Style Icons */}
-              <div className="mt-8">
-                <h3 className="text-lg font-semibold text-slate-900 mb-4">
-                  Learning Style Icons
-                </h3>
+              {/* Icons */}
+              <section className="mb-12">
+                <h2 className="text-2xl font-bold text-slate-900 mb-6">
+                  <a
+                    href="https://lucide.dev/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:text-blue-800 underline"
+                  >
+                    Icons (Lucide React)
+                  </a>
+                </h2>
                 <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
                   <div className="text-center">
                     <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-2 shadow-md">
-                      <Target className="h-8 w-8 text-pink-500" />
+                      <Target className="h-5 w-5 text-blue-600" />
                     </div>
-                    <div className="text-xs text-slate-600">Self</div>
+                    <div className="text-xs text-slate-600">Target</div>
                     <div className="text-xs text-slate-500 font-mono">
                       Target
                     </div>
-                    <div className="text-xs text-slate-400">#ec4899</div>
+                    <div className="text-xs text-slate-500">
+                      Navigation Active
+                    </div>
+                    <div className="text-xs text-slate-400">#2563eb</div>
                     <div className="text-xs text-slate-400">
-                      rgb(236, 72, 153)
+                      rgb(37, 99, 235)
                     </div>
                   </div>
                   <div className="text-center">
                     <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-2 shadow-md">
-                      <Users className="h-8 w-8 text-blue-500" />
+                      <Award className="h-5 w-5 text-blue-600" />
                     </div>
-                    <div className="text-xs text-slate-600">Community</div>
+                    <div className="text-xs text-slate-600">Award</div>
                     <div className="text-xs text-slate-500 font-mono">
-                      Users
+                      Award
+                    </div>
+                    <div className="text-xs text-slate-500">
+                      Navigation Active
+                    </div>
+                    <div className="text-xs text-slate-400">#2563eb</div>
+                    <div className="text-xs text-slate-400">
+                      rgb(37, 99, 235)
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-2 shadow-md">
+                      <Heart className="h-5 w-5 text-blue-600" />
+                    </div>
+                    <div className="text-xs text-slate-600">Heart</div>
+                    <div className="text-xs text-slate-500 font-mono">
+                      Heart
+                    </div>
+                    <div className="text-xs text-slate-500">
+                      Navigation Active
+                    </div>
+                    <div className="text-xs text-slate-400">#2563eb</div>
+                    <div className="text-xs text-slate-400">
+                      rgb(37, 99, 235)
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-2 shadow-md">
+                      <Sparkles className="h-5 w-5 text-blue-600" />
+                    </div>
+                    <div className="text-xs text-slate-600">Sparkles</div>
+                    <div className="text-xs text-slate-500 font-mono">
+                      Sparkles
+                    </div>
+                    <div className="text-xs text-slate-500">
+                      Navigation Active
+                    </div>
+                    <div className="text-xs text-slate-400">#2563eb</div>
+                    <div className="text-xs text-slate-400">
+                      rgb(37, 99, 235)
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-2 shadow-md">
+                      <Sparkles className="h-5 w-5 text-blue-500" />
+                    </div>
+                    <div className="text-xs text-slate-600">Sparkles</div>
+                    <div className="text-xs text-slate-500 font-mono">
+                      Sparkles
+                    </div>
+                    <div className="text-xs text-slate-500">AI Assistance</div>
+                    <div className="text-xs text-slate-400">#3b82f6</div>
+                    <div className="text-xs text-slate-400">
+                      rgb(59, 130, 246)
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-2 shadow-md">
+                      <Target className="h-5 w-5 text-blue-500" />
+                    </div>
+                    <div className="text-xs text-slate-600">Target</div>
+                    <div className="text-xs text-slate-500 font-mono">
+                      Target
+                    </div>
+                    <div className="text-xs text-slate-500">
+                      Actions This Week
                     </div>
                     <div className="text-xs text-slate-400">#3b82f6</div>
                     <div className="text-xs text-slate-400">
@@ -4499,38 +3976,13 @@ function App() {
                   </div>
                   <div className="text-center">
                     <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-2 shadow-md">
-                      <Brain className="h-8 w-8 text-emerald-500" />
+                      <Flame className="h-5 w-5 text-orange-500" />
                     </div>
-                    <div className="text-xs text-slate-600">Wisdom</div>
+                    <div className="text-xs text-slate-600">Flame</div>
                     <div className="text-xs text-slate-500 font-mono">
-                      Brain
+                      Flame
                     </div>
-                    <div className="text-xs text-slate-400">#10b981</div>
-                    <div className="text-xs text-slate-400">
-                      rgb(16, 185, 129)
-                    </div>
-                  </div>
-                  <div className="text-center">
-                    <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-2 shadow-md">
-                      <HeartHandshake className="h-8 w-8 text-purple-500" />
-                    </div>
-                    <div className="text-xs text-slate-600">Service</div>
-                    <div className="text-xs text-slate-500 font-mono">
-                      HeartHandshake
-                    </div>
-                    <div className="text-xs text-slate-400">#8b5cf6</div>
-                    <div className="text-xs text-slate-400">
-                      rgb(139, 92, 246)
-                    </div>
-                  </div>
-                  <div className="text-center">
-                    <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-2 shadow-md">
-                      <Shield className="h-8 w-8 text-orange-500" />
-                    </div>
-                    <div className="text-xs text-slate-600">Protection</div>
-                    <div className="text-xs text-slate-500 font-mono">
-                      Shield
-                    </div>
+                    <div className="text-xs text-slate-500">Streak</div>
                     <div className="text-xs text-slate-400">#f97316</div>
                     <div className="text-xs text-slate-400">
                       rgb(249, 115, 22)
@@ -4538,669 +3990,817 @@ function App() {
                   </div>
                   <div className="text-center">
                     <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-2 shadow-md">
-                      <Lightbulb className="h-8 w-8 text-yellow-500" />
+                      <Target className="h-5 w-5 text-slate-600" />
                     </div>
-                    <div className="text-xs text-slate-600">Innovation</div>
+                    <div className="text-xs text-slate-600">Target</div>
                     <div className="text-xs text-slate-500 font-mono">
-                      Lightbulb
+                      Target
                     </div>
-                    <div className="text-xs text-slate-400">#eab308</div>
+                    <div className="text-xs text-slate-500">Actions Total</div>
+                    <div className="text-xs text-slate-400">#475569</div>
                     <div className="text-xs text-slate-400">
-                      rgb(234, 179, 8)
+                      rgb(71, 85, 105)
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-2 shadow-md">
+                      <Award className="h-5 w-5 text-emerald-600" />
+                    </div>
+                    <div className="text-xs text-slate-600">Award</div>
+                    <div className="text-xs text-slate-500 font-mono">
+                      Award
+                    </div>
+                    <div className="text-xs text-slate-500">Success Modal</div>
+                    <div className="text-xs text-slate-400">#059669</div>
+                    <div className="text-xs text-slate-400">
+                      rgb(5, 150, 105)
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-2 shadow-md">
+                      <Award className="h-5 w-5 text-amber-600" />
+                    </div>
+                    <div className="text-xs text-slate-600">Award</div>
+                    <div className="text-xs text-slate-500 font-mono">
+                      Award
+                    </div>
+                    <div className="text-xs text-slate-500">Points Tile</div>
+                    <div className="text-xs text-slate-400">#d97706</div>
+                    <div className="text-xs text-slate-400">
+                      rgb(217, 119, 6)
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-2 shadow-md">
+                      <Target className="h-5 w-5 text-slate-400" />
+                    </div>
+                    <div className="text-xs text-slate-600">Target</div>
+                    <div className="text-xs text-slate-500 font-mono">
+                      Target
+                    </div>
+                    <div className="text-xs text-slate-500">Empty State</div>
+                    <div className="text-xs text-slate-400">#94a3b8</div>
+                    <div className="text-xs text-slate-400">
+                      rgb(148, 163, 184)
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-2 shadow-md">
+                      <Target className="h-5 w-5 text-pink-400" />
+                    </div>
+                    <div className="text-xs text-slate-600">Target</div>
+                    <div className="text-xs text-slate-500 font-mono">
+                      Target
+                    </div>
+                    <div className="text-xs text-slate-500">Action Card</div>
+                    <div className="text-xs text-slate-400">#f472b6</div>
+                    <div className="text-xs text-slate-400">
+                      rgb(244, 114, 182)
                     </div>
                   </div>
                 </div>
-              </div>
 
-              {/* SDG Icons */}
-              <div className="mt-8">
-                <h3 className="text-lg font-semibold text-slate-900 mb-4">
-                  SDG Icons (UN Sustainable Development Goals)
-                </h3>
-                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
-                  <div className="text-center">
-                    <div className="w-20 h-20 bg-white rounded-full overflow-hidden overflow-hidden flex items-center justify-center mx-auto mb-2 shadow-md">
-                      <img
-                        src="/1-no-poverty.png"
-                        alt="No Poverty"
-                        className="w-16 h-16 object-cover"
-                      />
-                    </div>
-                    <div className="text-xs text-slate-600">Goal 1</div>
-                    <div className="text-xs text-slate-500">No Poverty</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="w-20 h-20 bg-white rounded-full overflow-hidden flex items-center justify-center mx-auto mb-2 shadow-md">
-                      <img
-                        src="/15-zero-hunger.png"
-                        alt="Zero Hunger"
-                        className="w-16 h-16 object-cover"
-                      />
-                    </div>
-                    <div className="text-xs text-slate-600">Goal 2</div>
-                    <div className="text-xs text-slate-500">Zero Hunger</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="w-20 h-20 bg-white rounded-full overflow-hidden flex items-center justify-center mx-auto mb-2 shadow-md">
-                      <img
-                        src="/3-Good-Health.png"
-                        alt="Good Health"
-                        className="w-16 h-16 object-cover"
-                      />
-                    </div>
-                    <div className="text-xs text-slate-600">Goal 3</div>
-                    <div className="text-xs text-slate-500">Good Health</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="w-20 h-20 bg-white rounded-full overflow-hidden flex items-center justify-center mx-auto mb-2 shadow-md">
-                      <img
-                        src="/4-education.png"
-                        alt="Quality Education"
-                        className="w-16 h-16 object-cover"
-                      />
-                    </div>
-                    <div className="text-xs text-slate-600">Goal 4</div>
-                    <div className="text-xs text-slate-500">
-                      Quality Education
-                    </div>
-                  </div>
-                  <div className="text-center">
-                    <div className="w-20 h-20 bg-white rounded-full overflow-hidden flex items-center justify-center mx-auto mb-2 shadow-md">
-                      <img
-                        src="/5-Gender-Equality.png"
-                        alt="Gender Equality"
-                        className="w-16 h-16 object-cover"
-                      />
-                    </div>
-                    <div className="text-xs text-slate-600">Goal 5</div>
-                    <div className="text-xs text-slate-500">
-                      Gender Equality
-                    </div>
-                  </div>
-                  <div className="text-center">
-                    <div className="w-20 h-20 bg-white rounded-full overflow-hidden flex items-center justify-center mx-auto mb-2 shadow-md">
-                      <img
-                        src="/Property 1=Clean Water.png"
-                        alt="Clean Water"
-                        className="w-16 h-16 object-cover"
-                      />
-                    </div>
-                    <div className="text-xs text-slate-600">Goal 6</div>
-                    <div className="text-xs text-slate-500">Clean Water</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="w-20 h-20 bg-white rounded-full overflow-hidden flex items-center justify-center mx-auto mb-2 shadow-md">
-                      <img
-                        src="/7-Affordable-and-Clean-Energy.png"
-                        alt="Clean Energy"
-                        className="w-16 h-16 object-cover"
-                      />
-                    </div>
-                    <div className="text-xs text-slate-600">Goal 7</div>
-                    <div className="text-xs text-slate-500">Clean Energy</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="w-20 h-20 bg-white rounded-full overflow-hidden flex items-center justify-center mx-auto mb-2 shadow-md">
-                      <img
-                        src="/8-Decent-Work-and-Economic-Growth.png"
-                        alt="Economic Growth"
-                        className="w-16 h-16 object-cover"
-                      />
-                    </div>
-                    <div className="text-xs text-slate-600">Goal 8</div>
-                    <div className="text-xs text-slate-500">
-                      Economic Growth
-                    </div>
-                  </div>
-                  <div className="text-center">
-                    <div className="w-20 h-20 bg-white rounded-full overflow-hidden flex items-center justify-center mx-auto mb-2 shadow-md">
-                      <img
-                        src="/9-industry-and-innovation.png"
-                        alt="Innovation"
-                        className="w-16 h-16 object-cover"
-                      />
-                    </div>
-                    <div className="text-xs text-slate-600">Goal 9</div>
-                    <div className="text-xs text-slate-500">Innovation</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="w-20 h-20 bg-white rounded-full overflow-hidden flex items-center justify-center mx-auto mb-2 shadow-md">
-                      <img
-                        src="/Property 1=Reduced Inequalities.png"
-                        alt="Reduced Inequalities"
-                        className="w-16 h-16 object-cover"
-                      />
-                    </div>
-                    <div className="text-xs text-slate-600">Goal 10</div>
-                    <div className="text-xs text-slate-500">
-                      Reduced Inequalities
-                    </div>
-                  </div>
-                  <div className="text-center">
-                    <div className="w-20 h-20 bg-white rounded-full overflow-hidden flex items-center justify-center mx-auto mb-2 shadow-md">
-                      <img
-                        src="/11-sustainable-cities.png"
-                        alt="Sustainable Cities"
-                        className="w-16 h-16 object-cover"
-                      />
-                    </div>
-                    <div className="text-xs text-slate-600">Goal 11</div>
-                    <div className="text-xs text-slate-500">
-                      Sustainable Cities
-                    </div>
-                  </div>
-                  <div className="text-center">
-                    <div className="w-20 h-20 bg-white rounded-full overflow-hidden flex items-center justify-center mx-auto mb-2 shadow-md">
-                      <img
-                        src="/12-responsible.png"
-                        alt="Responsible Consumption"
-                        className="w-16 h-16 object-cover"
-                      />
-                    </div>
-                    <div className="text-xs text-slate-600">Goal 12</div>
-                    <div className="text-xs text-slate-500">
-                      Responsible Consumption
-                    </div>
-                  </div>
-                  <div className="text-center">
-                    <div className="w-20 h-20 bg-white rounded-full overflow-hidden flex items-center justify-center mx-auto mb-2 shadow-md">
-                      <img
-                        src="/13-Climate-Action.png"
-                        alt="Climate Action"
-                        className="w-16 h-16 object-cover"
-                      />
-                    </div>
-                    <div className="text-xs text-slate-600">Goal 13</div>
-                    <div className="text-xs text-slate-500">Climate Action</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="w-20 h-20 bg-white rounded-full overflow-hidden flex items-center justify-center mx-auto mb-2 shadow-md">
-                      <img
-                        src="/14-Life-Below-Water.png"
-                        alt="Life Below Water"
-                        className="w-16 h-16 object-cover"
-                      />
-                    </div>
-                    <div className="text-xs text-slate-600">Goal 14</div>
-                    <div className="text-xs text-slate-500">
-                      Life Below Water
-                    </div>
-                  </div>
-                  <div className="text-center">
-                    <div className="w-20 h-20 bg-white rounded-full overflow-hidden flex items-center justify-center mx-auto mb-2 shadow-md">
-                      <img
-                        src="/15-life-on-land.png"
-                        alt="Life on Land"
-                        className="w-16 h-16 object-cover"
-                      />
-                    </div>
-                    <div className="text-xs text-slate-600">Goal 15</div>
-                    <div className="text-xs text-slate-500">Life on Land</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="w-20 h-20 bg-white rounded-full overflow-hidden flex items-center justify-center mx-auto mb-2 shadow-md">
-                      <img
-                        src="/16-peace-justice.png"
-                        alt="Peace and Justice"
-                        className="w-16 h-16 object-cover"
-                      />
-                    </div>
-                    <div className="text-xs text-slate-600">Goal 16</div>
-                    <div className="text-xs text-slate-500">
-                      Peace and Justice
-                    </div>
-                  </div>
-                  <div className="text-center">
-                    <div className="w-20 h-20 bg-white rounded-full overflow-hidden flex items-center justify-center mx-auto mb-2 shadow-md">
-                      <img
-                        src="/17-partnership-for-the-goals.png"
-                        alt="Partnerships"
-                        className="w-16 h-16 object-cover"
-                      />
-                    </div>
-                    <div className="text-xs text-slate-600">Goal 17</div>
-                    <div className="text-xs text-slate-500">Partnerships</div>
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            {/* Buttons */}
-            <section className="mb-12">
-              <h2 className="text-2xl font-bold text-slate-900 mb-6">
-                Buttons
-              </h2>
-              <div className="space-y-4">
-                <div className="flex flex-wrap gap-4">
-                  <button className="bg-slate-900 hover:bg-slate-800 text-white py-3 px-6 rounded-full font-medium transition-colors">
-                    Primary Button
-                  </button>
-                  <button className="bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-full font-medium transition-colors">
-                    Secondary Button
-                  </button>
-                  <button className="bg-slate-200 hover:bg-slate-300 text-slate-700 py-3 px-6 rounded-full font-medium transition-colors">
-                    Tertiary Button
-                  </button>
-                  <button className="border border-slate-300 hover:border-slate-400 text-slate-700 py-3 px-6 rounded-full font-medium transition-colors">
-                    Outline Button
-                  </button>
-                </div>
-                <div className="flex flex-wrap gap-4">
-                  <button className="bg-emerald-600 hover:bg-emerald-700 text-white py-2 px-4 rounded-full text-sm font-medium transition-colors">
-                    Small Button
-                  </button>
-                  <button className="bg-amber-100 text-amber-800 py-1 px-2 rounded-full text-xs font-medium">
-                    Chip
-                  </button>
-                </div>
-              </div>
-            </section>
-
-            {/* Cards */}
-            <section className="mb-12">
-              <h2 className="text-2xl font-bold text-slate-900 mb-6">Cards</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div className="bg-white p-6 rounded-xl shadow-md border border-slate-100">
-                  <h3 className="font-semibold text-slate-900 mb-2">
-                    Card Title
+                {/* Learning Style Icons */}
+                <div className="mt-8">
+                  <h3 className="text-lg font-semibold text-slate-900 mb-4">
+                    Learning Style Icons
                   </h3>
-                  {showCodeLabels && (
-                    <div className="text-xs text-slate-500 mb-1">
-                      &lt;h3&gt; - text-lg font-semibold (1.125rem)
-                    </div>
-                  )}
-                  <p className="text-sm text-slate-600">
-                    This is a basic card with shadow and border.
-                  </p>
-                  {showCodeLabels && (
-                    <div className="text-xs text-slate-500 mt-1">
-                      &lt;p&gt; - text-sm (0.875rem)
-                    </div>
-                  )}
-                </div>
-                <div className="bg-white p-6 rounded-xl shadow-xl border border-slate-100">
-                  <h3 className="font-semibold text-slate-900 mb-2">
-                    Elevated Card
-                  </h3>
-                  {showCodeLabels && (
-                    <div className="text-xs text-slate-500 mb-1">
-                      &lt;h3&gt; - text-lg font-semibold (1.125rem)
-                    </div>
-                  )}
-                  <p className="text-sm text-slate-600">
-                    This card has a more prominent shadow.
-                  </p>
-                  {showCodeLabels && (
-                    <div className="text-xs text-slate-500 mt-1">
-                      &lt;p&gt; - text-sm (0.875rem)
-                    </div>
-                  )}
-                </div>
-                <div className="bg-slate-50 p-6 object-cover border border-slate-100">
-                  <h3 className="font-semibold text-slate-900 mb-2">
-                    Subtle Card
-                  </h3>
-                  {showCodeLabels && (
-                    <div className="text-xs text-slate-500 mb-1">
-                      &lt;h3&gt; - text-lg font-semibold (1.125rem)
-                    </div>
-                  )}
-                  <p className="text-sm text-slate-600">
-                    This card has a subtle background.
-                  </p>
-                  {showCodeLabels && (
-                    <div className="text-xs text-slate-500 mt-1">
-                      &lt;p&gt; - text-sm (0.875rem)
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Help Card Example */}
-              <div className="mt-8">
-                <h3 className="text-lg font-semibold text-slate-900 mb-4">
-                  Help Card Example
-                </h3>
-                {showCodeLabels && (
-                  <div className="text-xs text-slate-500 mb-2">
-                    &lt;h3&gt; - text-lg font-semibold (1.125rem)
-                  </div>
-                )}
-                <div className="max-w-md">
-                  <HelpCard
-                    onHelpClick={() => console.log("Help clicked")}
-                    onChooseMyselfClick={() =>
-                      console.log("Choose myself clicked")
-                    }
-                    onClose={() => console.log("Close clicked")}
-                  />
-                </div>
-              </div>
-
-              {/* AI Recommendation Card Example */}
-              <div className="mt-8">
-                <h3 className="text-lg font-semibold text-slate-900 mb-4">
-                  AI Recommendation Card Example
-                </h3>
-                {showCodeLabels && (
-                  <div className="text-xs text-slate-500 mb-2">
-                    &lt;h3&gt; - text-lg font-semibold (1.125rem)
-                  </div>
-                )}
-                <div className="max-w-md">
-                  <AIRecommendationCard
-                    recommendation="Affordable and Clean Energy aligns with the subject matter."
-                    onAccept={() => console.log("Recommendation accepted")}
-                    onTryAnother={() => console.log("Try another clicked")}
-                  />
-                </div>
-              </div>
-
-              {/* Action Card Example */}
-              <div className="mt-8">
-                <h3 className="text-lg font-semibold text-slate-900 mb-4">
-                  Action Card Example
-                </h3>
-                {showCodeLabels && (
-                  <div className="text-xs text-slate-500 mb-2">
-                    &lt;h3&gt; - text-lg font-semibold (1.125rem)
-                  </div>
-                )}
-                <div className="max-w-md">
-                  <div className="bg-white p-4 rounded-xl shadow-md border border-slate-100">
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-pink-400 rounded-full overflow-hidden flex items-center justify-center">
-                          <Target className="h-5 w-5 text-white" />
-                        </div>
-                        <div>
-                          <h4 className="text-lg font-semibold text-slate-900">
-                            Intro to UX
-                          </h4>
-                          {showCodeLabels && (
-                            <div className="text-xs text-slate-500 mb-1">
-                              &lt;h4&gt; - text-lg font-semibold (1.125rem)
-                            </div>
-                          )}
-                          <p className="text-xs text-slate-600">
-                            Complete UX Fundamentals Course
-                          </p>
-                          {showCodeLabels && (
-                            <div className="text-xs text-slate-500 mb-1">
-                              &lt;p&gt; - text-xs (0.75rem)
-                            </div>
-                          )}
-                          <p className="text-xs text-slate-500">4 Weeks</p>
-                          {showCodeLabels && (
-                            <div className="text-xs text-slate-500">
-                              &lt;p&gt; - text-xs (0.75rem)
-                            </div>
-                          )}
-                        </div>
+                  <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
+                    <div className="text-center">
+                      <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-2 shadow-md">
+                        <Target className="h-5 w-5 text-pink-500" />
                       </div>
-                      <div className="flex items-center space-x-2">
-                        <div className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800 whitespace-nowrap">
-                          Action created
-                        </div>
-                        {showCodeLabels && (
-                          <div className="text-xs text-slate-500 mt-1">
-                            &lt;div&gt; - text-xs font-medium (0.75rem)
-                          </div>
-                        )}
-                        <button
-                          onClick={() =>
-                            setDesignSystemCardExpanded(
-                              !designSystemCardExpanded
-                            )
-                          }
-                          className="text-slate-400 hover:text-slate-600 transition-colors"
-                        >
-                          <svg
-                            className={`w-4 h-4 transition-transform ${
-                              designSystemCardExpanded ? "rotate-180" : ""
-                            }`}
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M19 9l-7 7-7-7"
-                            />
-                          </svg>
-                        </button>
+                      <div className="text-xs text-slate-600">Self</div>
+                      <div className="text-xs text-slate-500 font-mono">
+                        Target
+                      </div>
+                      <div className="text-xs text-slate-400">#ec4899</div>
+                      <div className="text-xs text-slate-400">
+                        rgb(236, 72, 153)
                       </div>
                     </div>
+                    <div className="text-center">
+                      <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-2 shadow-md">
+                        <Users className="h-5 w-5 text-blue-500" />
+                      </div>
+                      <div className="text-xs text-slate-600">Community</div>
+                      <div className="text-xs text-slate-500 font-mono">
+                        Users
+                      </div>
+                      <div className="text-xs text-slate-400">#3b82f6</div>
+                      <div className="text-xs text-slate-400">
+                        rgb(59, 130, 246)
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-2 shadow-md">
+                        <Brain className="h-5 w-5 text-emerald-500" />
+                      </div>
+                      <div className="text-xs text-slate-600">Wisdom</div>
+                      <div className="text-xs text-slate-500 font-mono">
+                        Brain
+                      </div>
+                      <div className="text-xs text-slate-400">#10b981</div>
+                      <div className="text-xs text-slate-400">
+                        rgb(16, 185, 129)
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-2 shadow-md">
+                        <HeartHandshake className="h-5 w-5 text-purple-500" />
+                      </div>
+                      <div className="text-xs text-slate-600">Service</div>
+                      <div className="text-xs text-slate-500 font-mono">
+                        HeartHandshake
+                      </div>
+                      <div className="text-xs text-slate-400">#8b5cf6</div>
+                      <div className="text-xs text-slate-400">
+                        rgb(139, 92, 246)
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-2 shadow-md">
+                        <Shield className="h-5 w-5 text-orange-500" />
+                      </div>
+                      <div className="text-xs text-slate-600">Protection</div>
+                      <div className="text-xs text-slate-500 font-mono">
+                        Shield
+                      </div>
+                      <div className="text-xs text-slate-400">#f97316</div>
+                      <div className="text-xs text-slate-400">
+                        rgb(249, 115, 22)
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-2 shadow-md">
+                        <Lightbulb className="h-5 w-5 text-yellow-500" />
+                      </div>
+                      <div className="text-xs text-slate-600">Innovation</div>
+                      <div className="text-xs text-slate-500 font-mono">
+                        Lightbulb
+                      </div>
+                      <div className="text-xs text-slate-400">#eab308</div>
+                      <div className="text-xs text-slate-400">
+                        rgb(234, 179, 8)
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
-                    {/* Expanded content */}
-                    {designSystemCardExpanded && (
-                      <div className="mt-3 pt-3 border-t border-slate-100">
-                        <p className="text-sm text-slate-600 mb-3">
-                          Complete the UX design fundamentals course to build
-                          practical skills in user research, wireframing, and
-                          prototyping. Dedicate 30 minutes daily to progress
-                          through the lessons and hands-on exercises.
-                        </p>
+                {/* SDG Icons */}
+                <div className="mt-8">
+                  <h3 className="text-lg font-semibold text-slate-900 mb-4">
+                    SDG Icons (UN Sustainable Development Goals)
+                  </h3>
+                  <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
+                    <div className="text-center">
+                      <div className="w-20 h-20 bg-white rounded-full overflow-hidden overflow-hidden flex items-center justify-center mx-auto mb-2 shadow-md">
+                        <img
+                          src="/1-no-poverty.png"
+                          alt="No Poverty"
+                          className="w-16 h-16 object-cover"
+                        />
+                      </div>
+                      <div className="text-xs text-slate-600">Goal 1</div>
+                      <div className="text-xs text-slate-500">No Poverty</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="w-20 h-20 bg-white rounded-full overflow-hidden flex items-center justify-center mx-auto mb-2 shadow-md">
+                        <img
+                          src="/15-zero-hunger.png"
+                          alt="Zero Hunger"
+                          className="w-16 h-16 object-cover"
+                        />
+                      </div>
+                      <div className="text-xs text-slate-600">Goal 2</div>
+                      <div className="text-xs text-slate-500">Zero Hunger</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="w-20 h-20 bg-white rounded-full overflow-hidden flex items-center justify-center mx-auto mb-2 shadow-md">
+                        <img
+                          src="/3-Good-Health.png"
+                          alt="Good Health"
+                          className="w-16 h-16 object-cover"
+                        />
+                      </div>
+                      <div className="text-xs text-slate-600">Goal 3</div>
+                      <div className="text-xs text-slate-500">Good Health</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="w-20 h-20 bg-white rounded-full overflow-hidden flex items-center justify-center mx-auto mb-2 shadow-md">
+                        <img
+                          src="/4-education.png"
+                          alt="Quality Education"
+                          className="w-16 h-16 object-cover"
+                        />
+                      </div>
+                      <div className="text-xs text-slate-600">Goal 4</div>
+                      <div className="text-xs text-slate-500">
+                        Quality Education
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <div className="w-20 h-20 bg-white rounded-full overflow-hidden flex items-center justify-center mx-auto mb-2 shadow-md">
+                        <img
+                          src="/5-Gender-Equality.png"
+                          alt="Gender Equality"
+                          className="w-16 h-16 object-cover"
+                        />
+                      </div>
+                      <div className="text-xs text-slate-600">Goal 5</div>
+                      <div className="text-xs text-slate-500">
+                        Gender Equality
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <div className="w-20 h-20 bg-white rounded-full overflow-hidden flex items-center justify-center mx-auto mb-2 shadow-md">
+                        <img
+                          src="/Property 1=Clean Water.png"
+                          alt="Clean Water"
+                          className="w-16 h-16 object-cover"
+                        />
+                      </div>
+                      <div className="text-xs text-slate-600">Goal 6</div>
+                      <div className="text-xs text-slate-500">Clean Water</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="w-20 h-20 bg-white rounded-full overflow-hidden flex items-center justify-center mx-auto mb-2 shadow-md">
+                        <img
+                          src="/7-Affordable-and-Clean-Energy.png"
+                          alt="Clean Energy"
+                          className="w-16 h-16 object-cover"
+                        />
+                      </div>
+                      <div className="text-xs text-slate-600">Goal 7</div>
+                      <div className="text-xs text-slate-500">Clean Energy</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="w-20 h-20 bg-white rounded-full overflow-hidden flex items-center justify-center mx-auto mb-2 shadow-md">
+                        <img
+                          src="/8-Decent-Work-and-Economic-Growth.png"
+                          alt="Economic Growth"
+                          className="w-16 h-16 object-cover"
+                        />
+                      </div>
+                      <div className="text-xs text-slate-600">Goal 8</div>
+                      <div className="text-xs text-slate-500">
+                        Economic Growth
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <div className="w-20 h-20 bg-white rounded-full overflow-hidden flex items-center justify-center mx-auto mb-2 shadow-md">
+                        <img
+                          src="/9-industry-and-innovation.png"
+                          alt="Innovation"
+                          className="w-16 h-16 object-cover"
+                        />
+                      </div>
+                      <div className="text-xs text-slate-600">Goal 9</div>
+                      <div className="text-xs text-slate-500">Innovation</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="w-20 h-20 bg-white rounded-full overflow-hidden flex items-center justify-center mx-auto mb-2 shadow-md">
+                        <img
+                          src="/Property 1=Reduced Inequalities.png"
+                          alt="Reduced Inequalities"
+                          className="w-16 h-16 object-cover"
+                        />
+                      </div>
+                      <div className="text-xs text-slate-600">Goal 10</div>
+                      <div className="text-xs text-slate-500">
+                        Reduced Inequalities
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <div className="w-20 h-20 bg-white rounded-full overflow-hidden flex items-center justify-center mx-auto mb-2 shadow-md">
+                        <img
+                          src="/11-sustainable-cities.png"
+                          alt="Sustainable Cities"
+                          className="w-16 h-16 object-cover"
+                        />
+                      </div>
+                      <div className="text-xs text-slate-600">Goal 11</div>
+                      <div className="text-xs text-slate-500">
+                        Sustainable Cities
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <div className="w-20 h-20 bg-white rounded-full overflow-hidden flex items-center justify-center mx-auto mb-2 shadow-md">
+                        <img
+                          src="/12-responsible.png"
+                          alt="Responsible Consumption"
+                          className="w-16 h-16 object-cover"
+                        />
+                      </div>
+                      <div className="text-xs text-slate-600">Goal 12</div>
+                      <div className="text-xs text-slate-500">
+                        Responsible Consumption
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <div className="w-20 h-20 bg-white rounded-full overflow-hidden flex items-center justify-center mx-auto mb-2 shadow-md">
+                        <img
+                          src="/13-Climate-Action.png"
+                          alt="Climate Action"
+                          className="w-16 h-16 object-cover"
+                        />
+                      </div>
+                      <div className="text-xs text-slate-600">Goal 13</div>
+                      <div className="text-xs text-slate-500">
+                        Climate Action
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <div className="w-20 h-20 bg-white rounded-full overflow-hidden flex items-center justify-center mx-auto mb-2 shadow-md">
+                        <img
+                          src="/14-Life-Below-Water.png"
+                          alt="Life Below Water"
+                          className="w-16 h-16 object-cover"
+                        />
+                      </div>
+                      <div className="text-xs text-slate-600">Goal 14</div>
+                      <div className="text-xs text-slate-500">
+                        Life Below Water
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <div className="w-20 h-20 bg-white rounded-full overflow-hidden flex items-center justify-center mx-auto mb-2 shadow-md">
+                        <img
+                          src="/15-life-on-land.png"
+                          alt="Life on Land"
+                          className="w-16 h-16 object-cover"
+                        />
+                      </div>
+                      <div className="text-xs text-slate-600">Goal 15</div>
+                      <div className="text-xs text-slate-500">Life on Land</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="w-20 h-20 bg-white rounded-full overflow-hidden flex items-center justify-center mx-auto mb-2 shadow-md">
+                        <img
+                          src="/16-peace-justice.png"
+                          alt="Peace and Justice"
+                          className="w-16 h-16 object-cover"
+                        />
+                      </div>
+                      <div className="text-xs text-slate-600">Goal 16</div>
+                      <div className="text-xs text-slate-500">
+                        Peace and Justice
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <div className="w-20 h-20 bg-white rounded-full overflow-hidden flex items-center justify-center mx-auto mb-2 shadow-md">
+                        <img
+                          src="/17-partnership-for-the-goals.png"
+                          alt="Partnerships"
+                          className="w-16 h-16 object-cover"
+                        />
+                      </div>
+                      <div className="text-xs text-slate-600">Goal 17</div>
+                      <div className="text-xs text-slate-500">Partnerships</div>
+                    </div>
+                  </div>
+                </div>
+              </section>
 
-                        {/* Course Completeness */}
-                        <div className="mt-4 pt-3 border-t border-slate-100">
-                          <div className="flex items-center justify-between mb-2">
-                            <span className="text-xs font-medium text-slate-700">
-                              Course Completeness
-                            </span>
-                            <span className="text-xs font-semibold text-slate-900">
-                              0%
-                            </span>
-                          </div>
-                          <div className="w-full bg-slate-200 rounded-full h-2">
-                            <div
-                              className="bg-blue-600 h-2 rounded-full transition-all"
-                              style={{ width: "0%" }}
-                            />
-                          </div>
-                        </div>
+              {/* Buttons */}
+              <section className="mb-12">
+                <h2 className="text-2xl font-bold text-slate-900 mb-6">
+                  Buttons
+                </h2>
+                <div className="space-y-4">
+                  <div className="flex flex-wrap gap-4">
+                    <button className="bg-slate-900 hover:bg-slate-800 text-white py-3 px-6 rounded-full font-medium transition-colors">
+                      Primary Button
+                    </button>
+                    <button className="bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-full font-medium transition-colors">
+                      Secondary Button
+                    </button>
+                    <button className="bg-slate-200 hover:bg-slate-300 text-slate-700 py-3 px-6 rounded-full font-medium transition-colors">
+                      Tertiary Button
+                    </button>
+                    <button className="border border-slate-300 hover:border-slate-400 text-slate-700 py-3 px-6 rounded-full font-medium transition-colors">
+                      Outline Button
+                    </button>
+                  </div>
+                  <div className="flex flex-wrap gap-4">
+                    <button className="bg-emerald-600 hover:bg-emerald-700 text-white py-2 px-4 rounded-full text-sm font-medium transition-colors">
+                      Small Button
+                    </button>
+                    <button className="bg-amber-100 text-amber-800 py-1 px-2 rounded-full text-xs font-medium">
+                      Chip
+                    </button>
+                  </div>
+                </div>
+              </section>
+
+              {/* Cards */}
+              <section className="mb-12">
+                <h2 className="text-2xl font-bold text-slate-900 mb-6">
+                  Cards
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div className="bg-white p-6 rounded-xl shadow-md border border-slate-100">
+                    <h3 className="font-semibold text-slate-900 mb-2">
+                      Card Title
+                    </h3>
+                    {showCodeLabels && (
+                      <div className="text-xs text-slate-500 mb-1">
+                        &lt;h3&gt; - text-lg font-semibold (1.125rem)
+                      </div>
+                    )}
+                    <p className="text-sm text-slate-600">
+                      This is a basic card with shadow and border.
+                    </p>
+                    {showCodeLabels && (
+                      <div className="text-xs text-slate-500 mt-1">
+                        &lt;p&gt; - text-sm (0.875rem)
+                      </div>
+                    )}
+                  </div>
+                  <div className="bg-white p-6 rounded-xl shadow-xl border border-slate-100">
+                    <h3 className="font-semibold text-slate-900 mb-2">
+                      Elevated Card
+                    </h3>
+                    {showCodeLabels && (
+                      <div className="text-xs text-slate-500 mb-1">
+                        &lt;h3&gt; - text-lg font-semibold (1.125rem)
+                      </div>
+                    )}
+                    <p className="text-sm text-slate-600">
+                      This card has a more prominent shadow.
+                    </p>
+                    {showCodeLabels && (
+                      <div className="text-xs text-slate-500 mt-1">
+                        &lt;p&gt; - text-sm (0.875rem)
+                      </div>
+                    )}
+                  </div>
+                  <div className="bg-slate-50 p-6 object-cover border border-slate-100">
+                    <h3 className="font-semibold text-slate-900 mb-2">
+                      Subtle Card
+                    </h3>
+                    {showCodeLabels && (
+                      <div className="text-xs text-slate-500 mb-1">
+                        &lt;h3&gt; - text-lg font-semibold (1.125rem)
+                      </div>
+                    )}
+                    <p className="text-sm text-slate-600">
+                      This card has a subtle background.
+                    </p>
+                    {showCodeLabels && (
+                      <div className="text-xs text-slate-500 mt-1">
+                        &lt;p&gt; - text-sm (0.875rem)
                       </div>
                     )}
                   </div>
                 </div>
-              </div>
-            </section>
 
-            {/* Form Elements */}
-            <section className="mb-12">
-              <h2 className="text-2xl font-bold text-slate-900 mb-6">
-                Form Elements
-              </h2>
-              <div className="space-y-6">
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">
-                    Input Field
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Enter text here..."
-                    className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                  />
+                {/* Help Card Example */}
+                <div className="mt-8">
+                  <h3 className="text-lg font-semibold text-slate-900 mb-4">
+                    Help Card Example
+                  </h3>
+                  {showCodeLabels && (
+                    <div className="text-xs text-slate-500 mb-2">
+                      &lt;h3&gt; - text-lg font-semibold (1.125rem)
+                    </div>
+                  )}
+                  <div className="max-w-md">
+                    <HelpCard
+                      onHelpClick={() => console.log("Help clicked")}
+                      onChooseMyselfClick={() =>
+                        console.log("Choose myself clicked")
+                      }
+                      onClose={() => console.log("Close clicked")}
+                    />
+                  </div>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">
-                    Textarea
-                  </label>
-                  <textarea
-                    placeholder="Enter description here..."
-                    rows={3}
-                    className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-                  />
-                </div>
-                <div>
-                  <YesNoToggle
-                    label="Toggle"
-                    value={designSystemToggle}
-                    onChange={setDesignSystemToggle}
-                  />
-                </div>
-              </div>
-            </section>
 
-            {/* Featured Course */}
-            <section className="mb-12">
-              <h2 className="text-2xl font-bold text-slate-900 mb-6">
-                Featured Course
-              </h2>
-              <div className="max-w-2xl">
-                <div
-                  className="bg-slate-50 object-cover p-4 text-[#0f172a] border border-slate-100"
-                  style={{ minHeight: "500px" }}
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center mb-4">
-                        <span className="mr-2">
-                          <Sparkles className="h-5 w-5 text-blue-500" />
-                        </span>
-                        <h3 className="text-xl font-semibold text-slate-900">
-                          Featured Course
+                {/* AI Recommendation Card Example */}
+                <div className="mt-8">
+                  <h3 className="text-lg font-semibold text-slate-900 mb-4">
+                    AI Recommendation Card Example
+                  </h3>
+                  {showCodeLabels && (
+                    <div className="text-xs text-slate-500 mb-2">
+                      &lt;h3&gt; - text-lg font-semibold (1.125rem)
+                    </div>
+                  )}
+                  <div className="max-w-md">
+                    <AIRecommendationCard
+                      recommendation="Affordable and Clean Energy aligns with the subject matter."
+                      onAccept={() => console.log("Recommendation accepted")}
+                      onTryAnother={() => console.log("Try another clicked")}
+                    />
+                  </div>
+                </div>
+
+                {/* Action Card Example */}
+                <div className="mt-8">
+                  <h3 className="text-lg font-semibold text-slate-900 mb-4">
+                    Action Card Example
+                  </h3>
+                  {showCodeLabels && (
+                    <div className="text-xs text-slate-500 mb-2">
+                      &lt;h3&gt; - text-lg font-semibold (1.125rem)
+                    </div>
+                  )}
+                  <div className="max-w-md">
+                    <div className="bg-white p-4 rounded-xl shadow-md border border-slate-100">
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-10 h-10 bg-pink-400 rounded-full overflow-hidden flex items-center justify-center">
+                            <Target className="h-5 w-5 text-white" />
+                          </div>
+                          <div>
+                            <h4 className="text-lg font-semibold text-slate-900">
+                              Intro to UX
+                            </h4>
+                            {showCodeLabels && (
+                              <div className="text-xs text-slate-500 mb-1">
+                                &lt;h4&gt; - text-lg font-semibold (1.125rem)
+                              </div>
+                            )}
+                            <p className="text-xs text-slate-600">
+                              Complete UX Fundamentals Course
+                            </p>
+                            {showCodeLabels && (
+                              <div className="text-xs text-slate-500 mb-1">
+                                &lt;p&gt; - text-xs (0.75rem)
+                              </div>
+                            )}
+                            <p className="text-xs text-slate-500">4 Weeks</p>
+                            {showCodeLabels && (
+                              <div className="text-xs text-slate-500">
+                                &lt;p&gt; - text-xs (0.75rem)
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <div className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800 whitespace-nowrap">
+                            Action created
+                          </div>
+                          {showCodeLabels && (
+                            <div className="text-xs text-slate-500 mt-1">
+                              &lt;div&gt; - text-xs font-medium (0.75rem)
+                            </div>
+                          )}
+                          <button
+                            onClick={() =>
+                              setDesignSystemCardExpanded(
+                                !designSystemCardExpanded
+                              )
+                            }
+                            className="text-slate-400 hover:text-slate-600 transition-colors"
+                          >
+                            <svg
+                              className={`w-4 h-4 transition-transform ${
+                                designSystemCardExpanded ? "rotate-180" : ""
+                              }`}
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M19 9l-7 7-7-7"
+                              />
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Expanded content */}
+                      {designSystemCardExpanded && (
+                        <div className="mt-3 pt-3 border-t border-slate-100">
+                          <p className="text-sm text-slate-600 mb-3">
+                            Complete the UX design fundamentals course to build
+                            practical skills in user research, wireframing, and
+                            prototyping. Dedicate 30 minutes daily to progress
+                            through the lessons and hands-on exercises.
+                          </p>
+
+                          {/* Course Completeness */}
+                          <div className="mt-4 pt-3 border-t border-slate-100">
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="text-xs font-medium text-slate-700">
+                                Course Completeness
+                              </span>
+                              <span className="text-xs font-semibold text-slate-900">
+                                0%
+                              </span>
+                            </div>
+                            <div className="w-full bg-slate-200 rounded-full h-2">
+                              <div
+                                className="bg-blue-600 h-2 rounded-full transition-all"
+                                style={{ width: "0%" }}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              {/* Form Elements */}
+              <section className="mb-12">
+                <h2 className="text-2xl font-bold text-slate-900 mb-6">
+                  Form Elements
+                </h2>
+                <div className="space-y-6">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Input Field
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Enter text here..."
+                      className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Textarea
+                    </label>
+                    <textarea
+                      placeholder="Enter description here..."
+                      rows={3}
+                      className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                    />
+                  </div>
+                  <div>
+                    <YesNoToggle
+                      label="Toggle"
+                      value={designSystemToggle}
+                      onChange={setDesignSystemToggle}
+                    />
+                  </div>
+                </div>
+              </section>
+
+              {/* Featured Course */}
+              <section className="mb-12">
+                <h2 className="text-2xl font-bold text-slate-900 mb-6">
+                  Featured Course
+                </h2>
+                <div className="max-w-2xl">
+                  <div
+                    className="bg-slate-50 object-cover p-4 text-[#0f172a] border border-slate-100"
+                    style={{ minHeight: "500px" }}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center mb-4">
+                          <span className="mr-2">
+                            <Sparkles className="h-5 w-5 text-blue-500" />
+                          </span>
+                          <h3 className="text-xl font-semibold text-slate-900">
+                            Featured Course
+                          </h3>
+                          {showCodeLabels && (
+                            <div className="text-xs text-slate-500 ml-2">
+                              &lt;h3&gt; - text-xl font-semibold (1.25rem)
+                            </div>
+                          )}
+                        </div>
+                        <h3 className="text-2xl font-bold mb-3 text-[#0f172a]">
+                          Intro to UX
                         </h3>
                         {showCodeLabels && (
-                          <div className="text-xs text-slate-500 ml-2">
-                            &lt;h3&gt; - text-xl font-semibold (1.25rem)
+                          <div className="text-xs text-slate-500 mb-2">
+                            &lt;h3&gt; - text-2xl font-bold (1.5rem)
                           </div>
                         )}
+                        <div className="relative">
+                          <p className="text-[#0f172a] text-xl leading-relaxed mb-4 text-slate-600">
+                            Master the fundamentals of user experience design in
+                            this comprehensive course. Learn how to create
+                            intuitive interfaces, conduct user research, and
+                            build products that people love. Perfect for
+                            designers, developers, and product managers looking
+                            to enhance their UX skills.
+                          </p>
+                          {showCodeLabels && (
+                            <div className="text-xs text-slate-500 mb-2">
+                              &lt;p&gt; - text-sm (0.875rem)
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Read More Button */}
+                        <div className="mt-4">
+                          <button
+                            onClick={() => setShowExtendedModal(true)}
+                            className="text-blue-600 hover:text-blue-700 font-medium text-sm underline block mt-2 p-2 border border-blue-300 rounded"
+                          >
+                            Read more
+                          </button>
+                          {showCodeLabels && (
+                            <div className="text-xs text-slate-500 mt-1">
+                              &lt;button&gt; - text-sm font-medium (0.875rem)
+                            </div>
+                          )}
+                        </div>
                       </div>
-                      <h3 className="text-2xl font-bold mb-3 text-[#0f172a]">
-                        Intro to UX
+                    </div>
+                  </div>
+                </div>
+
+                {/* Featured Course - Dashboard Version */}
+                <div className="mt-8">
+                  <h3 className="text-lg font-semibold text-slate-900 mb-4">
+                    Dashboard Version
+                  </h3>
+                  {showCodeLabels && (
+                    <div className="text-xs text-slate-500 mb-2">
+                      &lt;h3&gt; - text-lg font-semibold (1.125rem)
+                    </div>
+                  )}
+                  <div className="max-w-md">
+                    <div className="bg-white p-6 rounded-xl shadow-lg border border-slate-100 mb-6">
+                      <h3 className="text-xl font-semibold text-slate-900 mb-4">
+                        Featured Course:{" "}
+                        <span className="text-blue-600">Intro to UX</span>
                       </h3>
                       {showCodeLabels && (
                         <div className="text-xs text-slate-500 mb-2">
-                          &lt;h3&gt; - text-2xl font-bold (1.5rem)
+                          &lt;h3&gt; - text-xl font-semibold (1.25rem)
                         </div>
                       )}
-                      <div className="relative">
-                        <p className="text-[#0f172a] text-sm leading-relaxed mb-4 text-slate-600">
-                          Master the fundamentals of user experience design in
-                          this comprehensive course. Learn how to create
-                          intuitive interfaces, conduct user research, and build
-                          products that people love. Perfect for designers,
-                          developers, and product managers looking to enhance
-                          their UX skills.
-                        </p>
-                        {showCodeLabels && (
-                          <div className="text-xs text-slate-500 mb-2">
-                            &lt;p&gt; - text-sm (0.875rem)
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Read More Button */}
-                      <div className="mt-4">
-                        <button
-                          onClick={() => setShowExtendedModal(true)}
-                          className="text-blue-600 hover:text-blue-700 font-medium text-sm underline block mt-2 p-2 border border-blue-300 rounded"
-                        >
-                          Read more
-                        </button>
-                        {showCodeLabels && (
-                          <div className="text-xs text-slate-500 mt-1">
-                            &lt;button&gt; - text-sm font-medium (0.875rem)
-                          </div>
-                        )}
-                      </div>
+                      <p className="text-slate-700 text-lg leading-relaxed mb-4">
+                        Personal growth is our connection to continuous learning
+                        and development. It involves embracing opportunities for
+                        improvement and self-discovery. Personal growth
+                        motivates us to offer our best selves to others.
+                      </p>
+                      {showCodeLabels && (
+                        <div className="text-xs text-slate-500 mb-2">
+                          &lt;p&gt; - text-slate-700 (default)
+                        </div>
+                      )}
+                      <button
+                        onClick={() => setShowExtendedModal(true)}
+                        className="text-blue-600 hover:text-blue-700 font-medium text-sm underline"
+                      >
+                        Read more
+                      </button>
+                      {showCodeLabels && (
+                        <div className="text-xs text-slate-500 mt-1">
+                          &lt;button&gt; - text-sm font-medium (0.875rem)
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
-              </div>
+              </section>
 
-              {/* Featured Course - Dashboard Version */}
-              <div className="mt-8">
-                <h3 className="text-lg font-semibold text-slate-900 mb-4">
-                  Dashboard Version
-                </h3>
-                {showCodeLabels && (
-                  <div className="text-xs text-slate-500 mb-2">
-                    &lt;h3&gt; - text-lg font-semibold (1.125rem)
+              {/* Spacing */}
+              <section className="mb-12">
+                <h2 className="text-2xl font-bold text-slate-900 mb-6">
+                  Spacing Scale
+                </h2>
+                <div className="space-y-4">
+                  <div className="flex items-center">
+                    <div className="w-1 h-4 bg-slate-300 mr-4"></div>
+                    <span className="text-sm">1 (4px)</span>
                   </div>
-                )}
-                <div className="max-w-md">
-                  <div className="bg-white p-6 rounded-xl shadow-lg border border-slate-100 mb-6">
-                    <h3 className="text-xl font-semibold text-slate-900 mb-4">
-                      Featured Course:{" "}
-                      <span className="text-blue-600">Intro to UX</span>
-                    </h3>
-                    {showCodeLabels && (
-                      <div className="text-xs text-slate-500 mb-2">
-                        &lt;h3&gt; - text-xl font-semibold (1.25rem)
-                      </div>
-                    )}
-                    <p className="text-slate-700 leading-relaxed mb-4">
-                      Personal growth is our connection to continuous learning
-                      and development. It involves embracing opportunities for
-                      improvement and self-discovery. Personal growth motivates
-                      us to offer our best selves to others.
-                    </p>
-                    {showCodeLabels && (
-                      <div className="text-xs text-slate-500 mb-2">
-                        &lt;p&gt; - text-slate-700 (default)
-                      </div>
-                    )}
-                    <button
-                      onClick={() => setShowExtendedModal(true)}
-                      className="text-blue-600 hover:text-blue-700 font-medium text-sm underline"
-                    >
-                      Read more
-                    </button>
-                    {showCodeLabels && (
-                      <div className="text-xs text-slate-500 mt-1">
-                        &lt;button&gt; - text-sm font-medium (0.875rem)
-                      </div>
-                    )}
+                  <div className="flex items-center">
+                    <div className="w-2 h-4 bg-slate-300 mr-4"></div>
+                    <span className="text-sm">2 (8px)</span>
+                  </div>
+                  <div className="flex items-center">
+                    <div className="w-3 h-4 bg-slate-300 mr-4"></div>
+                    <span className="text-sm">3 (12px)</span>
+                  </div>
+                  <div className="flex items-center">
+                    <div className="w-4 h-4 bg-slate-300 mr-4"></div>
+                    <span className="text-sm">4 (16px)</span>
+                  </div>
+                  <div className="flex items-center">
+                    <div className="w-6 h-4 bg-slate-300 mr-4"></div>
+                    <span className="text-sm">6 (24px)</span>
+                  </div>
+                  <div className="flex items-center">
+                    <div className="w-8 h-4 bg-slate-300 mr-4"></div>
+                    <span className="text-sm">8 (32px)</span>
                   </div>
                 </div>
-              </div>
-            </section>
+              </section>
 
-            {/* Spacing */}
-            <section className="mb-12">
-              <h2 className="text-2xl font-bold text-slate-900 mb-6">
-                Spacing Scale
-              </h2>
-              <div className="space-y-4">
-                <div className="flex items-center">
-                  <div className="w-1 h-4 bg-slate-300 mr-4"></div>
-                  <span className="text-sm">1 (4px)</span>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-2 h-4 bg-slate-300 mr-4"></div>
-                  <span className="text-sm">2 (8px)</span>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-3 h-4 bg-slate-300 mr-4"></div>
-                  <span className="text-sm">3 (12px)</span>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-4 h-4 bg-slate-300 mr-4"></div>
-                  <span className="text-sm">4 (16px)</span>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-6 h-4 bg-slate-300 mr-4"></div>
-                  <span className="text-sm">6 (24px)</span>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-8 h-4 bg-slate-300 mr-4"></div>
-                  <span className="text-sm">8 (32px)</span>
-                </div>
+              {/* Navigation */}
+              <div className="flex justify-center">
+                <button
+                  onClick={() => navigateToScreen(0)}
+                  className="bg-slate-900 hover:bg-slate-800 text-white py-3 px-6 rounded-full font-medium transition-colors"
+                >
+                  Back to Dashboard
+                </button>
               </div>
-            </section>
-
-            {/* Navigation */}
-            <div className="flex justify-center">
-              <button
-                onClick={() => navigateToScreen(0)}
-                className="bg-slate-900 hover:bg-slate-800 text-white py-3 px-6 rounded-full font-medium transition-colors"
-              >
-                Back to Dashboard
-              </button>
             </div>
           </div>
         </div>
@@ -5394,7 +4994,6 @@ function App() {
       {currentScreen === 11 && <SDGsScreen />}
       {currentScreen === 12 && <AllVirtuesScreen />}
       {currentScreen === 13 && <UserResearchScreen />}
-      {currentScreen === 17 && <ActionJourneyScreen />}
       {currentScreen === 20 && <DesignSystemScreen />}
       {currentScreen === 21 && (
         <CourseLibraryScreen

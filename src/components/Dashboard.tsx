@@ -225,7 +225,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
         <div className="mb-6 md:mb-8">
           <div className="flex items-center mb-2">
             <span className="mr-3">
-              <Sparkles className="h-6 w-6 text-blue-500" />
+              <Sparkles className="h-5 w-5 text-blue-500" />
             </span>
             <h2
               className={`text-2xl font-bold text-slate-900 ${getHeadingFontClass(
@@ -796,7 +796,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
             onClick={() => setShowCompletedActionsView(true)}
             className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-full text-sm transition-colors flex items-center space-x-2"
           >
-            <Star className="h-4 w-4" />
+            <Star className="h-5 w-5" />
             <span>View Database</span>
           </button>
         </div>

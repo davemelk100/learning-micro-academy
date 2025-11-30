@@ -54,7 +54,7 @@ export const OnboardingGoalsScreen: React.FC<OnboardingGoalsScreenProps> = ({
     <div className="min-h-screen flex flex-col items-center justify-center bg-warm-white px-4 py-8">
       <div className="max-w-2xl w-full">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-900 mb-3">
+          <h1 className="text-4xl font-bold text-slate-900 mb-3">
             Set Your Learning Goals
           </h1>
           <p className="text-slate-700">

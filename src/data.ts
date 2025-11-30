@@ -102,7 +102,7 @@ export const learningTopics = [
   },
   {
     id: "topic7",
-    title: "Sustainability",
+    title: "Energy",
     color: "bg-indigo-500",
     innerColor: "bg-indigo-700",
   },
@@ -537,15 +537,15 @@ Key Metrics:
     ],
   },
   {
-    id: "sustainability-practices",
+    id: "environment-practices",
     title: "Sustainable Living Practices",
     description:
       "Learn practical ways to live more sustainably. Cover waste reduction, sustainable consumption, and environmental impact awareness.",
-    category: "Sustainability",
+    category: "Environment",
     duration: "5 weeks",
     level: "Beginner",
     instructor: "Rachel Green",
-    tags: ["Sustainability", "Environment", "Lifestyle"],
+    tags: ["Environment", "Lifestyle"],
     lessons: [
       {
         id: "lesson-1",

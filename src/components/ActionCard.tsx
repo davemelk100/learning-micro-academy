@@ -151,7 +151,7 @@ export const ActionCard: React.FC<ActionCardProps> = ({
                 }}
                 className="px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-700 hover:bg-purple-200 transition-colors flex items-center space-x-1"
               >
-                <Database className="h-3 w-3" />
+                <Database className="h-5 w-5" />
                 <span>Save to DB</span>
               </button>
             )}

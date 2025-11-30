@@ -20,7 +20,7 @@ export const AddActionButton: React.FC<AddActionButtonProps> = ({
         className="w-5 h-5 rounded-full border flex items-center justify-center"
         style={{ borderColor: "#335292" }}
       >
-        <Plus className="h-3 w-3" />
+        <Plus className="h-5 w-5" />
       </div>
     </button>
   );

@@ -34,7 +34,7 @@ export const Pagination: React.FC<PaginationProps> = ({
             : "text-slate-400 cursor-not-allowed"
         }`}
       >
-        <ChevronLeft className="h-4 w-4" />
+        <ChevronLeft className="h-5 w-5" />
         <span>{previousLabel}</span>
       </button>
 
@@ -70,7 +70,7 @@ export const Pagination: React.FC<PaginationProps> = ({
         }`}
       >
         <span>{nextLabel}</span>
-        <ChevronRight className="h-4 w-4" />
+        <ChevronRight className="h-5 w-5" />
       </button>
     </div>
   );

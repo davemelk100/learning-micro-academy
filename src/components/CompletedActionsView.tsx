@@ -166,7 +166,7 @@ export const CompletedActionsView: React.FC<CompletedActionsViewProps> = ({
             <div className="flex items-center space-x-3">
               <Database className="h-8 w-8 text-blue-600" />
               <div>
-                <h1 className="text-xl font-bold text-slate-900">
+                <h1 className="text-4xl font-bold text-slate-900">
                   Completed Actions Database
                 </h1>
                 <p className="text-sm text-slate-600">
@@ -190,7 +190,7 @@ export const CompletedActionsView: React.FC<CompletedActionsViewProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             {/* Search */}
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-400" />
               <input
                 type="text"
                 placeholder="Search actions..."
@@ -270,7 +270,7 @@ export const CompletedActionsView: React.FC<CompletedActionsViewProps> = ({
 
                     <div className="flex items-center space-x-4 text-sm text-slate-500 mb-3">
                       <span className="flex items-center space-x-1">
-                        <Calendar className="h-4 w-4" />
+                        <Calendar className="h-5 w-5" />
                         <span>{formatDate(action.completedAt)}</span>
                       </span>
                       <span>•</span>
@@ -279,7 +279,7 @@ export const CompletedActionsView: React.FC<CompletedActionsViewProps> = ({
                         <>
                           <span>•</span>
                           <span className="flex items-center space-x-1">
-                            <Tag className="h-4 w-4" />
+                            <Tag className="h-5 w-5" />
                             <span>{action.tags.join(", ")}</span>
                           </span>
                         </>
@@ -315,14 +315,14 @@ export const CompletedActionsView: React.FC<CompletedActionsViewProps> = ({
                       className="p-2 text-slate-400 hover:text-slate-600 transition-colors"
                       title="Archive"
                     >
-                      <Archive className="h-4 w-4" />
+                      <Archive className="h-5 w-5" />
                     </button>
                     <button
                       onClick={() => handleDelete(action.id)}
                       className="p-2 text-slate-400 hover:text-red-600 transition-colors"
                       title="Delete"
                     >
-                      <Trash2 className="h-4 w-4" />
+                      <Trash2 className="h-5 w-5" />
                     </button>
                   </div>
                 </div>

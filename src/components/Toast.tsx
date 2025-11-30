@@ -84,7 +84,7 @@ export const Toast: React.FC<ToastProps> = ({
           onClick={onClose}
           className="flex-shrink-0 text-slate-400 hover:text-slate-600 transition-colors"
         >
-          <X className="h-4 w-4" />
+          <X className="h-5 w-5" />
         </button>
       </div>
     </div>
