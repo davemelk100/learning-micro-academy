@@ -7,9 +7,9 @@ import {
   Network,
   Users,
 } from "lucide-react";
-import { Virtue } from "./types";
+import { LearningStyle } from "./types";
 
-export const virtues: Virtue[] = [
+export const learningStyles: LearningStyle[] = [
   {
     id: "visual",
     name: "Visual",

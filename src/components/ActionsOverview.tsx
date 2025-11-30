@@ -2,11 +2,10 @@ import React from "react";
 import { Target, Flame, Check, BookOpen, CheckCircle2 } from "lucide-react";
 import { Goal } from "../types";
 import { courses } from "../data";
-import { VirtueProgress } from "./VirtueProgress";
 
 interface ActionsOverviewProps {
   goals: Goal[];
-  navigateToScreen: (_screen: number) => void;
+  navigateToScreen: (_path: string) => void;
   expandedCards: Set<string>;
   toggleCardExpansion: (_cardId: string) => void;
   onNavigateToCourse?: (_courseId: string) => void;
@@ -77,10 +76,6 @@ export const ActionsOverview: React.FC<ActionsOverviewProps> = ({
         <h2 className="text-lg md:text-xl font-semibold text-slate-900">
           Learning Activity
         </h2>
-      </div>
-
-      <div className="mb-6">
-        <VirtueProgress />
       </div>
 
       <div className="grid grid-cols-3 gap-3 md:gap-4 mb-6">

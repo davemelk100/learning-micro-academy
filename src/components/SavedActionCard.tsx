@@ -67,7 +67,7 @@ export const SavedActionCard: React.FC<SavedActionCardProps> = ({
                   {completedAction.title}
                 </h3>
                 <p className="text-sm text-slate-600">
-                  {completedAction.virtueName}
+                  {completedAction.learningStyleName}
                 </p>
               </div>
             </div>

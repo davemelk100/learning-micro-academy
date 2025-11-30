@@ -1,7 +1,8 @@
 import React from "react";
+import { ROUTES } from "../routes";
 
 interface AppHeaderProps {
-  navigateToScreen: (_screen: number) => void;
+  navigateToScreen: (_path: string) => void;
   Navigation: React.ComponentType;
 }
 
@@ -15,7 +16,7 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
         <div className="flex items-center justify-between">
           <div>
             <button
-              onClick={() => navigateToScreen(1)}
+              onClick={() => navigateToScreen(ROUTES.WELCOME)}
               className="hover:opacity-80 transition-opacity"
             >
               <span className="text-2xl font-bold text-slate-900">

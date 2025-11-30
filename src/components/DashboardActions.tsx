@@ -1,7 +1,7 @@
 import React from "react";
 import { ActionCard } from "./ActionCard";
-import { Goal, Virtue, UserState } from "../types";
-import { virtues } from "../data";
+import { Goal, LearningStyle, UserState } from "../types";
+import { learningStyles } from "../data";
 
 interface DashboardActionsProps {
   goals: Goal[];
@@ -14,7 +14,7 @@ interface DashboardActionsProps {
   setGoals: (_goals: Goal[]) => void;
   saveUserState: (_state: UserState) => void;
   user: { name: string };
-  handleOpenSaveModal: (_goal: Goal, _virtue: Virtue) => void;
+  handleOpenSaveModal: (_goal: Goal, _learningStyle: LearningStyle) => void;
 }
 
 export const DashboardActions: React.FC<DashboardActionsProps> = ({
@@ -54,13 +54,15 @@ export const DashboardActions: React.FC<DashboardActionsProps> = ({
       {goals
         .filter((goal) => !goal.completed)
         .map((goal) => {
-          const virtue = virtues.find((v) => v.id === goal.learningStyleId);
-          if (!virtue) return null;
+          const learningStyle = learningStyles.find(
+            (v) => v.id === goal.learningStyleId
+          );
+          if (!learningStyle) return null;
           return (
             <ActionCard
               key={goal.id}
               goal={goal}
-              virtue={virtue}
+              learningStyle={learningStyle}
               onEdit={openEditGoalModal}
               onDelete={openDeleteModal}
               onToggleComplete={(goalToToggle) => {
@@ -126,16 +128,16 @@ export const DashboardActions: React.FC<DashboardActionsProps> = ({
               {goals
                 .filter((goal) => goal.completed)
                 .map((goal) => {
-                  const virtue = virtues.find(
+                  const learningStyle = learningStyles.find(
                     (v) => v.id === goal.learningStyleId
                   );
-                  if (!virtue) return null;
+                  if (!learningStyle) return null;
 
                   return (
                     <ActionCard
                       key={goal.id}
                       goal={goal}
-                      virtue={virtue}
+                      learningStyle={learningStyle}
                       isCompleted={true}
                       onEdit={openEditGoalModal}
                       onDelete={openDeleteModal}
@@ -175,7 +177,9 @@ export const DashboardActions: React.FC<DashboardActionsProps> = ({
                           currentScreen: 0,
                         });
                       }}
-                      onSaveToDatabase={() => handleOpenSaveModal(goal, virtue)}
+                      onSaveToDatabase={() =>
+                        handleOpenSaveModal(goal, learningStyle)
+                      }
                     />
                   );
                 })}

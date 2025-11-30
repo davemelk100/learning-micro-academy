@@ -1,15 +1,16 @@
 import React, { useState } from "react";
-import { ArrowRight, ArrowLeft } from "lucide-react";
+import { ArrowRight, ArrowLeft, X } from "lucide-react";
 
 interface OnboardingAssessmentScreenProps {
   onNext: () => void;
   onBack: () => void;
   onComplete: (_data: { subjects: string[]; proficiencyLevel: string }) => void;
+  onSkip?: () => void;
 }
 
 export const OnboardingAssessmentScreen: React.FC<
   OnboardingAssessmentScreenProps
-> = ({ onNext, onBack, onComplete }) => {
+> = ({ onNext, onBack, onComplete, onSkip }) => {
   const [subjects, setSubjects] = useState<string[]>([]);
   const [proficiencyLevel, setProficiencyLevel] = useState<string>("");
 
@@ -52,7 +53,16 @@ export const OnboardingAssessmentScreen: React.FC<
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-warm-white px-4 py-8">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-warm-white px-4 py-8 relative">
+      {onSkip && (
+        <button
+          onClick={onSkip}
+          className="absolute top-4 right-4 text-slate-500 hover:text-slate-700 transition-colors p-2"
+          title="Skip onboarding"
+        >
+          <X className="w-6 h-6" />
+        </button>
+      )}
       <div className="max-w-2xl w-full">
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-slate-900 mb-3">
@@ -110,7 +120,7 @@ export const OnboardingAssessmentScreen: React.FC<
           </div>
         </div>
 
-        <div className="flex justify-between mt-8">
+        <div className="flex justify-between items-center mt-8">
           <button
             onClick={onBack}
             className="px-6 py-3 border-2 border-slate-300 rounded-lg hover:bg-slate-50 transition-colors font-medium flex items-center gap-2"
@@ -118,14 +128,24 @@ export const OnboardingAssessmentScreen: React.FC<
             <ArrowLeft className="w-5 h-5" />
             Back
           </button>
-          <button
-            onClick={handleNext}
-            disabled={subjects.length === 0 || !proficiencyLevel}
-            className="px-6 py-3 bg-slate-900 text-white rounded-lg hover:bg-slate-800 transition-colors font-medium disabled:bg-slate-300 disabled:cursor-not-allowed flex items-center gap-2"
-          >
-            Next
-            <ArrowRight className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-3">
+            {onSkip && (
+              <button
+                onClick={onSkip}
+                className="px-6 py-3 bg-white hover:bg-slate-100 text-slate-700 border-2 border-slate-300 rounded-lg transition-colors font-medium"
+              >
+                Skip
+              </button>
+            )}
+            <button
+              onClick={handleNext}
+              disabled={subjects.length === 0 || !proficiencyLevel}
+              className="px-6 py-3 bg-slate-900 text-white rounded-lg hover:bg-slate-800 transition-colors font-medium disabled:bg-slate-300 disabled:cursor-not-allowed flex items-center gap-2"
+            >
+              Next
+              <ArrowRight className="w-5 h-5" />
+            </button>
+          </div>
         </div>
       </div>
     </div>

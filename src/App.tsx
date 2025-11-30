@@ -1,4 +1,13 @@
-import React, { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useNavigate,
+  useLocation,
+  useParams,
+  Navigate,
+} from "react-router-dom";
 import { HomeDashboardScreen } from "./screens/HomeDashboardScreen";
 import { CourseLibraryScreen } from "./components/CourseLibraryScreen";
 import { AuthModal } from "./components/Auth/AuthModal";
@@ -13,9 +22,20 @@ import { useAuth } from "./contexts/AuthContext";
 import { saveUserState, getUserState } from "./utils";
 import { UserState, Goal } from "./types";
 import { appContent } from "./content/appContent";
+import { ROUTES, getCourseRoute } from "./routes";
 
 function App() {
+  return (
+    <Router>
+      <AppContent />
+    </Router>
+  );
+}
+
+function AppContent() {
   const { user, isAuthenticated, refreshUser } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
   const [userState, setUserState] = useState<UserState>({
     preferences: {
       theme: "light",
@@ -65,7 +85,6 @@ function App() {
     }
   }, [userState, loadingUserState]);
 
-  const [currentScreen, setCurrentScreen] = useState(1);
   const [selectedCourseId, setSelectedCourseId] = useState<string | undefined>(
     undefined
   );
@@ -92,10 +111,15 @@ function App() {
   // Onboarding workflow state
   const [onboardingStep, setOnboardingStep] = useState<number | null>(null); // null = not in onboarding, 1-4 = onboarding steps
 
-  const navigateToScreen = useCallback((screen: number) => {
-    setCurrentScreen(screen);
-    window.history.pushState({ screen }, "", `#screen-${screen}`);
-  }, []);
+  // Navigation helper that uses React Router
+  const navigateToRoute = (path: string) => {
+    navigate(path);
+  };
+
+  // Get current route path for compatibility
+  const getCurrentRoute = () => {
+    return location.pathname;
+  };
 
   const updateGoalProgress = (
     goalId: string,
@@ -119,30 +143,28 @@ function App() {
     );
   };
 
-  useEffect(() => {
-    const handlePopState = (event: PopStateEvent) => {
-      if (event.state && event.state.screen !== undefined) {
-        setCurrentScreen(event.state.screen);
-      }
-    };
-
-    window.history.replaceState(
-      { screen: currentScreen },
-      "",
-      `#screen-${currentScreen}`
-    );
-
-    window.addEventListener("popstate", handlePopState);
-    return () => window.removeEventListener("popstate", handlePopState);
-  }, [currentScreen]);
-
-  useEffect(() => {
-    if (displayUser.isNewUser) {
-      navigateToScreen(1);
-    } else {
-      navigateToScreen(0);
+  // Component to handle root path redirect
+  const RootRedirect = ({
+    isNewUser,
+    loadingUserState,
+  }: {
+    isNewUser: boolean;
+    loadingUserState: boolean;
+  }) => {
+    if (loadingUserState) {
+      return (
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p className="text-slate-600">Loading...</p>
+          </div>
+        </div>
+      );
     }
-  }, [displayUser.isNewUser, navigateToScreen]);
+    return (
+      <Navigate to={isNewUser ? ROUTES.WELCOME : ROUTES.DASHBOARD} replace />
+    );
+  };
 
   const [userStats] = useState({
     totalGoals: 12,
@@ -161,10 +183,10 @@ function App() {
       }}
       goals={goals}
       userStats={userStats}
-      navigateToScreen={navigateToScreen}
+      navigateToScreen={navigateToRoute}
       Navigation={createNavigationComponent({
-        currentScreen,
-        navigateToScreen,
+        currentScreen: getCurrentRoute(),
+        navigateToScreen: navigateToRoute,
         setShowAuthModal,
         setShowProfileModal,
         getUserState,
@@ -185,7 +207,7 @@ function App() {
       updateGoalProgress={updateGoalProgress}
       onNavigateToCourse={(courseId) => {
         setSelectedCourseId(courseId);
-        navigateToScreen(21);
+        navigate(getCourseRoute(courseId));
       }}
       completedCourses={userState?.preferences?.completedCourses || []}
       courseProgress={userState?.preferences?.courseProgress || {}}
@@ -197,7 +219,32 @@ function App() {
   // Onboarding workflow handlers
   const handleOnboardingComplete = () => {
     setOnboardingStep(null);
-    navigateToScreen(0); // Go to dashboard
+    // Mark onboarding as completed
+    const updatedState: UserState = {
+      ...userState,
+      preferences: {
+        ...userState.preferences,
+        hasCompletedOnboarding: true,
+      },
+    };
+    setUserState(updatedState);
+    saveUserState(updatedState).catch(console.error);
+    navigate(ROUTES.DASHBOARD); // Go to dashboard
+  };
+
+  const handleOnboardingSkip = () => {
+    setOnboardingStep(null);
+    // Mark onboarding as completed when skipped
+    const updatedState: UserState = {
+      ...userState,
+      preferences: {
+        ...userState.preferences,
+        hasCompletedOnboarding: true,
+      },
+    };
+    setUserState(updatedState);
+    saveUserState(updatedState).catch(console.error);
+    navigate(ROUTES.DASHBOARD); // Go to dashboard
   };
 
   const handleOnboardingNext = () => {
@@ -220,41 +267,54 @@ function App() {
     }
   };
 
-  // Show onboarding for new users
-  if (displayUser.isNewUser && onboardingStep !== null) {
+  // Wrapper component for course detail route to extract courseId from URL
+  const CourseDetailWrapper = ({
+    navigate,
+    navigateToRoute,
+    getCurrentRoute,
+    setShowAuthModal,
+    setShowProfileModal,
+    getUserState,
+    setUserState,
+    userState,
+  }: {
+    navigate: (path: string) => void;
+    navigateToRoute: (path: string) => void;
+    getCurrentRoute: () => string;
+    setShowAuthModal: (show: boolean) => void;
+    setShowProfileModal: (show: boolean) => void;
+    getUserState: () => Promise<UserState>;
+    setUserState: (state: UserState) => void;
+    userState: UserState;
+  }) => {
+    const { courseId } = useParams<{ courseId: string }>();
     return (
-      <div className="pb-20 md:pb-0">
-        {onboardingStep === 1 && (
-          <OnboardingWelcomeScreen onNext={handleOnboardingNext} />
-        )}
-        {onboardingStep === 2 && (
-          <OnboardingAssessmentScreen
-            onNext={handleOnboardingNext}
-            onBack={handleOnboardingBack}
-            onComplete={(data) => {
-              // Save assessment data to user profile
-              const updatedState: UserState = {
-                ...userState,
-                preferences: {
-                  ...userState.preferences,
-                  onboardingData: {
-                    ...userState.preferences.onboardingData,
-                    subjects: data.subjects,
-                    proficiencyLevel: data.proficiencyLevel,
-                  },
-                },
-              };
-              setUserState(updatedState);
-              saveUserState(updatedState).catch(console.error);
-            }}
+      <CourseLibraryScreen
+        onBack={() => {
+          navigate(ROUTES.COURSE_LIBRARY);
+        }}
+        Navigation={() => (
+          <Navigation
+            currentScreen={getCurrentRoute()}
+            navigateToScreen={navigateToRoute}
+            setShowAuthModal={setShowAuthModal}
+            setShowProfileModal={setShowProfileModal}
+            getUserState={getUserState}
+            setUserState={setUserState}
+            onNavigateToCourseLibrary={() => {}}
           />
         )}
-        {onboardingStep === 4 && (
-          <OnboardingDashboardScreen onComplete={handleOnboardingComplete} />
-        )}
-      </div>
+        userState={userState}
+        onCourseComplete={() => {
+          getUserState().then(setUserState).catch(console.error);
+        }}
+        onStateUpdate={(updatedState) => {
+          setUserState(updatedState);
+        }}
+        initialCourseId={courseId}
+      />
     );
-  }
+  };
 
   return (
     <div className="pb-20 md:pb-0">
@@ -279,52 +339,134 @@ function App() {
         </div>
       )}
 
-      {currentScreen === 0 && <HomeDashboardScreenComponent />}
-      {currentScreen === 1 && (
-        <WelcomeScreen
-          onStartOnboarding={() => {
-            if (displayUser.isNewUser) {
-              setOnboardingStep(1);
-            }
-          }}
-          navigateToScreen={navigateToScreen}
-          displayUser={{
-            name: displayUser.name || appContent.defaults.guestName,
-            isNewUser: displayUser.isNewUser ?? true,
-          }}
-          currentScreen={currentScreen}
-          setShowAuthModal={setShowAuthModal}
-          setShowProfileModal={setShowProfileModal}
-          getUserState={getUserState}
-          setUserState={setUserState}
-        />
-      )}
-      {currentScreen === 21 && (
-        <CourseLibraryScreen
-          onBack={() => {
-            setSelectedCourseId(undefined);
-            navigateToScreen(1);
-          }}
-          Navigation={() => (
-            <Navigation
-              currentScreen={currentScreen}
-              navigateToScreen={navigateToScreen}
-              setShowAuthModal={setShowAuthModal}
-              setShowProfileModal={setShowProfileModal}
-              getUserState={getUserState}
-              setUserState={setUserState}
-              onNavigateToCourseLibrary={() => setSelectedCourseId(undefined)}
+      {/* Show onboarding for new users */}
+      {displayUser.isNewUser && onboardingStep !== null ? (
+        <div className="pb-20 md:pb-0">
+          {onboardingStep === 1 && (
+            <OnboardingWelcomeScreen
+              onNext={handleOnboardingNext}
+              onSkip={handleOnboardingSkip}
             />
           )}
-          userState={userState}
-          onCourseComplete={() => {
-            getUserState().then(setUserState).catch(console.error);
-          }}
-          onStateUpdate={(updatedState) => {
-            setUserState(updatedState);
-          }}
-          initialCourseId={selectedCourseId}
-        />
+          {onboardingStep === 2 && (
+            <OnboardingAssessmentScreen
+              onNext={handleOnboardingNext}
+              onBack={handleOnboardingBack}
+              onSkip={handleOnboardingSkip}
+              onComplete={(data) => {
+                // Save assessment data to user profile
+                const updatedState: UserState = {
+                  ...userState,
+                  preferences: {
+                    ...userState.preferences,
+                    onboardingData: {
+                      ...userState.preferences.onboardingData,
+                      subjects: data.subjects,
+                      proficiencyLevel: data.proficiencyLevel,
+                    },
+                  },
+                };
+                setUserState(updatedState);
+                saveUserState(updatedState).catch(console.error);
+              }}
+            />
+          )}
+          {onboardingStep === 4 && (
+            <OnboardingDashboardScreen
+              onComplete={handleOnboardingComplete}
+              onSkip={handleOnboardingSkip}
+            />
+          )}
+        </div>
+      ) : (
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <RootRedirect
+                isNewUser={displayUser.isNewUser ?? true}
+                loadingUserState={loadingUserState}
+              />
+            }
+          />
+          <Route
+            path={ROUTES.DASHBOARD}
+            element={<HomeDashboardScreenComponent />}
+          />
+          <Route
+            path={ROUTES.WELCOME}
+            element={
+              <WelcomeScreen
+                onStartOnboarding={() => {
+                  if (displayUser.isNewUser) {
+                    setOnboardingStep(1);
+                  }
+                }}
+                navigateToScreen={navigateToRoute}
+                displayUser={{
+                  name: displayUser.name || appContent.defaults.guestName,
+                  isNewUser: displayUser.isNewUser ?? true,
+                }}
+                currentScreen={getCurrentRoute()}
+                setShowAuthModal={setShowAuthModal}
+                setShowProfileModal={setShowProfileModal}
+                getUserState={getUserState}
+                setUserState={setUserState}
+              />
+            }
+          />
+          <Route
+            path={ROUTES.COURSE_LIBRARY}
+            element={
+              <CourseLibraryScreen
+                onBack={() => {
+                  setSelectedCourseId(undefined);
+                  navigate(ROUTES.WELCOME);
+                }}
+                Navigation={() => (
+                  <Navigation
+                    currentScreen={getCurrentRoute()}
+                    navigateToScreen={navigateToRoute}
+                    setShowAuthModal={setShowAuthModal}
+                    setShowProfileModal={setShowProfileModal}
+                    getUserState={getUserState}
+                    setUserState={setUserState}
+                    onNavigateToCourseLibrary={() =>
+                      setSelectedCourseId(undefined)
+                    }
+                  />
+                )}
+                userState={userState}
+                onCourseComplete={() => {
+                  getUserState().then(setUserState).catch(console.error);
+                }}
+                onStateUpdate={(updatedState) => {
+                  setUserState(updatedState);
+                }}
+                initialCourseId={selectedCourseId}
+              />
+            }
+          />
+          <Route
+            path={ROUTES.COURSE_DETAIL}
+            element={
+              <CourseDetailWrapper
+                navigate={navigate}
+                navigateToRoute={navigateToRoute}
+                getCurrentRoute={getCurrentRoute}
+                setShowAuthModal={setShowAuthModal}
+                setShowProfileModal={setShowProfileModal}
+                getUserState={getUserState}
+                setUserState={setUserState}
+                userState={userState}
+              />
+            }
+          />
+          <Route
+            path="*"
+            element={<Navigate to={ROUTES.DASHBOARD} replace />}
+          />
+        </Routes>
       )}
     </div>
   );

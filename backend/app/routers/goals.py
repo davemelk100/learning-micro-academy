@@ -50,7 +50,7 @@ async def create_goal(
             "user_id": current_user["id"],
             "title": goal.title,
             "description": goal.description,
-            "virtue_id": goal.learningStyleId,
+            "learningStyleId": goal.learningStyleId,
             "sdg_ids": goal.sdgIds,
             "progress": goal.progress,
             "completed": goal.completed,

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { AppHeader } from "../components/AppHeader";
 import { WelcomeSection } from "../components/WelcomeSection";
-import { VirtueOfTheWeek } from "../components/VirtueOfTheWeek";
+import { FeaturedCourse } from "../components/FeaturedCourse";
 import { ActionsOverview } from "../components/ActionsOverview";
 import { Goal } from "../types";
 
@@ -11,7 +11,7 @@ interface HomeDashboardScreenProps {
   userStats: {
     currentStreak: number;
   };
-  navigateToScreen: (_screen: number) => void;
+  navigateToScreen: (_path: string) => void;
   Navigation: React.ComponentType;
   onNavigateToCourse?: (_courseId: string) => void;
   completedCourses?: string[];
@@ -72,7 +72,7 @@ export const HomeDashboardScreen: React.FC<HomeDashboardScreenProps> = ({
         {/* Featured Course and Your Actions Row */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6 md:mb-8">
           <div className="lg:col-span-1">
-            <VirtueOfTheWeek onNavigateToCourse={onNavigateToCourse} />
+            <FeaturedCourse onNavigateToCourse={onNavigateToCourse} />
           </div>
           <div className="lg:col-span-2">
             <ActionsOverview

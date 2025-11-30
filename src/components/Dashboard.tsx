@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Edit3, X, Sparkles, Star } from "lucide-react";
 import { Goal, UserState, UserPreferences, LearningStyle } from "../types";
-import { virtues } from "../data";
+import { learningStyles } from "../data";
 import { clearGoalCreationState } from "../utils";
 import { AIInput } from "./AIInput";
 import { AddActionButton } from "./AddActionButton";
@@ -258,7 +258,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
             {goals
               .filter((goal) => !goal.completed)
               .map((goal) => {
-                const learningStyle = virtues.find(
+                const learningStyle = learningStyles.find(
                   (v) => v.id === goal.learningStyleId
                 );
                 return (
@@ -589,7 +589,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                     {goals
                       .filter((goal) => goal.completed)
                       .map((goal) => {
-                        const learningStyle = virtues.find(
+                        const learningStyle = learningStyles.find(
                           (v) => v.id === goal.learningStyleId
                         );
                         if (!learningStyle) return null;
@@ -598,7 +598,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                           <ActionCard
                             key={goal.id}
                             goal={goal}
-                            virtue={learningStyle}
+                            learningStyle={learningStyle}
                             isCompleted={true}
                             onEdit={openEditGoalModal}
                             onDelete={openDeleteModal}

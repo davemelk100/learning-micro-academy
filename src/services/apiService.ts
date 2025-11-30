@@ -140,7 +140,7 @@ class ApiService {
   async updateUserGoals(goals: any[]) {
     return this.request("/users/me/goals", {
       method: "PUT",
-      body: JSON.stringify(goals),
+      body: JSON.stringify({ goals }),
     });
   }
 
