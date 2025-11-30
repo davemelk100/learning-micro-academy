@@ -146,7 +146,7 @@ export const VirtueSelectionScreen: React.FC<VirtueSelectionScreenProps> = ({
                   <button
                     onClick={() => selectedVirtue && navigateToScreen(3)}
                     disabled={!selectedVirtue}
-                    className={`px-6 py-2 rounded-full font-medium text-sm transition-all ${
+                    className={`px-6 py-2 rounded-lg font-medium text-sm transition-all ${
                       selectedVirtue
                         ? `bg-button-dark hover:bg-slate-800 text-white shadow-lg ${
                             nextButtonPulse ? "animate-pulse" : ""
@@ -172,7 +172,7 @@ export const VirtueSelectionScreen: React.FC<VirtueSelectionScreenProps> = ({
                     <button
                       onClick={() => selectedVirtue && navigateToScreen(3)}
                       disabled={!selectedVirtue}
-                      className={`px-6 py-2 rounded-full font-medium text-sm transition-all ${
+                      className={`px-6 py-2 rounded-lg font-medium text-sm transition-all ${
                         selectedVirtue
                           ? `bg-button-dark hover:bg-slate-800 text-white shadow-lg ${
                               nextButtonPulse ? "animate-pulse" : ""
@@ -339,7 +339,7 @@ export const VirtueSelectionScreen: React.FC<VirtueSelectionScreenProps> = ({
                 <button
                   onClick={() => selectedVirtue && navigateToScreen(3)}
                   disabled={!selectedVirtue}
-                  className={`px-6 py-2 rounded-full font-medium text-sm transition-all ${
+                  className={`px-6 py-2 rounded-lg font-medium text-sm transition-all ${
                     selectedVirtue
                       ? `bg-button-dark hover:bg-slate-800 text-white shadow-lg ${
                           nextButtonPulse ? "animate-pulse" : ""

@@ -4,7 +4,7 @@ export default {
   theme: {
     extend: {
       fontSize: {
-        base: "20px",
+        base: "18px",
       },
       fontFamily: {
         sans: [

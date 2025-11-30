@@ -86,57 +86,57 @@ export const ActionsOverview: React.FC<ActionsOverviewProps> = ({
           <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
             <button
               onClick={() => toggleCardExpansion("sample-card")}
-              className="w-full flex items-center justify-between cursor-pointer hover:opacity-90 transition-opacity text-left"
+              className="w-full flex items-start justify-between cursor-pointer hover:opacity-90 transition-opacity text-left"
             >
-              <div className="flex items-center space-x-3 flex-1 min-w-0">
-                <div className="w-12 h-12 bg-pink-400 rounded-full flex items-center justify-center flex-shrink-0">
-                  <Target className="h-5 w-5 text-white" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h4 className="text-lg font-semibold text-slate-900 mb-1">
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center space-x-3 mb-2">
+                  <div className="w-12 h-12 bg-pink-400 rounded-full flex items-center justify-center flex-shrink-0">
+                    <Target className="h-5 w-5 text-white" />
+                  </div>
+                  <h4 className="text-lg font-semibold text-slate-900">
                     Intro to UX
                   </h4>
-                  <p className="text-lg text-slate-600 mb-1">
+                </div>
+                <div className="flex items-center gap-2 mb-1">
+                  <p className="text-lg text-slate-600">
                     Complete UX Fundamentals Course
                   </p>
                   <p className="text-lg text-slate-500">4 Weeks</p>
                 </div>
-              </div>
-              <div className="flex items-center space-x-2 ml-3 flex-shrink-0">
-                <div className="inline-flex items-center px-2 py-1 rounded-full text-lg font-medium bg-amber-100 text-amber-800 whitespace-nowrap">
+                <div className="inline-flex items-center px-2 py-1 rounded-lg text-lg font-medium bg-amber-100 text-amber-800 whitespace-nowrap">
                   Action created
                 </div>
-                <div className="text-slate-400">
-                  {expandedCards.has("sample-card") ? (
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M19 9l-7 7-7-7"
-                      />
-                    </svg>
-                  ) : (
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 5l7 7-7 7"
-                      />
-                    </svg>
-                  )}
-                </div>
+              </div>
+              <div className="text-slate-400 ml-3 flex-shrink-0">
+                {expandedCards.has("sample-card") ? (
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                ) : (
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                )}
               </div>
             </button>
 
@@ -148,26 +148,26 @@ export const ActionsOverview: React.FC<ActionsOverviewProps> = ({
                   Dedicate 30 minutes daily to progress through the lessons and
                   hands-on exercises.
                 </p>
-                {onNavigateToCourse && (
-                  <button
-                    onClick={() => onNavigateToCourse("intro-to-ux")}
-                    className="w-full bg-slate-900 hover:bg-slate-800 text-white py-3 px-6 rounded-full font-medium transition-colors text-lg mb-5"
-                  >
-                    Continue Course
-                  </button>
-                )}
+                {(() => {
+                  const sampleCourse = courses.find(
+                    (c) => c.id === "intro-to-ux"
+                  );
+                  const sampleCompleteness =
+                    sampleCourse && completedCourses.includes(sampleCourse.id)
+                      ? 100
+                      : 0;
+                  return (
+                    <>
+                      {onNavigateToCourse && sampleCompleteness < 100 && (
+                        <button
+                          onClick={() => onNavigateToCourse("intro-to-ux")}
+                          className="w-full bg-slate-900 hover:bg-slate-800 text-white py-3 px-6 rounded-lg font-medium transition-colors text-lg mb-5"
+                        >
+                          Continue Course
+                        </button>
+                      )}
 
-                <div className="pt-5 border-t border-slate-200">
-                  {(() => {
-                    const sampleCourse = courses.find(
-                      (c) => c.id === "intro-to-ux"
-                    );
-                    const sampleCompleteness =
-                      sampleCourse && completedCourses.includes(sampleCourse.id)
-                        ? 100
-                        : 0;
-                    return (
-                      <>
+                      <div className="pt-5 border-t border-slate-200">
                         <div className="flex items-center justify-between mb-2">
                           <span className="text-lg font-medium text-slate-700">
                             Course Completeness
@@ -182,10 +182,10 @@ export const ActionsOverview: React.FC<ActionsOverviewProps> = ({
                             style={{ width: `${sampleCompleteness}%` }}
                           />
                         </div>
-                      </>
-                    );
-                  })()}
-                </div>
+                      </div>
+                    </>
+                  );
+                })()}
               </div>
             )}
           </div>
@@ -211,7 +211,7 @@ export const ActionsOverview: React.FC<ActionsOverviewProps> = ({
                 </div>
                 <div className="ml-3 flex-shrink-0">
                   <div
-                    className={`inline-flex items-center px-2 py-1 rounded-full text-lg font-medium whitespace-nowrap ${
+                    className={`inline-flex items-center px-2 py-1 rounded-lg text-lg font-medium whitespace-nowrap ${
                       goal.completed
                         ? "bg-emerald-100 text-emerald-800"
                         : "bg-amber-100 text-amber-800"

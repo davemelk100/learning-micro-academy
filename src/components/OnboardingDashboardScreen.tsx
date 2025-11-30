@@ -78,7 +78,7 @@ export const OnboardingDashboardScreen: React.FC<
         <div className="text-center">
           <button
             onClick={onComplete}
-            className="px-8 py-4 bg-slate-900 hover:bg-slate-800 text-white rounded-full transition-all duration-200 font-medium shadow-lg hover:shadow-xl text-lg"
+            className="px-8 py-4 bg-slate-900 hover:bg-slate-800 text-white rounded-lg transition-all duration-200 font-medium shadow-lg hover:shadow-xl text-lg"
           >
             Go to Dashboard
           </button>

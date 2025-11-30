@@ -101,7 +101,7 @@ export const SavedActionCard: React.FC<SavedActionCardProps> = ({
                 {completedAction.tags.map((tag, index) => (
                   <span
                     key={index}
-                    className="px-2 py-1 bg-slate-100 text-slate-700 text-xs rounded-full"
+                    className="px-2 py-1 bg-slate-100 text-slate-700 text-xs rounded-lg"
                   >
                     {tag}
                   </span>
@@ -134,7 +134,7 @@ export const SavedActionCard: React.FC<SavedActionCardProps> = ({
             {onArchive && (
               <button
                 onClick={() => onArchive(completedAction.id)}
-                className="px-3 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-700 hover:bg-orange-200 transition-colors flex items-center space-x-1"
+                className="px-3 py-1 rounded-lg text-xs font-medium bg-orange-100 text-orange-700 hover:bg-orange-200 transition-colors flex items-center space-x-1"
               >
                 <Archive className="h-5 w-5" />
                 <span>Archive</span>
@@ -143,7 +143,7 @@ export const SavedActionCard: React.FC<SavedActionCardProps> = ({
             {onDelete && (
               <button
                 onClick={() => onDelete(completedAction.id)}
-                className="px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700 hover:bg-red-200 transition-colors"
+                className="px-3 py-1 rounded-lg text-xs font-medium bg-red-100 text-red-700 hover:bg-red-200 transition-colors"
               >
                 Delete
               </button>
@@ -202,7 +202,7 @@ export const SavedActionCard: React.FC<SavedActionCardProps> = ({
                   {completedAction.sdgIds.map((sdgId) => (
                     <span
                       key={sdgId}
-                      className="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full"
+                      className="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-lg"
                     >
                       SDG {sdgId}
                     </span>

@@ -204,7 +204,7 @@ export const SaveCompletedActionModal: React.FC<
             <button
               onClick={handleSave}
               disabled={isLoading}
-              className={`px-6 py-2 rounded-full font-medium transition-colors ${
+              className={`px-6 py-2 rounded-lg font-medium transition-colors ${
                 isLoading
                   ? "bg-slate-200 text-slate-400 cursor-not-allowed"
                   : "bg-green-600 hover:bg-green-700 text-white shadow-lg"

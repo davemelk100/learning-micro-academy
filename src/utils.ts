@@ -148,3 +148,123 @@ export const getHeadingFontClass = (selectedFont: string): string => {
       return "font-nunito";
   }
 };
+
+/**
+ * Converts markdown-style text to HTML
+ * Handles:
+ * - Bullet lists (lines starting with `- `)
+ * - Code blocks (```code```)
+ * - Inline code (`code`)
+ * - Paragraphs
+ */
+export const markdownToHtml = (text: string): string => {
+  if (!text) return "";
+
+  let html = "";
+  const lines = text.split("\n");
+  let inCodeBlock = false;
+  let inList = false;
+  let codeBlockContent = "";
+  let codeBlockLanguage = "";
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const trimmedLine = line.trim();
+
+    // Handle code blocks
+    if (trimmedLine.startsWith("```")) {
+      if (inCodeBlock) {
+        // End code block
+        html += `<pre><code class="language-${codeBlockLanguage}">${escapeHtml(
+          codeBlockContent
+        )}</code></pre>`;
+        codeBlockContent = "";
+        codeBlockLanguage = "";
+        inCodeBlock = false;
+      } else {
+        // Start code block
+        if (inList) {
+          html += "</ul>";
+          inList = false;
+        }
+        codeBlockLanguage = trimmedLine.slice(3).trim() || "";
+        inCodeBlock = true;
+      }
+      continue;
+    }
+
+    if (inCodeBlock) {
+      codeBlockContent += (codeBlockContent ? "\n" : "") + line;
+      continue;
+    }
+
+    // Handle bullet lists
+    if (trimmedLine.startsWith("- ")) {
+      if (!inList) {
+        html += "<ul>";
+        inList = true;
+      }
+      const listItem = trimmedLine.slice(2).trim();
+      // Process inline code in list items
+      const processedItem = processInlineCode(listItem);
+      html += `<li>${processedItem}</li>`;
+      continue;
+    }
+
+    // End list if we hit a non-list line
+    if (inList && trimmedLine !== "") {
+      html += "</ul>";
+      inList = false;
+    }
+
+    // Handle empty lines (paragraph breaks)
+    if (trimmedLine === "") {
+      if (i < lines.length - 1 && lines[i + 1]?.trim() !== "") {
+        html += "<br>";
+      }
+      continue;
+    }
+
+    // Handle regular paragraphs
+    const processedLine = processInlineCode(trimmedLine);
+    html += `<p>${processedLine}</p>`;
+  }
+
+  // Close any open tags
+  if (inList) {
+    html += "</ul>";
+  }
+  if (inCodeBlock) {
+    html += `<pre><code class="language-${codeBlockLanguage}">${escapeHtml(
+      codeBlockContent
+    )}</code></pre>`;
+  }
+
+  return html;
+};
+
+/**
+ * Processes inline code (`code`) in text
+ */
+const processInlineCode = (text: string): string => {
+  // Escape HTML first
+  let escaped = escapeHtml(text);
+  // Replace inline code backticks
+  escaped = escaped.replace(
+    /`([^`]+)`/g,
+    '<code class="inline-code">$1</code>'
+  );
+  return escaped;
+};
+
+/**
+ * Escapes HTML special characters
+ */
+const escapeHtml = (text: string): string => {
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+};

@@ -13,7 +13,8 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { UserState } from "../types";
-import { saveUserState } from "../utils";
+import { saveUserState, markdownToHtml } from "../utils";
+import { Quiz } from "./Quiz";
 
 interface CourseLibraryScreenProps {
   onBack: () => void;
@@ -159,11 +160,23 @@ export const CourseLibraryScreen: React.FC<CourseLibraryScreenProps> = ({
               </div>
             </div>
 
-            <div className="prose max-w-none">
-              <div className="whitespace-pre-wrap text-slate-700 leading-relaxed">
-                {selectedLesson.content}
+            {selectedLesson.type === "quiz" && selectedLesson.questions ? (
+              <Quiz
+                questions={selectedLesson.questions}
+                onComplete={(score, total) => {
+                  console.log(`Quiz completed: ${score}/${total}`);
+                }}
+              />
+            ) : (
+              <div className="prose max-w-none">
+                <div
+                  className="text-slate-700 leading-relaxed"
+                  dangerouslySetInnerHTML={{
+                    __html: markdownToHtml(selectedLesson.content),
+                  }}
+                />
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>
@@ -219,25 +232,16 @@ export const CourseLibraryScreen: React.FC<CourseLibraryScreenProps> = ({
 
               <div className="flex flex-wrap items-center gap-4 text-sm">
                 <div className="flex items-center gap-1 text-slate-600">
-                  <Clock className="w-4 h-4" />
-                  {selectedCourse.duration}
-                </div>
-                <div className="flex items-center gap-1 text-slate-600">
                   <Users className="w-4 h-4" />
                   {selectedCourse.level}
                 </div>
-                {selectedCourse.instructor && (
-                  <div className="text-slate-600">
-                    Instructor: {selectedCourse.instructor}
-                  </div>
-                )}
               </div>
 
               <div className="flex flex-wrap gap-2 mt-4">
                 {selectedCourse.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="px-3 py-1 bg-slate-100 text-slate-700 rounded-full text-xs font-medium"
+                    className="px-3 py-1 bg-slate-100 text-slate-700 rounded-lg text-xs font-medium"
                   >
                     {tag}
                   </span>
@@ -247,7 +251,7 @@ export const CourseLibraryScreen: React.FC<CourseLibraryScreenProps> = ({
                 <div className="mt-6">
                   <button
                     onClick={(e) => handleToggleComplete(selectedCourse.id, e)}
-                    className={`flex items-center gap-2 px-6 py-3 rounded-full font-medium transition-colors ${
+                    className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-colors ${
                       isCourseCompleted(selectedCourse.id)
                         ? "bg-green-100 text-green-700 hover:bg-green-200"
                         : "bg-slate-900 text-white hover:bg-slate-800"
@@ -270,7 +274,7 @@ export const CourseLibraryScreen: React.FC<CourseLibraryScreenProps> = ({
             </div>
 
             <div className="p-8">
-              <h2 className="text-xl font-bold text-slate-900 mb-4">
+              <h2 className="text-lg font-bold text-slate-900 mb-4">
                 Course Lessons
               </h2>
               <div className="space-y-3">
@@ -341,7 +345,7 @@ export const CourseLibraryScreen: React.FC<CourseLibraryScreenProps> = ({
 
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="text-4xl font-bold text-slate-900 mb-2">
+              <h1 className="text-2xl font-bold text-slate-900 mb-2">
                 Course Library
               </h1>
               <p className="text-slate-600">
@@ -399,27 +403,23 @@ export const CourseLibraryScreen: React.FC<CourseLibraryScreenProps> = ({
                     {course.category}
                   </span>
                   {isCourseCompleted(course.id) && (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-green-50 text-green-700 rounded-full text-xs font-medium border border-green-200">
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-green-50 text-green-700 rounded-lg text-xs font-medium border border-green-200">
                       <CheckCircle2 className="w-3 h-3" />
                       Completed
                     </span>
                   )}
                 </div>
 
-                <h3 className="text-base font-bold text-slate-900 mb-2.5 leading-snug">
+                <h3 className="text-lg font-bold text-slate-900 mb-2.5 leading-snug">
                   {course.title}
                 </h3>
 
-                <p className="text-sm text-slate-600 mb-4 line-clamp-2 leading-relaxed">
+                <p className="text-lg text-slate-600 mb-4 line-clamp-2 leading-relaxed">
                   {course.description}
                 </p>
 
                 <div className="flex items-center justify-between pt-4 border-t border-slate-100">
                   <div className="flex items-center gap-3 text-xs text-slate-600">
-                    <div className="flex items-center gap-1">
-                      <Clock className="w-3.5 h-3.5 text-slate-400" />
-                      <span>{course.duration}</span>
-                    </div>
                     <div className="flex items-center gap-1">
                       <BookOpen className="w-3.5 h-3.5 text-slate-400" />
                       <span>

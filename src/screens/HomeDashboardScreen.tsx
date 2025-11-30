@@ -63,17 +63,21 @@ export const HomeDashboardScreen: React.FC<HomeDashboardScreenProps> = ({
         <WelcomeSection userName={user.name} />
 
         {/* Featured Course and Your Actions Row */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6 md:mb-8">
-          <VirtueOfTheWeek />
-          <ActionsOverview
-            goals={goals}
-            navigateToScreen={navigateToScreen}
-            expandedCards={expandedCards}
-            toggleCardExpansion={toggleCardExpansion}
-            onNavigateToCourse={onNavigateToCourse}
-            completedCourses={completedCourses}
-            userStats={userStats}
-          />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6 md:mb-8">
+          <div className="lg:col-span-1">
+            <VirtueOfTheWeek onNavigateToCourse={onNavigateToCourse} />
+          </div>
+          <div className="lg:col-span-2">
+            <ActionsOverview
+              goals={goals}
+              navigateToScreen={navigateToScreen}
+              expandedCards={expandedCards}
+              toggleCardExpansion={toggleCardExpansion}
+              onNavigateToCourse={onNavigateToCourse}
+              completedCourses={completedCourses}
+              userStats={userStats}
+            />
+          </div>
         </div>
       </div>
     </div>

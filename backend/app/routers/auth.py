@@ -5,6 +5,7 @@ from fastapi import APIRouter, HTTPException, status, Depends
 from pydantic import BaseModel, EmailStr
 from app.database.database_adapter import db
 from app.core.security import create_access_token, verify_password, get_password_hash
+from app.core.dependencies import get_current_user
 from datetime import timedelta
 from app.core.config import settings
 import uuid
@@ -191,7 +192,6 @@ async def login(credentials: UserLogin):
 @router.post("/refresh")
 async def refresh_token(current_user: dict = Depends(get_current_user)):
     """Refresh access token"""
-    from app.core.dependencies import get_current_user
     access_token = create_access_token(
         data={"sub": current_user["id"], "email": current_user["email"]}
     )

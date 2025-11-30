@@ -30,7 +30,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       <div className="relative">
         <button
           onClick={onClose}
-          className="absolute -top-2 -right-2 z-10 bg-white rounded-full p-2 shadow-lg hover:bg-slate-100 transition-colors"
+          className="absolute -top-2 -right-2 z-10 bg-white rounded-lg p-2 shadow-lg hover:bg-slate-100 transition-colors"
         >
           <X className="w-5 h-5 text-slate-600" />
         </button>

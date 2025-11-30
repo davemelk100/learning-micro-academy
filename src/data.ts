@@ -230,12 +230,21 @@ export interface Course {
   tags: string[];
 }
 
+export interface QuizQuestion {
+  id: string;
+  question: string;
+  options: string[];
+  correctAnswer: number; // index of correct answer
+  explanation?: string;
+}
+
 export interface CourseLesson {
   id: string;
   title: string;
   content: string;
   duration: string;
   type: "video" | "reading" | "exercise" | "quiz";
+  questions?: QuizQuestion[]; // For quiz type lessons
 }
 
 export const courses: Course[] = [
@@ -247,7 +256,6 @@ export const courses: Course[] = [
     category: "Design",
     duration: "4 weeks",
     level: "Beginner",
-    instructor: "Sarah Chen",
     tags: ["UX", "Design", "User Research"],
     lessons: [
       {
@@ -333,6 +341,59 @@ Create wireframes for a simple login page. Focus on:
         duration: "25 min",
         type: "exercise",
       },
+      {
+        id: "quiz-1",
+        title: "Course Quiz",
+        content: "Test your knowledge of UX Design fundamentals",
+        duration: "15 min",
+        type: "quiz",
+        questions: [
+          {
+            id: "q1",
+            question: "What is the primary goal of UX Design?",
+            options: [
+              "To make products look beautiful",
+              "To create meaningful and relevant experiences for users",
+              "To use the latest design trends",
+              "To minimize development costs",
+            ],
+            correctAnswer: 1,
+            explanation:
+              "UX Design focuses on creating meaningful and relevant experiences for users, considering their needs, behaviors, and context.",
+          },
+          {
+            id: "q2",
+            question:
+              "Which research method is best for understanding user motivations?",
+            options: ["Surveys", "User Interviews", "Analytics", "A/B Testing"],
+            correctAnswer: 1,
+            explanation:
+              "User interviews are one-on-one conversations that allow deep exploration of user motivations and pain points.",
+          },
+          {
+            id: "q3",
+            question: "What is the main purpose of wireframes?",
+            options: [
+              "To show final visual design",
+              "To focus on layout, structure, and functionality",
+              "To demonstrate color schemes",
+              "To create animations",
+            ],
+            correctAnswer: 1,
+            explanation:
+              "Wireframes are low-fidelity representations that focus on layout, structure, and functionality rather than visual design.",
+          },
+          {
+            id: "q4",
+            question:
+              "Which of the following is NOT a key component of the UX Design process?",
+            options: ["Research", "Design", "Testing", "Marketing"],
+            correctAnswer: 3,
+            explanation:
+              "The UX Design process includes Research, Design, Testing, and Iteration. Marketing is a separate business function.",
+          },
+        ],
+      },
     ],
   },
   {
@@ -343,7 +404,6 @@ Create wireframes for a simple login page. Focus on:
     category: "Design",
     duration: "6 weeks",
     level: "Intermediate",
-    instructor: "Michael Park",
     tags: ["Design Systems", "Components", "Figma"],
     lessons: [
       {
@@ -386,6 +446,41 @@ Create a design token system for a new product. Define at least:
         duration: "30 min",
         type: "exercise",
       },
+      {
+        id: "quiz-1",
+        title: "Course Quiz",
+        content: "Test your knowledge of Design Systems",
+        duration: "15 min",
+        type: "quiz",
+        questions: [
+          {
+            id: "q1",
+            question: "What is the main benefit of a design system?",
+            options: [
+              "It makes designs look more modern",
+              "It ensures consistency and scalability across products",
+              "It reduces the need for designers",
+              "It automatically generates code",
+            ],
+            correctAnswer: 1,
+            explanation:
+              "Design systems ensure consistency and scalability, making it easier to maintain and extend products.",
+          },
+          {
+            id: "q2",
+            question: "What are design tokens?",
+            options: [
+              "Visual design atoms like colors, spacing, and typography",
+              "User authentication codes",
+              "Database identifiers",
+              "API endpoints",
+            ],
+            correctAnswer: 0,
+            explanation:
+              "Design tokens are the visual design atoms that represent design decisions like colors, spacing, and typography.",
+          },
+        ],
+      },
     ],
   },
   {
@@ -396,7 +491,6 @@ Create a design token system for a new product. Define at least:
     category: "Development",
     duration: "8 weeks",
     level: "Beginner",
-    instructor: "Alex Rodriguez",
     tags: ["HTML", "CSS", "JavaScript", "Web"],
     lessons: [
       {
@@ -462,6 +556,49 @@ Key Concepts:
         duration: "25 min",
         type: "reading",
       },
+      {
+        id: "quiz-1",
+        title: "Course Quiz",
+        content: "Test your knowledge of Web Development Basics",
+        duration: "15 min",
+        type: "quiz",
+        questions: [
+          {
+            id: "q1",
+            question: "What does HTML stand for?",
+            options: [
+              "HyperText Markup Language",
+              "High Tech Modern Language",
+              "Home Tool Markup Language",
+              "Hyperlink and Text Markup Language",
+            ],
+            correctAnswer: 0,
+            explanation:
+              "HTML stands for HyperText Markup Language, which is the standard markup language for web pages.",
+          },
+          {
+            id: "q2",
+            question: "What is the primary purpose of CSS?",
+            options: [
+              "To structure web content",
+              "To control the visual appearance of HTML elements",
+              "To add interactivity to web pages",
+              "To store data",
+            ],
+            correctAnswer: 1,
+            explanation:
+              "CSS (Cascading Style Sheets) controls the visual appearance, layout, and styling of HTML elements.",
+          },
+          {
+            id: "q3",
+            question: "Which HTML element is used for the main heading?",
+            options: ["<heading>", "<h1>", "<header>", "<title>"],
+            correctAnswer: 1,
+            explanation:
+              "The <h1> element is used for the main heading, with <h2> through <h6> for subheadings.",
+          },
+        ],
+      },
     ],
   },
   {
@@ -472,7 +609,6 @@ Key Concepts:
     category: "Product",
     duration: "5 weeks",
     level: "Intermediate",
-    instructor: "Jessica Kim",
     tags: ["Product", "Strategy", "Roadmap"],
     lessons: [
       {
@@ -496,6 +632,41 @@ The Strategy Process:
         duration: "20 min",
         type: "reading",
       },
+      {
+        id: "quiz-1",
+        title: "Course Quiz",
+        content: "Test your knowledge of Product Strategy",
+        duration: "15 min",
+        type: "quiz",
+        questions: [
+          {
+            id: "q1",
+            question: "What is the primary purpose of a product strategy?",
+            options: [
+              "To create detailed feature specifications",
+              "To outline what a product will achieve and how",
+              "To design the user interface",
+              "To write code",
+            ],
+            correctAnswer: 1,
+            explanation:
+              "Product strategy is the high-level plan that outlines what a product will achieve and how it will achieve it.",
+          },
+          {
+            id: "q2",
+            question: "Which is NOT a key component of product strategy?",
+            options: [
+              "Vision",
+              "Target Users",
+              "Success Metrics",
+              "Code Implementation",
+            ],
+            correctAnswer: 3,
+            explanation:
+              "Code implementation is part of execution, not strategy. Strategy focuses on vision, goals, users, and metrics.",
+          },
+        ],
+      },
     ],
   },
   {
@@ -506,7 +677,6 @@ The Strategy Process:
     category: "Analytics",
     duration: "6 weeks",
     level: "Beginner",
-    instructor: "David Lee",
     tags: ["Data", "Analytics", "SQL", "Visualization"],
     lessons: [
       {
@@ -534,49 +704,48 @@ Key Metrics:
         duration: "15 min",
         type: "reading",
       },
-    ],
-  },
-  {
-    id: "environment-practices",
-    title: "Sustainable Living Practices",
-    description:
-      "Learn practical ways to live more sustainably. Cover waste reduction, sustainable consumption, and environmental impact awareness.",
-    category: "Environment",
-    duration: "5 weeks",
-    level: "Beginner",
-    instructor: "Rachel Green",
-    tags: ["Environment", "Lifestyle"],
-    lessons: [
       {
-        id: "lesson-1",
-        title: "The Three R's: Reduce, Reuse, Recycle",
-        content: `The foundation of sustainable living starts with the three R's.
-
-Reduce:
-- Buy only what you need
-- Choose products with less packaging
-- Reduce water and energy consumption
-- Minimize food waste
-
-Reuse:
-- Repair instead of replace
-- Buy second-hand items
-- Repurpose items creatively
-- Use reusable containers and bags
-
-Recycle:
-- Know what can be recycled in your area
-- Clean items before recycling
-- Follow local recycling guidelines
-- Support products made from recycled materials
-
-Beyond the Three R's:
-- Refuse: Say no to unnecessary items
-- Rot: Compost organic waste
-- Repair: Fix items instead of replacing
-- Rethink: Question consumption habits`,
+        id: "quiz-1",
+        title: "Course Quiz",
+        content: "Test your knowledge of Data Analytics",
         duration: "15 min",
-        type: "reading",
+        type: "quiz",
+        questions: [
+          {
+            id: "q1",
+            question: "What type of analytics answers 'What happened?'",
+            options: [
+              "Descriptive Analytics",
+              "Diagnostic Analytics",
+              "Predictive Analytics",
+              "Prescriptive Analytics",
+            ],
+            correctAnswer: 0,
+            explanation:
+              "Descriptive analytics examines historical data to understand what happened in the past.",
+          },
+          {
+            id: "q2",
+            question: "Which tool is commonly used for data visualization?",
+            options: ["Microsoft Word", "Tableau", "Photoshop", "Figma"],
+            correctAnswer: 1,
+            explanation:
+              "Tableau is a popular business intelligence and data visualization tool used for analyzing and visualizing data.",
+          },
+          {
+            id: "q3",
+            question: "What does SQL stand for?",
+            options: [
+              "Structured Query Language",
+              "Simple Query Language",
+              "Standard Query Language",
+              "System Query Language",
+            ],
+            correctAnswer: 0,
+            explanation:
+              "SQL stands for Structured Query Language, used for managing and querying relational databases.",
+          },
+        ],
       },
     ],
   },

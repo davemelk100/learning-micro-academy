@@ -99,8 +99,8 @@ export const OnboardingAssessmentScreen: React.FC<
                   onClick={() => setProficiencyLevel(level.value)}
                   className={`w-full text-left px-4 py-3 rounded-lg border-2 transition-all ${
                     proficiencyLevel === level.value
-                      ? "border-slate-900 bg-slate-50"
-                      : "border-slate-300 hover:border-slate-400"
+                      ? "border-slate-900 bg-slate-900 text-white"
+                      : "border-slate-300 bg-white text-slate-700 hover:border-slate-400"
                   }`}
                 >
                   {level.label}
@@ -113,7 +113,7 @@ export const OnboardingAssessmentScreen: React.FC<
         <div className="flex justify-between mt-8">
           <button
             onClick={onBack}
-            className="px-6 py-3 border-2 border-slate-300 rounded-full hover:bg-slate-50 transition-colors font-medium flex items-center gap-2"
+            className="px-6 py-3 border-2 border-slate-300 rounded-lg hover:bg-slate-50 transition-colors font-medium flex items-center gap-2"
           >
             <ArrowLeft className="w-5 h-5" />
             Back
@@ -121,7 +121,7 @@ export const OnboardingAssessmentScreen: React.FC<
           <button
             onClick={handleNext}
             disabled={subjects.length === 0 || !proficiencyLevel}
-            className="px-6 py-3 bg-slate-900 text-white rounded-full hover:bg-slate-800 transition-colors font-medium disabled:bg-slate-300 disabled:cursor-not-allowed flex items-center gap-2"
+            className="px-6 py-3 bg-slate-900 text-white rounded-lg hover:bg-slate-800 transition-colors font-medium disabled:bg-slate-300 disabled:cursor-not-allowed flex items-center gap-2"
           >
             Next
             <ArrowRight className="w-5 h-5" />

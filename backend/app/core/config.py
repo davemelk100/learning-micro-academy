@@ -7,6 +7,7 @@ from typing import List
 class Settings(BaseSettings):
     # Database mode: "supabase" or "sqlite"
     DATABASE_MODE: str = "supabase"
+    USE_SQLITE: str = "false"  # Legacy support
     
     # Supabase (required if DATABASE_MODE is "supabase")
     SUPABASE_URL: str = ""
@@ -37,6 +38,7 @@ class Settings(BaseSettings):
     class Config:
         env_file = ".env"
         case_sensitive = True
+        extra = "ignore"  # Ignore extra fields in .env
 
 settings = Settings()
 

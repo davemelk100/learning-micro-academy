@@ -5,6 +5,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from app.database.database_adapter import db
 from app.core.security import decode_access_token
+from app.database.supabase_client import get_supabase_client
 
 security = HTTPBearer()
 
@@ -45,3 +46,7 @@ async def get_current_user(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error fetching user: {str(e)}"
         )
+
+def get_supabase():
+    """Get Supabase client dependency"""
+    return get_supabase_client()
