@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { X, Star, Tag, FileText, ArrowRight } from "lucide-react";
-import { CompletedAction, Goal, Virtue } from "../types";
+import { CompletedAction, Goal, LearningStyle } from "../types";
 import { createCompletedActionFromGoal } from "../services/databaseService";
 
 interface SaveCompletedActionModalProps {
@@ -8,12 +8,12 @@ interface SaveCompletedActionModalProps {
   onClose: () => void;
   onSave: (_completedAction: CompletedAction) => void;
   goal: Goal;
-  virtue: Virtue;
+  learningStyle: LearningStyle;
 }
 
 export const SaveCompletedActionModal: React.FC<
   SaveCompletedActionModalProps
-> = ({ isOpen, onClose, onSave, goal, virtue }) => {
+> = ({ isOpen, onClose, onSave, goal, learningStyle }) => {
   const [completionNotes, setCompletionNotes] = useState("");
   const [impactRating, setImpactRating] = useState<number>(0);
   const [lessonsLearned, setLessonsLearned] = useState("");
@@ -24,7 +24,7 @@ export const SaveCompletedActionModal: React.FC<
   const handleSave = async () => {
     setIsLoading(true);
     try {
-      const completedAction = createCompletedActionFromGoal(goal, virtue.name, {
+      const completedAction = createCompletedActionFromGoal(goal, learningStyle.name, {
         completionNotes,
         impactRating: impactRating > 0 ? impactRating : undefined,
         lessonsLearned,
@@ -95,7 +95,7 @@ export const SaveCompletedActionModal: React.FC<
             <h4 className="font-semibold text-slate-900 mb-2">{goal.title}</h4>
             <p className="text-sm text-slate-600 mb-2">{goal.description}</p>
             <div className="flex items-center space-x-4 text-xs text-slate-500">
-              <span>Learning Style: {virtue.name}</span>
+              <span>Learning Style: {learningStyle.name}</span>
               <span>•</span>
               <span>Completed: {new Date().toLocaleDateString()}</span>
             </div>

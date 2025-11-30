@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Edit3, X, Sparkles, Star } from "lucide-react";
-import { Virtue, Goal, UserState, UserPreferences } from "../types";
+import { Goal, UserState, UserPreferences, LearningStyle } from "../types";
 import { virtues } from "../data";
 import { getHeadingFontClass, clearGoalCreationState } from "../utils";
 import { AIInput } from "./AIInput";
@@ -11,7 +11,6 @@ import { SaveCompletedActionModal } from "./SaveCompletedActionModal";
 import { CompletedActionsView } from "./CompletedActionsView";
 import { SavedActionCard } from "./SavedActionCard";
 import { UserStats } from "./UserStats";
-import { DashboardVirtueOfTheWeek } from "./DashboardVirtueOfTheWeek";
 import { databaseService } from "../services/databaseService";
 import { CompletedAction } from "../types";
 
@@ -27,9 +26,6 @@ interface DashboardProps {
   };
   selectedFont: string;
   navigate: (path: string) => void;
-  setSelectedVirtue?: (virtue: Virtue | null) => void;
-  setSelectedSDGs?: (sdgs: string[]) => void;
-  setCurrentSelectedSDG?: (sdg: string) => void;
   setNewGoal: (goal: UserPreferences["newGoal"]) => void;
   setGoals: (goals: Goal[]) => void;
   saveUserState: (state: UserState) => void;
@@ -59,9 +55,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
   userStats,
   selectedFont,
   navigate,
-  setSelectedVirtue,
-  setSelectedSDGs,
-  setCurrentSelectedSDG,
   setNewGoal,
   setGoals,
   saveUserState,
@@ -81,7 +74,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [selectedGoalForSave, setSelectedGoalForSave] = useState<{
     goal: Goal;
-    virtue: Virtue;
+    learningStyle: LearningStyle;
   } | null>(null);
   const [savedCompletedActions, setSavedCompletedActions] = useState<
     CompletedAction[]
@@ -117,8 +110,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
     }
   };
 
-  const handleOpenSaveModal = (goal: Goal, virtue: Virtue) => {
-    setSelectedGoalForSave({ goal, virtue });
+  const handleOpenSaveModal = (goal: Goal, learningStyle: LearningStyle) => {
+    setSelectedGoalForSave({ goal, learningStyle });
     setShowSaveModal(true);
   };
 
@@ -224,12 +217,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
         {/* AI Input Field */}
         <AIInput />
 
-        {/* Virtue of the Week */}
-        <DashboardVirtueOfTheWeek
-          selectedFont={selectedFont}
-          getHeadingFontClass={getHeadingFontClass}
-        />
-
         {/* User Stats */}
         <UserStats
           userStats={userStats}
@@ -254,9 +241,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
               onClick={() => {
                 // Clear goal creation state for fresh start
                 const clearedState = clearGoalCreationState();
-                setSelectedVirtue?.(null);
-                setSelectedSDGs?.([]);
-                setCurrentSelectedSDG?.("");
                 setNewGoal(clearedState.newGoal);
                 saveUserState({
                   preferences: clearedState,
@@ -264,7 +248,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                   progress: [],
                   currentScreen: 0,
                 });
-                navigate("/sdgs");
+                navigate("/goal-creation");
               }}
             />
           </div>
@@ -292,7 +276,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
             {goals
               .filter((goal) => !goal.completed)
               .map((goal) => {
-                const virtue = virtues.find(
+                const learningStyle = virtues.find(
                   (v) => v.id === goal.learningStyleId
                 );
                 return (
@@ -357,7 +341,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                               {goal.title}
                             </h4>
                             <p className="text-base text-slate-600 leading-normal">
-                              {virtue?.name || "Unknown Learning Style"}
+                              {learningStyle?.name || "Unknown Learning Style"}
                             </p>
                             <p className="text-base text-slate-500 leading-normal">
                               {goal.title.includes("5 Minute")
@@ -629,16 +613,16 @@ export const Dashboard: React.FC<DashboardProps> = ({
                     {goals
                       .filter((goal) => goal.completed)
                       .map((goal) => {
-                        const virtue = virtues.find(
+                        const learningStyle = virtues.find(
                           (v) => v.id === goal.learningStyleId
                         );
-                        if (!virtue) return null;
+                        if (!learningStyle) return null;
 
                         return (
                           <ActionCard
                             key={goal.id}
                             goal={goal}
-                            virtue={virtue}
+                            virtue={learningStyle}
                             isCompleted={true}
                             onEdit={openEditGoalModal}
                             onDelete={openDeleteModal}
@@ -679,7 +663,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                               });
                             }}
                             onSaveToDatabase={(_completedAction) => {
-                              handleOpenSaveModal(goal, virtue);
+                              handleOpenSaveModal(goal, learningStyle);
                             }}
                           />
                         );
@@ -768,7 +752,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
           onClose={handleCloseSaveModal}
           onSave={handleSaveToDatabase}
           goal={selectedGoalForSave!.goal}
-          virtue={selectedGoalForSave!.virtue}
+          learningStyle={selectedGoalForSave!.learningStyle}
         />
       )}
     </div>
