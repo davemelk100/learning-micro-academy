@@ -70,7 +70,7 @@ export const CompletedActionsView: React.FC<CompletedActionsViewProps> = ({
     // Filter by learning style
     if (selectedLearningStyle !== "all") {
       filtered = filtered.filter(
-        (action) => action.learningStyleId === selectedLearningStyle
+        (action) => action.learningStyleName === selectedLearningStyle
       );
     }
 
@@ -116,11 +116,11 @@ export const CompletedActionsView: React.FC<CompletedActionsViewProps> = ({
     }
   };
 
-  const getVirtueOptions = () => {
-    const virtues = [
-      ...new Set(completedActions.map((action) => action.virtueName)),
+  const getLearningStyleOptions = () => {
+    const learningStyles = [
+      ...new Set(completedActions.map((action) => action.learningStyleName)),
     ];
-    return virtues.map((virtue) => ({ value: virtue, label: virtue }));
+    return learningStyles.map((style) => ({ value: style, label: style }));
   };
 
   const formatDate = (dateString: string) => {
@@ -208,7 +208,7 @@ export const CompletedActionsView: React.FC<CompletedActionsViewProps> = ({
               className="px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="all">All Learning Styles</option>
-              {getVirtueOptions().map((option) => (
+              {getLearningStyleOptions().map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
                 </option>
@@ -275,7 +275,7 @@ export const CompletedActionsView: React.FC<CompletedActionsViewProps> = ({
                         <span>{formatDate(action.completedAt)}</span>
                       </span>
                       <span>•</span>
-                      <span>{action.virtueName}</span>
+                      <span>{action.learningStyleName}</span>
                       {action.tags && action.tags.length > 0 && (
                         <>
                           <span>•</span>

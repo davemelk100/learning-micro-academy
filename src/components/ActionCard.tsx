@@ -53,7 +53,7 @@ export const ActionCard: React.FC<ActionCardProps> = ({
     <div
       className={`bg-white p-4 rounded-xl shadow-md border border-slate-100 ${className}`}
     >
-      <div className="flex items-start justify-between mb-3">
+      <div className="flex items-center justify-between mb-3">
         <div className="flex items-center space-x-3">
           <div
             className={`w-10 h-10 ${virtue.color} rounded-full overflow-hidden flex items-center justify-center`}
@@ -76,12 +76,12 @@ export const ActionCard: React.FC<ActionCardProps> = ({
           {getStatusBadge()}
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="text-slate-400 hover:text-slate-600 transition-colors"
+            className="text-slate-400 hover:text-slate-600 transition-colors flex items-center"
           >
             {isExpanded ? (
-              <ChevronUp className="w-4 h-4" />
+              <ChevronUp className="w-8 h-8" />
             ) : (
-              <ChevronDown className="w-4 h-4" />
+              <ChevronDown className="w-8 h-8" />
             )}
           </button>
         </div>

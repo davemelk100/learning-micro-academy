@@ -111,15 +111,15 @@ export const SavedActionCard: React.FC<SavedActionCardProps> = ({
           </div>
 
           {/* Actions */}
-          <div className="flex items-center space-x-2 ml-4">
+          <div className="flex items-center space-x-2 ml-4 self-start">
             <button
               onClick={() => setIsExpanded(!isExpanded)}
-              className="p-2 text-slate-400 hover:text-slate-600 transition-colors"
+              className="p-2 text-slate-400 hover:text-slate-600 transition-colors flex items-center"
             >
               {isExpanded ? (
-                <ChevronUp className="h-5 w-5" />
+                <ChevronUp className="h-8 w-8" />
               ) : (
-                <ChevronDown className="h-5 w-5" />
+                <ChevronDown className="h-8 w-8" />
               )}
             </button>
           </div>

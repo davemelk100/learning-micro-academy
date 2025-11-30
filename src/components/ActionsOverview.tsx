@@ -138,7 +138,7 @@ export const ActionsOverview: React.FC<ActionsOverviewProps> = ({
                 >
                   <button
                     onClick={() => toggleCardExpansion(cardId)}
-                    className="w-full flex items-start justify-between cursor-pointer hover:opacity-90 transition-opacity text-left"
+                    className="w-full flex items-center justify-between cursor-pointer hover:opacity-90 transition-opacity text-left"
                   >
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center space-x-3 mb-2">
@@ -169,10 +169,10 @@ export const ActionsOverview: React.FC<ActionsOverviewProps> = ({
                         {isCompleted ? "Completed" : `${progress}% Complete`}
                       </div>
                     </div>
-                    <div className="text-slate-400 ml-3 flex-shrink-0">
+                    <div className="text-slate-400 ml-3 flex-shrink-0 flex items-center">
                       {isExpanded ? (
                         <svg
-                          className="w-5 h-5"
+                          className="w-8 h-8"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -186,7 +186,7 @@ export const ActionsOverview: React.FC<ActionsOverviewProps> = ({
                         </svg>
                       ) : (
                         <svg
-                          className="w-5 h-5"
+                          className="w-8 h-8"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"

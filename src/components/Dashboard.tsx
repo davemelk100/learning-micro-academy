@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Edit3, X, Sparkles, Star } from "lucide-react";
 import { Goal, UserState, UserPreferences, LearningStyle } from "../types";
 import { virtues } from "../data";
-import { getHeadingFontClass, clearGoalCreationState } from "../utils";
+import { clearGoalCreationState } from "../utils";
 import { AIInput } from "./AIInput";
 import { AddActionButton } from "./AddActionButton";
 import { ActionCard } from "./ActionCard";
@@ -24,7 +24,6 @@ interface DashboardProps {
     weeklyProgress: number;
     currentStreak: number;
   };
-  selectedFont: string;
   navigate: (path: string) => void;
   setNewGoal: (goal: UserPreferences["newGoal"]) => void;
   setGoals: (goals: Goal[]) => void;
@@ -53,7 +52,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
   user,
   goals,
   userStats,
-  selectedFont,
   navigate,
   setNewGoal,
   setGoals,
@@ -204,11 +202,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
             <span className="mr-3">
               <Sparkles className="h-5 w-5 text-blue-500" />
             </span>
-            <h2
-              className={`text-2xl font-bold text-slate-900 ${getHeadingFontClass(
-                selectedFont
-              )}`}
-            >
+            <h2 className="text-2xl font-bold text-slate-900">
               Welcome back, {user.name}!
             </h2>
           </div>
@@ -218,11 +212,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
         <AIInput />
 
         {/* User Stats */}
-        <UserStats
-          userStats={userStats}
-          selectedFont={selectedFont}
-          getHeadingFontClass={getHeadingFontClass}
-        />
+        <UserStats userStats={userStats} />
 
         {/* Goals Overview */}
         <div
@@ -230,11 +220,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
           style={{ minHeight: "320px" }}
         >
           <div className="flex items-center justify-between mb-4">
-            <h3
-              className={`text-lg font-semibold text-slate-900 ${getHeadingFontClass(
-                selectedFont
-              )}`}
-            >
+            <h3 className="text-lg font-semibold text-slate-900">
               My Learning Actions
             </h3>
             <AddActionButton
@@ -261,11 +247,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 style={{ minHeight: "320px" }}
               >
                 <div className="text-center">
-                  <h3
-                    className={`text-lg font-semibold text-slate-900 ${getHeadingFontClass(
-                      selectedFont
-                    )}`}
-                  >
+                  <h3 className="text-lg font-semibold text-slate-900">
                     No Actions Yet
                   </h3>
                 </div>
@@ -308,7 +290,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                                   language: "en",
                                   selectedLearningStyle: null,
                                   name: user.name,
-                                  selectedFont: selectedFont,
+                                  selectedFont: "philosopher-mulish",
                                   hasCompletedOnboarding: false,
                                   newGoal: {
                                     title: "",
@@ -330,9 +312,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                           />
                           <div>
                             <h4
-                              className={`font-semibold text-slate-900 text-lg ${getHeadingFontClass(
-                                selectedFont
-                              )} ${
+                              className={`font-semibold text-slate-900 text-lg ${
                                 goal.completed
                                   ? "line-through text-slate-500"
                                   : ""
@@ -590,11 +570,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
             {goals.filter((goal) => goal.completed).length > 0 && (
               <div className="mt-8">
                 <div className="flex items-center justify-between mb-4">
-                  <h3
-                    className={`text-lg font-semibold text-slate-900 ${getHeadingFontClass(
-                      selectedFont
-                    )}`}
-                  >
+                  <h3 className="text-lg font-semibold text-slate-900">
                     Completed Actions (
                     {goals.filter((goal) => goal.completed).length})
                   </h3>
@@ -644,7 +620,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                                   language: "en",
                                   selectedLearningStyle: null,
                                   name: user.name,
-                                  selectedFont: selectedFont,
+                                  selectedFont: "philosopher-mulish",
                                   hasCompletedOnboarding: false,
                                   newGoal: {
                                     title: "",
@@ -678,11 +654,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
           {savedCompletedActions.length > 0 && (
             <div className="mt-8">
               <div className="flex items-center justify-between mb-4">
-                <h3
-                  className={`text-lg font-semibold text-slate-900 ${getHeadingFontClass(
-                    selectedFont
-                  )}`}
-                >
+                <h3 className="text-lg font-semibold text-slate-900">
                   Saved Actions ({savedCompletedActions.length})
                 </h3>
                 <button
