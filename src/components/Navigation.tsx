@@ -1,13 +1,15 @@
 import { User as UserIcon, LogOut, Target, BookOpen } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
+import { UserState } from "../types";
 
 interface NavigationProps {
   currentScreen: number;
   navigateToScreen: (screen: number) => void;
   setShowAuthModal: (show: boolean) => void;
   setShowProfileModal: (show: boolean) => void;
-  getUserState: () => Promise<any>;
-  setUserState: (state: any) => void;
+  getUserState: () => Promise<UserState>;
+  setUserState: (state: UserState) => void;
+  onNavigateToCourseLibrary?: () => void;
 }
 
 export const Navigation = ({
@@ -17,12 +19,19 @@ export const Navigation = ({
   setShowProfileModal,
   getUserState,
   setUserState,
+  onNavigateToCourseLibrary,
 }: NavigationProps) => {
   const { isAuthenticated, logout } = useAuth();
 
   const navItems = [
     { label: "Dashboard", action: () => navigateToScreen(0) },
-    { label: "Course Library", action: () => navigateToScreen(21) },
+    {
+      label: "Course Library",
+      action: () => {
+        onNavigateToCourseLibrary?.();
+        navigateToScreen(21);
+      },
+    },
   ];
 
   return (

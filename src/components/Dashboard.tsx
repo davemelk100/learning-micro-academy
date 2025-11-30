@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Edit3, X, Sparkles, Star } from "lucide-react";
-import { Virtue, Goal, UserState } from "../types";
+import { Virtue, Goal, UserState, UserPreferences } from "../types";
 import { virtues, sdgGoals } from "../data";
 import { getHeadingFontClass, clearGoalCreationState } from "../utils";
 import { AIInput } from "./AIInput";
@@ -33,7 +33,7 @@ interface DashboardProps {
   setSelectedVirtue: (virtue: Virtue | null) => void;
   setSelectedSDGs: (sdgs: string[]) => void;
   setCurrentSelectedSDG: (sdg: string) => void;
-  setNewGoal: (goal: any) => void;
+  setNewGoal: (goal: UserPreferences["newGoal"]) => void;
   setGoals: (goals: Goal[]) => void;
   saveUserState: (state: UserState) => void;
   openEditGoalModal: (goal: Goal) => void;
@@ -45,7 +45,7 @@ interface DashboardProps {
   progressDefinitions: string[];
   editGoalModalOpen: boolean;
   selectedGoalForEdit: Goal | null;
-  newGoal: any;
+  newGoal: UserPreferences["newGoal"];
   setEditGoalModalOpen: (open: boolean) => void;
   setSelectedGoalForEdit: (goal: Goal | null) => void;
   setProgressModalOpen: (open: boolean) => void;
@@ -98,8 +98,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
     useState(false);
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [selectedGoalForSave, setSelectedGoalForSave] = useState<{
-    goal: any;
-    virtue: any;
+    goal: Goal;
+    virtue: Virtue;
   } | null>(null);
   const [savedCompletedActions, setSavedCompletedActions] = useState<
     CompletedAction[]
@@ -135,7 +135,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
     }
   };
 
-  const handleOpenSaveModal = (goal: any, virtue: any) => {
+  const handleOpenSaveModal = (goal: Goal, virtue: Virtue) => {
     setSelectedGoalForSave({ goal, virtue });
     setShowSaveModal(true);
   };
