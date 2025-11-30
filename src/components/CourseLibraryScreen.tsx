@@ -33,6 +33,7 @@ export const CourseLibraryScreen: React.FC<CourseLibraryScreenProps> = ({
   initialCourseId,
 }) => {
   const completedCourses = userState?.preferences?.completedCourses || [];
+  const quizResults = userState?.preferences?.quizResults || {};
 
   // Initialize with initialCourseId if provided
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(
@@ -46,6 +47,17 @@ export const CourseLibraryScreen: React.FC<CourseLibraryScreenProps> = ({
       e.stopPropagation(); // Prevent card click when clicking button
     }
     if (!userState) return;
+
+    // Check if quiz has been passed (80% threshold)
+    const quizResult = quizResults[courseId];
+    const hasPassedQuiz = quizResult?.passed === true;
+
+    if (!hasPassedQuiz) {
+      alert(
+        "You must pass the course quiz (80% or higher) before marking the course as complete."
+      );
+      return;
+    }
 
     const isCompleted = completedCourses.includes(courseId);
     const updatedCompletedCourses = isCompleted
@@ -63,6 +75,41 @@ export const CourseLibraryScreen: React.FC<CourseLibraryScreenProps> = ({
     saveUserState(updatedState);
     if (onCourseComplete) {
       onCourseComplete();
+    }
+  };
+
+  const handleQuizComplete = (
+    courseId: string,
+    score: number,
+    total: number
+  ) => {
+    if (!userState) return;
+
+    const percentage = Math.round((score / total) * 100);
+    const passed = percentage >= 80;
+
+    const updatedQuizResults = {
+      ...quizResults,
+      [courseId]: {
+        passed,
+        score,
+        total,
+      },
+    };
+
+    const updatedState: UserState = {
+      ...userState,
+      preferences: {
+        ...userState.preferences,
+        quizResults: updatedQuizResults,
+      },
+    };
+
+    saveUserState(updatedState);
+
+    if (passed) {
+      // Optionally show a success message
+      console.log(`Quiz passed! You can now mark the course as complete.`);
     }
   };
 
@@ -160,11 +207,13 @@ export const CourseLibraryScreen: React.FC<CourseLibraryScreenProps> = ({
               </div>
             </div>
 
-            {selectedLesson.type === "quiz" && selectedLesson.questions ? (
+            {selectedLesson.type === "quiz" &&
+            selectedLesson.questions &&
+            selectedCourse ? (
               <Quiz
                 questions={selectedLesson.questions}
                 onComplete={(score, total) => {
-                  console.log(`Quiz completed: ${score}/${total}`);
+                  handleQuizComplete(selectedCourse.id, score, total);
                 }}
               />
             ) : (
@@ -249,26 +298,51 @@ export const CourseLibraryScreen: React.FC<CourseLibraryScreenProps> = ({
               </div>
               {userState && (
                 <div className="mt-6">
-                  <button
-                    onClick={(e) => handleToggleComplete(selectedCourse.id, e)}
-                    className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-colors ${
-                      isCourseCompleted(selectedCourse.id)
-                        ? "bg-green-100 text-green-700 hover:bg-green-200"
-                        : "bg-slate-900 text-white hover:bg-slate-800"
-                    }`}
-                  >
-                    {isCourseCompleted(selectedCourse.id) ? (
+                  {(() => {
+                    const quizResult = quizResults[selectedCourse.id];
+                    const hasPassedQuiz = quizResult?.passed === true;
+                    const isCompleted = isCourseCompleted(selectedCourse.id);
+                    const canComplete = hasPassedQuiz || isCompleted;
+
+                    return (
                       <>
-                        <CheckCircle2 className="w-5 h-5" />
-                        Completed
+                        {!hasPassedQuiz && !isCompleted && (
+                          <div className="mb-4 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+                            <p className="text-sm text-amber-800">
+                              <strong>Note:</strong> You must pass the course
+                              quiz (80% or higher) before you can mark this
+                              course as complete.
+                            </p>
+                          </div>
+                        )}
+                        <button
+                          onClick={(e) =>
+                            handleToggleComplete(selectedCourse.id, e)
+                          }
+                          disabled={!canComplete}
+                          className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-colors ${
+                            isCompleted
+                              ? "bg-green-100 text-green-700 hover:bg-green-200"
+                              : canComplete
+                              ? "bg-slate-900 text-white hover:bg-slate-800"
+                              : "bg-slate-300 text-slate-500 cursor-not-allowed"
+                          }`}
+                        >
+                          {isCompleted ? (
+                            <>
+                              <CheckCircle2 className="w-5 h-5" />
+                              Completed
+                            </>
+                          ) : (
+                            <>
+                              <Check className="w-5 h-5" />
+                              Mark as Complete
+                            </>
+                          )}
+                        </button>
                       </>
-                    ) : (
-                      <>
-                        <Check className="w-5 h-5" />
-                        Mark as Complete
-                      </>
-                    )}
-                  </button>
+                    );
+                  })()}
                 </div>
               )}
             </div>

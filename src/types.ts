@@ -82,6 +82,9 @@ export interface UserPreferences {
     }>;
   };
   completedCourses?: string[]; // Array of course IDs
+  quizResults?: {
+    [courseId: string]: { passed: boolean; score: number; total: number };
+  }; // Quiz completion status
 }
 
 export interface UserState {

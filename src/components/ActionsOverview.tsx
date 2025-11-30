@@ -46,7 +46,7 @@ export const ActionsOverview: React.FC<ActionsOverviewProps> = ({
       <div className="grid grid-cols-3 gap-3 md:gap-4 mb-6">
         <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
           <div className="flex justify-start mb-3">
-            <Target className="h-5 w-5 text-slate-600" />
+            <Target className="h-9 w-9 text-slate-600" />
           </div>
           <div className="text-base font-medium text-slate-600 mb-2 text-left">
             Actions - Total
@@ -58,7 +58,7 @@ export const ActionsOverview: React.FC<ActionsOverviewProps> = ({
 
         <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
           <div className="flex justify-start mb-3">
-            <Flame className="h-5 w-5 text-orange-500" />
+            <Flame className="h-9 w-9 text-orange-500" />
           </div>
           <div className="text-base font-medium text-slate-600 mb-2 text-left">
             Streak
@@ -70,7 +70,7 @@ export const ActionsOverview: React.FC<ActionsOverviewProps> = ({
 
         <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
           <div className="flex justify-start mb-3">
-            <Check className="h-5 w-5 text-blue-500" />
+            <Check className="h-9 w-9 text-blue-500" />
           </div>
           <div className="text-base font-medium text-slate-600 mb-2 text-left">
             Actions - This Week
@@ -91,7 +91,7 @@ export const ActionsOverview: React.FC<ActionsOverviewProps> = ({
               <div className="flex-1 min-w-0">
                 <div className="flex items-center space-x-3 mb-2">
                   <div className="w-12 h-12 bg-pink-400 rounded-full flex items-center justify-center flex-shrink-0">
-                    <Target className="h-5 w-5 text-white" />
+                    <Target className="h-7 w-7 text-white" />
                   </div>
                   <h4 className="text-lg font-semibold text-slate-900">
                     Intro to UX
@@ -200,7 +200,7 @@ export const ActionsOverview: React.FC<ActionsOverviewProps> = ({
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3 flex-1 min-w-0">
                   <div className="w-12 h-12 bg-slate-400 rounded-full flex items-center justify-center flex-shrink-0">
-                    <Target className="h-5 w-5 text-white" />
+                    <Target className="h-7 w-7 text-white" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <h4 className="text-lg font-semibold text-slate-900 mb-1">
