@@ -6,8 +6,9 @@ from typing import List
 
 class Settings(BaseSettings):
     # Database mode: "supabase" or "sqlite"
-    DATABASE_MODE: str = "supabase"
-    USE_SQLITE: str = "false"  # Legacy support
+    # Default to SQLite for local development if Supabase is not configured
+    DATABASE_MODE: str = "sqlite"
+    USE_SQLITE: str = "true"  # Default to SQLite for local development
     
     # Supabase (required if DATABASE_MODE is "supabase")
     SUPABASE_URL: str = ""

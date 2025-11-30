@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { apiService } from "../../services/apiService";
+import { useAuth } from "../../contexts/AuthContext";
 
 interface LoginFormProps {
   onSuccess: () => void;
@@ -10,6 +10,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
   onSuccess,
   onSwitchToSignup,
 }) => {
+  const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -21,14 +22,16 @@ export const LoginForm: React.FC<LoginFormProps> = ({
     setLoading(true);
 
     try {
-      const response = await apiService.login(email, password);
-      if (response.data) {
+      const success = await login(email, password);
+      if (success) {
         onSuccess();
       } else {
-        setError(response.error || "Login failed");
+        setError("Invalid email or password");
       }
-    } catch {
-      setError("An unexpected error occurred");
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "An unexpected error occurred"
+      );
     } finally {
       setLoading(false);
     }

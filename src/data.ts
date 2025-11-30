@@ -1412,4 +1412,896 @@ Error Handling:
       },
     ],
   },
+  {
+    id: "railway-deployment",
+    title: "Railway Deployment & Secrets Management",
+    description:
+      "Master Railway platform for deploying applications. Learn to manage environment variables, secrets, databases, and deploy applications with best practices.",
+    category: "DevOps",
+    duration: "5 weeks",
+    level: "Beginner",
+    tags: [
+      "Railway",
+      "Deployment",
+      "DevOps",
+      "Secrets",
+      "Environment Variables",
+    ],
+    lessons: [
+      {
+        id: "lesson-1",
+        title: "Introduction to Railway",
+        content: `Railway is a modern platform that makes it easy to deploy applications, manage databases, and handle infrastructure without the complexity of traditional cloud providers.
+
+What is Railway?
+- Platform-as-a-Service (PaaS) for application deployment
+- Automatic deployments from Git repositories
+- Built-in database and service management
+- Simple pricing with pay-as-you-go model
+- Zero-configuration deployments
+
+Key Features:
+- Git-based deployments
+- Automatic HTTPS/SSL certificates
+- Environment variable management
+- Database provisioning
+- Log streaming and monitoring
+- Custom domains
+
+Getting Started:
+1. Sign up at railway.app
+2. Connect your GitHub/GitLab account
+3. Create a new project
+4. Deploy from a repository or template
+
+Project Structure:
+- Projects: Container for your applications
+- Services: Individual applications or databases
+- Variables: Environment variables and secrets
+- Deployments: Version history of your app
+
+Use Cases:
+- Web applications (React, Next.js, etc.)
+- API backends (Node.js, Python, etc.)
+- Databases (PostgreSQL, MySQL, Redis)
+- Background workers and cron jobs`,
+        duration: "20 min",
+        type: "reading",
+      },
+      {
+        id: "lesson-2",
+        title: "Environment Variables and Secrets",
+        content: `Managing environment variables and secrets securely is crucial for application deployment.
+
+Environment Variables:
+Railway provides a simple interface for managing environment variables:
+- Project-level variables: Shared across all services
+- Service-level variables: Specific to one service
+- Private variables: Hidden from logs and UI
+- Public variables: Visible in deployment logs
+
+Setting Variables:
+1. Go to your service settings
+2. Navigate to "Variables" tab
+3. Add new variable with key-value pairs
+4. Variables are automatically injected at runtime
+
+Best Practices:
+- Use private variables for secrets (API keys, passwords)
+- Use public variables for non-sensitive config
+- Never commit secrets to Git
+- Use different values for dev/staging/production
+- Document required variables in README
+
+Example Variables:
+\`\`\`
+DATABASE_URL=postgresql://user:pass@host:5432/db
+API_KEY=sk_live_xxxxx (private)
+NODE_ENV=production
+PORT=3000
+\`\`\`
+
+Accessing Variables:
+In your application, access variables as normal environment variables:
+\`\`\`javascript
+// Node.js
+const dbUrl = process.env.DATABASE_URL;
+const apiKey = process.env.API_KEY;
+
+// Python
+import os
+db_url = os.getenv('DATABASE_URL')
+api_key = os.getenv('API_KEY')
+\`\`\`
+
+Variable Precedence:
+1. Service-level variables (highest priority)
+2. Project-level variables
+3. Railway-provided variables (RAILWAY_ENVIRONMENT, etc.)
+
+Secrets Management:
+- Mark sensitive variables as "Private"
+- Use Railway's secrets for API keys, tokens, certificates
+- Rotate secrets regularly
+- Use different secrets per environment`,
+        duration: "30 min",
+        type: "reading",
+      },
+      {
+        id: "lesson-3",
+        title: "Deploying Applications",
+        content: `Deploying applications on Railway is straightforward with automatic builds and deployments.
+
+Deployment Methods:
+1. Git Integration: Connect repository for automatic deploys
+2. GitHub Deploy: Deploy directly from GitHub
+3. Railway CLI: Deploy from command line
+4. Docker: Use Dockerfile for custom builds
+
+Git-Based Deployment:
+\`\`\`bash
+# Railway automatically detects your stack
+# Node.js projects: npm install && npm start
+# Python projects: pip install -r requirements.txt && python app.py
+# Static sites: Serves static files
+\`\`\`
+
+Build Configuration:
+Create \`railway.json\` or \`railway.toml\` for custom configuration:
+\`\`\`json
+{
+  "$schema": "https://railway.app/railway.schema.json",
+  "build": {
+    "builder": "NIXPACKS",
+    "buildCommand": "npm run build"
+  },
+  "deploy": {
+    "startCommand": "npm start",
+    "restartPolicyType": "ON_FAILURE",
+    "restartPolicyMaxRetries": 10
+  }
+}
+\`\`\`
+
+Environment Detection:
+Railway automatically detects:
+- Node.js: package.json detected
+- Python: requirements.txt or pyproject.toml
+- Go: go.mod file
+- Ruby: Gemfile
+- PHP: composer.json
+
+Custom Builds:
+- Use Dockerfile for full control
+- Specify build and start commands
+- Set build environment variables
+- Configure health checks
+
+Deployment Workflow:
+1. Push code to connected branch
+2. Railway detects changes
+3. Builds application
+4. Runs health checks
+5. Deploys new version
+6. Routes traffic to new deployment
+
+Exercise:
+Deploy a simple application:
+- Create a basic web app
+- Connect to Railway
+- Set environment variables
+- Deploy and verify it works`,
+        duration: "35 min",
+        type: "exercise",
+      },
+      {
+        id: "lesson-4",
+        title: "Database Management and Services",
+        content: `Railway makes it easy to provision and manage databases alongside your applications.
+
+Provisioning Databases:
+1. Click "New" in your project
+2. Select database type (PostgreSQL, MySQL, Redis, MongoDB)
+3. Railway automatically provisions and configures
+4. Connection string available as environment variable
+
+Database Types:
+- PostgreSQL: Most popular, full-featured
+- MySQL: Widely used, good compatibility
+- Redis: In-memory cache and queue
+- MongoDB: NoSQL document database
+
+Connection Strings:
+Railway automatically provides connection strings:
+\`\`\`
+DATABASE_URL=postgresql://user:password@host:port/database
+\`\`\`
+
+Using Databases:
+\`\`\`javascript
+// Node.js with PostgreSQL
+const { Pool } = require('pg');
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false }
+});
+\`\`\`
+
+\`\`\`python
+# Python with PostgreSQL
+import psycopg2
+conn = psycopg2.connect(os.getenv('DATABASE_URL'))
+\`\`\`
+
+Service Networking:
+- Services in same project can communicate
+- Use service names for internal networking
+- Private networking by default
+- Public endpoints for web services
+
+Multiple Services:
+- Deploy frontend and backend separately
+- Share databases across services
+- Use service dependencies
+- Manage resources per service
+
+Monitoring and Logs:
+- Real-time log streaming
+- View logs per deployment
+- Monitor resource usage
+- Set up alerts and notifications
+
+Backup and Recovery:
+- Automatic database backups
+- Point-in-time recovery
+- Export data easily
+- Restore from backups`,
+        duration: "30 min",
+        type: "reading",
+      },
+      {
+        id: "quiz-1",
+        title: "Course Quiz",
+        content:
+          "Test your knowledge of Railway Deployment & Secrets Management",
+        duration: "15 min",
+        type: "quiz",
+        questions: [
+          {
+            id: "q1",
+            question: "What is Railway primarily used for?",
+            options: [
+              "Code editing",
+              "Deploying applications and managing infrastructure",
+              "Version control",
+              "Design tools",
+            ],
+            correctAnswer: 1,
+            explanation:
+              "Railway is a Platform-as-a-Service (PaaS) used for deploying applications, managing databases, and handling infrastructure.",
+          },
+          {
+            id: "q2",
+            question:
+              "How should you handle sensitive information like API keys in Railway?",
+            options: [
+              "Commit them to Git",
+              "Use private environment variables",
+              "Hardcode them in your application",
+              "Share them in public channels",
+            ],
+            correctAnswer: 1,
+            explanation:
+              "Sensitive information should be stored as private environment variables in Railway, never committed to Git or hardcoded.",
+          },
+          {
+            id: "q3",
+            question:
+              "What is the correct way to access environment variables in a Node.js application on Railway?",
+            options: [
+              "process.railway.VARIABLE_NAME",
+              "process.env.VARIABLE_NAME",
+              "railway.get('VARIABLE_NAME')",
+              "config.VARIABLE_NAME",
+            ],
+            correctAnswer: 1,
+            explanation:
+              "Railway injects environment variables into the standard process.env object, accessible as process.env.VARIABLE_NAME.",
+          },
+          {
+            id: "q4",
+            question:
+              "Which variable takes precedence if set at both project and service level?",
+            options: [
+              "Project-level variables",
+              "Service-level variables",
+              "They merge together",
+              "Neither, it's an error",
+            ],
+            correctAnswer: 1,
+            explanation:
+              "Service-level variables take precedence over project-level variables, allowing service-specific overrides.",
+          },
+          {
+            id: "q5",
+            question:
+              "What happens when you push code to a connected Git repository?",
+            options: [
+              "Nothing automatically",
+              "Railway automatically builds and deploys",
+              "You must manually trigger deployment",
+              "Code is only stored, not deployed",
+            ],
+            correctAnswer: 1,
+            explanation:
+              "Railway automatically detects changes in connected repositories and triggers builds and deployments automatically.",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: "supabase-fundamentals",
+    title: "Supabase Fundamentals",
+    description:
+      "Learn to build modern applications with Supabase. Master database management, authentication, real-time subscriptions, storage, and edge functions.",
+    category: "Backend & Database",
+    duration: "6 weeks",
+    level: "Beginner",
+    tags: ["Supabase", "PostgreSQL", "Authentication", "Real-time", "Backend"],
+    lessons: [
+      {
+        id: "lesson-1",
+        title: "Introduction to Supabase",
+        content: `Supabase is an open-source Firebase alternative that provides a complete backend solution for your applications.
+
+What is Supabase?
+- Open-source backend-as-a-service (BaaS)
+- Built on PostgreSQL database
+- Provides authentication, storage, real-time, and edge functions
+- Self-hostable or cloud-hosted
+- TypeScript-first with auto-generated types
+
+Key Features:
+- PostgreSQL Database: Full-featured relational database
+- Authentication: Built-in user management with multiple providers
+- Real-time: Subscriptions to database changes
+- Storage: File storage with CDN
+- Edge Functions: Serverless functions at the edge
+- Row Level Security: Fine-grained access control
+
+Why Supabase?
+- Open source and self-hostable
+- No vendor lock-in
+- PostgreSQL power with easy API
+- Great developer experience
+- Generous free tier
+- Active community
+
+Use Cases:
+- Web applications
+- Mobile apps
+- Real-time dashboards
+- SaaS products
+- Internal tools`,
+        duration: "20 min",
+        type: "reading",
+      },
+      {
+        id: "lesson-2",
+        title: "Setting Up Supabase",
+        content: `Getting started with Supabase is straightforward. Let's set up your first project.
+
+Creating a Project:
+1. Sign up at supabase.com
+2. Create a new project
+3. Choose organization and region
+4. Set database password
+5. Wait for provisioning (2-3 minutes)
+
+Project Structure:
+- Project URL: Your API endpoint
+- API Keys: Anon key (public) and Service Role key (private)
+- Database: PostgreSQL instance
+- Storage: File storage bucket
+- Auth: User management system
+
+Installation:
+\`\`\`bash
+# Using npm
+npm install @supabase/supabase-js
+
+# Using yarn
+yarn add @supabase/supabase-js
+\`\`\`
+
+Client Setup:
+\`\`\`javascript
+import { createClient } from '@supabase/supabase-js'
+
+const supabaseUrl = 'https://your-project.supabase.co'
+const supabaseKey = 'your-anon-key'
+
+const supabase = createClient(supabaseUrl, supabaseKey)
+\`\`\`
+
+Environment Variables:
+\`\`\`env
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_ANON_KEY=your-anon-key
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+\`\`\`
+
+Best Practices:
+- Never expose service role key in client-side code
+- Use environment variables for all keys
+- Store anon key in frontend, service role key only in backend
+- Use different keys for development and production`,
+        duration: "25 min",
+        type: "reading",
+      },
+      {
+        id: "lesson-3",
+        title: "Database Management",
+        content: `Supabase provides a powerful PostgreSQL database with an intuitive interface.
+
+Table Editor:
+- Visual table creation and editing
+- Column types and constraints
+- Foreign key relationships
+- Indexes for performance
+
+SQL Editor:
+- Run SQL queries directly
+- Save frequently used queries
+- View query results
+- Export data
+
+Creating Tables:
+\`\`\`sql
+CREATE TABLE users (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  email TEXT UNIQUE NOT NULL,
+  name TEXT NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE TABLE posts (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  title TEXT NOT NULL,
+  content TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+\`\`\`
+
+Querying Data:
+\`\`\`javascript
+// Select all
+const { data, error } = await supabase
+  .from('posts')
+  .select('*')
+
+// Select with filters
+const { data, error } = await supabase
+  .from('posts')
+  .select('*')
+  .eq('user_id', 'user-id-here')
+  .order('created_at', { ascending: false })
+  .limit(10)
+
+// Insert data
+const { data, error } = await supabase
+  .from('posts')
+  .insert([
+    { title: 'New Post', content: 'Post content', user_id: 'user-id-here' }
+  ])
+
+// Update data
+const { data, error } = await supabase
+  .from('posts')
+  .update({ title: 'Updated Title' })
+  .eq('id', postId)
+
+// Delete data
+const { data, error } = await supabase
+  .from('posts')
+  .delete()
+  .eq('id', postId)
+\`\`\`
+
+Row Level Security (RLS):
+Enable RLS to control data access:
+\`\`\`sql
+ALTER TABLE posts ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Users can only see their own posts
+CREATE POLICY "Users can view own posts"
+ON posts FOR SELECT
+USING (auth.uid() = user_id);
+\`\`\`
+
+Exercise:
+Create a simple blog application:
+- Users table
+- Posts table with foreign key
+- Enable RLS policies
+- Query posts with user information`,
+        duration: "35 min",
+        type: "exercise",
+      },
+      {
+        id: "lesson-4",
+        title: "Authentication",
+        content: `Supabase Auth provides complete user authentication out of the box.
+
+Authentication Methods:
+- Email/Password
+- OAuth providers (Google, GitHub, etc.)
+- Magic links
+- Phone authentication
+- Custom JWT tokens
+
+Sign Up:
+\`\`\`javascript
+const { data, error } = await supabase.auth.signUp({
+  email: 'user@example.com',
+  password: 'secure-password',
+  options: {
+    data: {
+      name: 'John Doe'
+    }
+  }
+})
+\`\`\`
+
+Sign In:
+\`\`\`javascript
+const { data, error } = await supabase.auth.signInWithPassword({
+  email: 'user@example.com',
+  password: 'secure-password'
+})
+\`\`\`
+
+Sign Out:
+\`\`\`javascript
+const { error } = await supabase.auth.signOut()
+\`\`\`
+
+OAuth Providers:
+\`\`\`javascript
+const { data, error } = await supabase.auth.signInWithOAuth({
+  provider: 'google',
+  options: {
+    redirectTo: 'https://yourapp.com/callback'
+  }
+})
+\`\`\`
+
+Session Management:
+\`\`\`javascript
+// Get current session
+const { data: { session } } = await supabase.auth.getSession()
+
+// Get current user
+const { data: { user } } = await supabase.auth.getUser()
+
+// Listen to auth changes
+supabase.auth.onAuthStateChange((event, session) => {
+  console.log(event, session)
+})
+\`\`\`
+
+User Metadata:
+\`\`\`javascript
+// Update user metadata
+const { data, error } = await supabase.auth.updateUser({
+  data: { name: 'New Name' }
+})
+
+// Access metadata
+const user = session.user
+const name = user.user_metadata.name
+\`\`\`
+
+Password Reset:
+\`\`\`javascript
+const { data, error } = await supabase.auth.resetPasswordForEmail(
+  'user@example.com',
+  {
+    redirectTo: 'https://yourapp.com/reset-password'
+  }
+)
+\`\`\`
+
+Best Practices:
+- Always validate email format
+- Use strong password requirements
+- Implement rate limiting
+- Store user data in database, not just metadata
+- Handle auth errors gracefully`,
+        duration: "30 min",
+        type: "reading",
+      },
+      {
+        id: "lesson-5",
+        title: "Real-time Subscriptions",
+        content: `Supabase real-time allows you to listen to database changes as they happen.
+
+Enabling Real-time:
+\`\`\`sql
+-- Enable replication for a table
+ALTER PUBLICATION supabase_realtime ADD TABLE posts;
+\`\`\`
+
+Basic Subscription:
+\`\`\`javascript
+const channel = supabase
+  .channel('posts')
+  .on('postgres_changes', 
+    { 
+      event: 'INSERT', 
+      schema: 'public', 
+      table: 'posts' 
+    },
+    (payload) => {
+      console.log('New post:', payload.new)
+    }
+  )
+  .subscribe()
+\`\`\`
+
+Event Types:
+- INSERT: New rows added
+- UPDATE: Rows modified
+- DELETE: Rows removed
+
+Filtered Subscriptions:
+\`\`\`javascript
+// Subscribe to specific user's posts
+const channel = supabase
+  .channel('user-posts')
+  .on('postgres_changes',
+    {
+      event: '*',
+      schema: 'public',
+      table: 'posts',
+      filter: 'user_id=eq.user-id-here'
+    },
+    (payload) => {
+      console.log('Change:', payload)
+    }
+  )
+  .subscribe()
+\`\`\`
+
+Broadcast Channels:
+\`\`\`javascript
+// Send message
+const channel = supabase.channel('chat')
+channel.subscribe((status) => {
+  if (status === 'SUBSCRIBED') {
+    channel.send({
+      type: 'broadcast',
+      event: 'message',
+      payload: { text: 'Hello!' }
+    })
+  }
+})
+
+// Receive message
+const channel = supabase.channel('chat')
+channel.on('broadcast', { event: 'message' }, (payload) => {
+  console.log('Message:', payload.payload)
+})
+.subscribe()
+\`\`\`
+
+Presence:
+\`\`\`javascript
+// Track user presence
+const channel = supabase.channel('online-users')
+channel.on('presence', { event: 'sync' }, () => {
+  const state = channel.presenceState()
+  console.log('Online users:', state)
+})
+channel.on('presence', { event: 'join' }, ({ key, newPresences }) => {
+  console.log('User joined:', newPresences)
+})
+channel.track({
+  user: user.id,
+  online_at: new Date().toISOString()
+})
+channel.subscribe()
+\`\`\`
+
+Cleanup:
+\`\`\`javascript
+// Unsubscribe when done
+channel.unsubscribe()
+\`\`\`
+
+Use Cases:
+- Live chat applications
+- Collaborative editing
+- Real-time dashboards
+- Notification systems
+- Live updates`,
+        duration: "30 min",
+        type: "reading",
+      },
+      {
+        id: "lesson-6",
+        title: "Storage and File Management",
+        content: `Supabase Storage provides file storage with CDN capabilities.
+
+Creating Buckets:
+\`\`\`javascript
+const { data, error } = await supabase.storage.createBucket('avatars', {
+  public: true,
+  fileSizeLimit: 5242880, // 5MB
+  allowedMimeTypes: ['image/jpeg', 'image/png']
+})
+\`\`\`
+
+Uploading Files:
+\`\`\`javascript
+// Upload file
+const file = event.target.files[0]
+const { data, error } = await supabase.storage
+  .from('avatars')
+  .upload('user-id/file-name.jpg', file)
+
+// Upload with options
+const { data, error } = await supabase.storage
+  .from('avatars')
+  .upload('user-id/avatar.jpg', file, {
+    cacheControl: '3600',
+    upsert: true
+  })
+\`\`\`
+
+Downloading Files:
+\`\`\`javascript
+// Get public URL
+const { data } = supabase.storage
+  .from('avatars')
+  .getPublicUrl('user-id/avatar.jpg')
+
+// Download file
+const { data, error } = await supabase.storage
+  .from('avatars')
+  .download('user-id/avatar.jpg')
+\`\`\`
+
+Listing Files:
+\`\`\`javascript
+const { data, error } = await supabase.storage
+  .from('avatars')
+  .list('user-id', {
+    limit: 100,
+    offset: 0,
+    sortBy: { column: 'created_at', order: 'desc' }
+  })
+\`\`\`
+
+Deleting Files:
+\`\`\`javascript
+const { data, error } = await supabase.storage
+  .from('avatars')
+  .remove(['user-id/avatar.jpg'])
+\`\`\`
+
+Storage Policies:
+\`\`\`sql
+-- Allow authenticated users to upload
+CREATE POLICY "Users can upload own files"
+ON storage.objects FOR INSERT
+WITH CHECK (
+  bucket_id = 'avatars' AND
+  auth.uid()::text = (storage.foldername(name))[1]
+);
+
+-- Allow public read access
+CREATE POLICY "Public can read avatars"
+ON storage.objects FOR SELECT
+USING (bucket_id = 'avatars');
+\`\`\`
+
+Image Transformations:
+\`\`\`javascript
+// Resize image
+const { data } = supabase.storage
+  .from('avatars')
+  .getPublicUrl('user-id/avatar.jpg', {
+    transform: {
+      width: 200,
+      height: 200,
+      resize: 'cover'
+    }
+  })
+\`\`\`
+
+Best Practices:
+- Use appropriate bucket names
+- Set file size limits
+- Validate file types
+- Implement proper RLS policies
+- Use CDN for public assets
+- Clean up unused files`,
+        duration: "30 min",
+        type: "reading",
+      },
+      {
+        id: "quiz-1",
+        title: "Course Quiz",
+        content: "Test your knowledge of Supabase Fundamentals",
+        duration: "15 min",
+        type: "quiz",
+        questions: [
+          {
+            id: "q1",
+            question: "What database does Supabase use?",
+            options: ["MySQL", "PostgreSQL", "MongoDB", "SQLite"],
+            correctAnswer: 1,
+            explanation:
+              "Supabase is built on PostgreSQL, a powerful open-source relational database.",
+          },
+          {
+            id: "q2",
+            question: "What is Row Level Security (RLS) used for?",
+            options: [
+              "Database performance optimization",
+              "Fine-grained access control at the row level",
+              "Data encryption",
+              "Backup and recovery",
+            ],
+            correctAnswer: 1,
+            explanation:
+              "RLS allows you to define policies that control which rows users can access, update, or delete based on conditions.",
+          },
+          {
+            id: "q3",
+            question: "Which key should NEVER be exposed in client-side code?",
+            options: [
+              "Anon key",
+              "Service Role key",
+              "Project URL",
+              "Database password",
+            ],
+            correctAnswer: 1,
+            explanation:
+              "The Service Role key bypasses RLS and has full database access. It should only be used in secure backend environments.",
+          },
+          {
+            id: "q4",
+            question:
+              "What is the purpose of real-time subscriptions in Supabase?",
+            options: [
+              "To improve database performance",
+              "To listen to database changes as they happen",
+              "To encrypt data in transit",
+              "To backup data automatically",
+            ],
+            correctAnswer: 1,
+            explanation:
+              "Real-time subscriptions allow your application to receive updates immediately when data changes in the database.",
+          },
+          {
+            id: "q5",
+            question: "How do you enable real-time for a table?",
+            options: [
+              "Set a flag in the table settings",
+              "Use ALTER PUBLICATION command",
+              "Enable it in the dashboard only",
+              "It's enabled by default for all tables",
+            ],
+            correctAnswer: 1,
+            explanation:
+              "You enable real-time by adding the table to the supabase_realtime publication using: ALTER PUBLICATION supabase_realtime ADD TABLE table_name;",
+          },
+        ],
+      },
+    ],
+  },
 ];

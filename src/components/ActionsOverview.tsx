@@ -1,5 +1,5 @@
 import React from "react";
-import { Target, Flame, Check } from "lucide-react";
+import { Target, Flame, Check, BookOpen, CheckCircle2 } from "lucide-react";
 import { Goal } from "../types";
 import { courses } from "../data";
 import { VirtueProgress } from "./VirtueProgress";
@@ -11,6 +11,12 @@ interface ActionsOverviewProps {
   toggleCardExpansion: (_cardId: string) => void;
   onNavigateToCourse?: (_courseId: string) => void;
   completedCourses?: string[];
+  courseProgress?: {
+    [courseId: string]: {
+      completedLessons: string[];
+      lastAccessed?: string;
+    };
+  };
   userStats?: {
     currentStreak: number;
     totalGoals?: number;
@@ -25,11 +31,45 @@ export const ActionsOverview: React.FC<ActionsOverviewProps> = ({
   toggleCardExpansion,
   onNavigateToCourse,
   completedCourses = [],
+  courseProgress = {},
   userStats,
 }) => {
-  const totalGoals = userStats?.totalGoals ?? goals.length;
-  const thisWeekActions = userStats?.completedGoals ?? 2;
   const streak = userStats?.currentStreak ?? 0;
+
+  // Calculate course progress percentage
+  const getCourseProgress = (courseId: string): number => {
+    const course = courses.find((c) => c.id === courseId);
+    if (!course) return 0;
+
+    const progress = courseProgress[courseId];
+    if (!progress || !progress.completedLessons) return 0;
+
+    const totalLessons = course.lessons.length;
+    const completedLessons = progress.completedLessons.length;
+    return Math.round((completedLessons / totalLessons) * 100);
+  };
+
+  // Get courses with progress (in-progress or completed)
+  const getCoursesWithProgress = () => {
+    return courses.filter((course) => {
+      const isCompleted = completedCourses.includes(course.id);
+      const progress = getCourseProgress(course.id);
+      return isCompleted || progress > 0;
+    });
+  };
+
+  const coursesWithProgress = getCoursesWithProgress();
+
+  // Calculate course statistics
+  const totalCourses = coursesWithProgress.length;
+  const thisWeekCourses = coursesWithProgress.filter((course) => {
+    const progress = courseProgress[course.id];
+    if (!progress?.lastAccessed) return false;
+    const lastAccessed = new Date(progress.lastAccessed);
+    const weekAgo = new Date();
+    weekAgo.setDate(weekAgo.getDate() - 7);
+    return lastAccessed >= weekAgo;
+  }).length;
 
   return (
     <div className="bg-slate-50 p-4 md:p-6 border border-slate-100 rounded-xl">
@@ -49,10 +89,10 @@ export const ActionsOverview: React.FC<ActionsOverviewProps> = ({
             <Target className="h-9 w-9 text-slate-600" />
           </div>
           <div className="text-base font-medium text-slate-600 mb-2 text-left">
-            Actions - Total
+            Courses - Total
           </div>
           <p className="text-base font-bold text-slate-900 text-left">
-            {totalGoals}
+            {totalCourses}
           </p>
         </div>
 
@@ -73,94 +113,103 @@ export const ActionsOverview: React.FC<ActionsOverviewProps> = ({
             <Check className="h-9 w-9 text-blue-500" />
           </div>
           <div className="text-base font-medium text-slate-600 mb-2 text-left">
-            Actions - This Week
+            Courses - This Week
           </div>
           <p className="text-base font-bold text-slate-900 text-left">
-            {thisWeekActions}
+            {thisWeekCourses}
           </p>
         </div>
       </div>
 
       <div className="space-y-4">
-        {goals.length === 0 && (
-          <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
-            <button
-              onClick={() => toggleCardExpansion("sample-card")}
-              className="w-full flex items-start justify-between cursor-pointer hover:opacity-90 transition-opacity text-left"
-            >
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center space-x-3 mb-2">
-                  <div className="w-12 h-12 bg-pink-400 rounded-full flex items-center justify-center flex-shrink-0">
-                    <Target className="h-7 w-7 text-white" />
-                  </div>
-                  <h4 className="text-lg font-semibold text-slate-900">
-                    Intro to UX
-                  </h4>
-                </div>
-                <div className="flex items-center gap-2 mb-1">
-                  <p className="text-lg text-slate-600">
-                    Complete UX Fundamentals Course
-                  </p>
-                  <p className="text-lg text-slate-500">4 Weeks</p>
-                </div>
-                <div className="inline-flex items-center px-2 py-1 rounded-lg text-lg font-medium bg-amber-100 text-amber-800 whitespace-nowrap">
-                  Action created
-                </div>
-              </div>
-              <div className="text-slate-400 ml-3 flex-shrink-0">
-                {expandedCards.has("sample-card") ? (
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
-                ) : (
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                )}
-              </div>
-            </button>
+        {/* Course Cards */}
+        {coursesWithProgress.length > 0 && (
+          <>
+            {coursesWithProgress.map((course) => {
+              const progress = getCourseProgress(course.id);
+              const isCompleted = completedCourses.includes(course.id);
+              const cardId = `course-${course.id}`;
+              const isExpanded = expandedCards.has(cardId);
 
-            {expandedCards.has("sample-card") && (
-              <div className="mt-5 pt-5 border-t border-slate-200">
-                <p className="text-lg text-slate-600 mb-4 leading-relaxed">
-                  Complete the UX design fundamentals course to build practical
-                  skills in user research, wireframing, and prototyping.
-                  Dedicate 30 minutes daily to progress through the lessons and
-                  hands-on exercises.
-                </p>
-                {(() => {
-                  const sampleCourse = courses.find(
-                    (c) => c.id === "intro-to-ux"
-                  );
-                  const sampleCompleteness =
-                    sampleCourse && completedCourses.includes(sampleCourse.id)
-                      ? 100
-                      : 0;
-                  return (
-                    <>
-                      {onNavigateToCourse && sampleCompleteness < 100 && (
+              return (
+                <div
+                  key={course.id}
+                  className="bg-white p-4 rounded-xl shadow-sm border border-slate-200"
+                >
+                  <button
+                    onClick={() => toggleCardExpansion(cardId)}
+                    className="w-full flex items-start justify-between cursor-pointer hover:opacity-90 transition-opacity text-left"
+                  >
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center space-x-3 mb-2">
+                        <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
+                          <BookOpen className="h-7 w-7 text-white" />
+                        </div>
+                        <h4 className="text-lg font-semibold text-slate-900">
+                          {course.title}
+                        </h4>
+                        {isCompleted && (
+                          <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0" />
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2 mb-1">
+                        <p className="text-lg text-slate-600">
+                          {course.category}
+                        </p>
+                        <p className="text-lg text-slate-500">•</p>
+                        <p className="text-lg text-slate-500">{course.level}</p>
+                      </div>
+                      <div
+                        className={`inline-flex items-center px-2 py-1 rounded-lg text-lg font-medium whitespace-nowrap ${
+                          isCompleted
+                            ? "bg-emerald-100 text-emerald-800"
+                            : "bg-blue-100 text-blue-800"
+                        }`}
+                      >
+                        {isCompleted ? "Completed" : `${progress}% Complete`}
+                      </div>
+                    </div>
+                    <div className="text-slate-400 ml-3 flex-shrink-0">
+                      {isExpanded ? (
+                        <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M19 9l-7 7-7-7"
+                          />
+                        </svg>
+                      ) : (
+                        <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 5l7 7-7 7"
+                          />
+                        </svg>
+                      )}
+                    </div>
+                  </button>
+
+                  {isExpanded && (
+                    <div className="mt-5 pt-5 border-t border-slate-200">
+                      <p className="text-lg text-slate-600 mb-4 leading-relaxed">
+                        {course.description}
+                      </p>
+                      {onNavigateToCourse && !isCompleted && (
                         <button
-                          onClick={() => onNavigateToCourse("intro-to-ux")}
+                          onClick={() => onNavigateToCourse(course.id)}
                           className="w-full bg-slate-900 hover:bg-slate-800 text-white py-3 px-6 rounded-lg font-medium transition-colors text-lg mb-5"
                         >
                           Continue Course
@@ -170,25 +219,27 @@ export const ActionsOverview: React.FC<ActionsOverviewProps> = ({
                       <div className="pt-5 border-t border-slate-200">
                         <div className="flex items-center justify-between mb-2">
                           <span className="text-lg font-medium text-slate-700">
-                            Course Completeness
+                            Course Progress
                           </span>
                           <span className="text-lg font-semibold text-slate-900">
-                            {sampleCompleteness}%
+                            {progress}%
                           </span>
                         </div>
                         <div className="w-full bg-slate-200 rounded-full h-2">
                           <div
-                            className="bg-blue-600 h-2 rounded-full transition-all"
-                            style={{ width: `${sampleCompleteness}%` }}
+                            className={`h-2 rounded-full transition-all ${
+                              isCompleted ? "bg-green-600" : "bg-blue-600"
+                            }`}
+                            style={{ width: `${progress}%` }}
                           />
                         </div>
                       </div>
-                    </>
-                  );
-                })()}
-              </div>
-            )}
-          </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </>
         )}
 
         {goals.map((goal) => {

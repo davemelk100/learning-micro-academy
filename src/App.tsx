@@ -768,7 +768,7 @@ function App() {
       </header>
 
       <div className="flex-1 flex flex-col justify-center items-center px-6 text-center">
-        <div className="bg-white/90 backdrop-blur-sm rounded-xl p-8 max-w-5xl w-full border border-slate-200/50 shadow-xl">
+        <div className="bg-white/90 rounded-xl p-8 max-w-5xl w-full">
           <div className="mb-8">
             <h1 className="text-4xl font-bold text-slate-900 mb-4">
               Learning Micro-Academy
@@ -832,6 +832,7 @@ function App() {
         navigateToScreen(21);
       }}
       completedCourses={userState?.preferences?.completedCourses || []}
+      courseProgress={userState?.preferences?.courseProgress || {}}
     />
   );
 
@@ -3705,6 +3706,10 @@ function App() {
           onCourseComplete={() => {
             // Refresh user state after course completion
             getUserState().then(setUserState).catch(console.error);
+          }}
+          onStateUpdate={(updatedState) => {
+            // Update state immediately when quiz results or progress are saved
+            setUserState(updatedState);
           }}
           initialCourseId={selectedCourseId}
         />

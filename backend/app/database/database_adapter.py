@@ -19,16 +19,24 @@ class DatabaseAdapter:
     """Adapter for database operations supporting both Supabase and SQLite"""
     
     def __init__(self):
-        # Check if we should use SQLite (either via env var or if Supabase is not configured)
-        use_sqlite_env = os.getenv("USE_SQLITE", "false").lower() == "true"
+        # Check if we should use SQLite (either via env var, settings default, or if Supabase is not configured)
+        use_sqlite_env = os.getenv("USE_SQLITE", settings.USE_SQLITE).lower() == "true"
+        database_mode = os.getenv("DATABASE_MODE", settings.DATABASE_MODE).lower()
         supabase_configured = (
             os.getenv("SUPABASE_URL") and 
             os.getenv("SUPABASE_KEY") and 
             os.getenv("SUPABASE_SERVICE_ROLE_KEY")
         )
         
-        # Use SQLite if explicitly set OR if Supabase is not configured
-        self.use_sqlite = use_sqlite_env or not supabase_configured
+        # Use SQLite if:
+        # 1. Explicitly set via USE_SQLITE env var or settings
+        # 2. DATABASE_MODE is set to "sqlite"
+        # 3. Supabase is not configured (fallback for local development)
+        self.use_sqlite = (
+            use_sqlite_env or 
+            database_mode == "sqlite" or 
+            not supabase_configured
+        )
         self.conn = None
         
         if self.use_sqlite:

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { apiService } from "../../services/apiService";
+import { useAuth } from "../../contexts/AuthContext";
 import { User, Save, Loader } from "lucide-react";
 
 interface UserProfileProps {
@@ -14,6 +15,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({ onClose }) => {
     preferences?: Record<string, unknown>;
   }
 
+  const { isAuthenticated } = useAuth();
   const [user, setUser] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -28,17 +30,30 @@ export const UserProfile: React.FC<UserProfileProps> = ({ onClose }) => {
 
   const loadUserProfile = async () => {
     try {
+      // Check if user is authenticated
+      if (!isAuthenticated || !apiService.isAuthenticated()) {
+        setError("Please log in to view your profile");
+        setLoading(false);
+        return;
+      }
+
       const response = await apiService.getCurrentUser();
       if (response.data) {
         const userData = response.data as UserData;
         setUser(userData);
         setName(userData.name || "");
         setPreferences((userData.preferences as Record<string, unknown>) || {});
+        setError(""); // Clear any previous errors
       } else {
-        setError("Failed to load profile");
+        const errorMessage = response.error || "Failed to load profile";
+        setError(errorMessage);
+        console.error("Profile load error:", response.error);
       }
-    } catch {
-      setError("Error loading profile");
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Error loading profile";
+      setError(errorMessage);
+      console.error("Profile load exception:", error);
     } finally {
       setLoading(false);
     }

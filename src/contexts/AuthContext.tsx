@@ -68,12 +68,31 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
       const response = await apiService.login(email, password);
-      if (response.data) {
-        setUser(response.data.user);
+      if (response.data?.access_token) {
+        // User data is already stored in localStorage by apiService.login
+        // Try to fetch the full user profile, but fall back to response data
+        try {
+          const userResponse = await apiService.getCurrentUser();
+          if (userResponse.data) {
+            setUser(userResponse.data);
+          } else if (response.data.user) {
+            setUser(response.data.user);
+          }
+        } catch {
+          // If getCurrentUser fails, use the user data from login response
+          if (response.data.user) {
+            setUser(response.data.user);
+          }
+        }
         return true;
       }
+      // If there's an error message, log it for debugging
+      if (response.error) {
+        console.error("Login error:", response.error);
+      }
       return false;
-    } catch {
+    } catch (error) {
+      console.error("Login error:", error);
       return false;
     }
   };
@@ -85,12 +104,31 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   ): Promise<boolean> => {
     try {
       const response = await apiService.signup(email, password, name);
-      if (response.data) {
-        setUser(response.data.user);
+      if (response.data?.access_token) {
+        // User data is already stored in localStorage by apiService.signup
+        // Try to fetch the full user profile, but fall back to response data
+        try {
+          const userResponse = await apiService.getCurrentUser();
+          if (userResponse.data) {
+            setUser(userResponse.data);
+          } else if (response.data.user) {
+            setUser(response.data.user);
+          }
+        } catch {
+          // If getCurrentUser fails, use the user data from signup response
+          if (response.data.user) {
+            setUser(response.data.user);
+          }
+        }
         return true;
       }
+      // If there's an error message, log it for debugging
+      if (response.error) {
+        console.error("Signup error:", response.error);
+      }
       return false;
-    } catch {
+    } catch (error) {
+      console.error("Signup error:", error);
       return false;
     }
   };

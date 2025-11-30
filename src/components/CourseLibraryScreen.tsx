@@ -22,6 +22,7 @@ interface CourseLibraryScreenProps {
   Navigation?: React.ComponentType;
   userState?: UserState;
   onCourseComplete?: () => void;
+  onStateUpdate?: (updatedState: UserState) => void;
   initialCourseId?: string;
 }
 
@@ -30,10 +31,12 @@ export const CourseLibraryScreen: React.FC<CourseLibraryScreenProps> = ({
   Navigation,
   userState,
   onCourseComplete,
+  onStateUpdate,
   initialCourseId,
 }) => {
   const completedCourses = userState?.preferences?.completedCourses || [];
   const quizResults = userState?.preferences?.quizResults || {};
+  const courseProgress = userState?.preferences?.courseProgress || {};
 
   // Initialize with initialCourseId if provided
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(
@@ -83,7 +86,7 @@ export const CourseLibraryScreen: React.FC<CourseLibraryScreenProps> = ({
     score: number,
     total: number
   ) => {
-    if (!userState) return;
+    if (!userState || !selectedCourse) return;
 
     const percentage = Math.round((score / total) * 100);
     const passed = percentage >= 80;
@@ -97,15 +100,44 @@ export const CourseLibraryScreen: React.FC<CourseLibraryScreenProps> = ({
       },
     };
 
+    // Mark quiz lesson as completed when quiz is taken
+    const currentProgress = courseProgress[courseId] || {
+      completedLessons: [],
+    };
+    const quizLesson = selectedCourse.lessons.find((l) => l.type === "quiz");
+    let updatedProgress = { ...courseProgress };
+
+    if (
+      quizLesson &&
+      !currentProgress.completedLessons.includes(quizLesson.id)
+    ) {
+      updatedProgress = {
+        ...courseProgress,
+        [courseId]: {
+          completedLessons: [
+            ...currentProgress.completedLessons,
+            quizLesson.id,
+          ],
+          lastAccessed: new Date().toISOString(),
+        },
+      };
+    }
+
     const updatedState: UserState = {
       ...userState,
       preferences: {
         ...userState.preferences,
         quizResults: updatedQuizResults,
+        courseProgress: updatedProgress,
       },
     };
 
     saveUserState(updatedState);
+
+    // Update parent state if callback provided
+    if (onStateUpdate) {
+      onStateUpdate(updatedState);
+    }
 
     if (passed) {
       // Optionally show a success message
@@ -119,6 +151,42 @@ export const CourseLibraryScreen: React.FC<CourseLibraryScreenProps> = ({
   const [selectedLesson, setSelectedLesson] = useState<CourseLesson | null>(
     null
   );
+
+  // Track lesson completion when lesson is viewed
+  const handleLessonSelect = (lesson: CourseLesson, course: Course) => {
+    setSelectedLesson(lesson);
+
+    // Mark lesson as completed when viewed (for non-quiz lessons)
+    if (userState && lesson.type !== "quiz") {
+      const currentProgress = courseProgress[course.id] || {
+        completedLessons: [],
+      };
+      if (!currentProgress.completedLessons.includes(lesson.id)) {
+        const updatedProgress = {
+          ...courseProgress,
+          [course.id]: {
+            completedLessons: [...currentProgress.completedLessons, lesson.id],
+            lastAccessed: new Date().toISOString(),
+          },
+        };
+
+        const updatedState: UserState = {
+          ...userState,
+          preferences: {
+            ...userState.preferences,
+            courseProgress: updatedProgress,
+          },
+        };
+
+        saveUserState(updatedState);
+
+        // Update parent state if callback provided
+        if (onStateUpdate) {
+          onStateUpdate(updatedState);
+        }
+      }
+    }
+  };
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [selectedLevel, setSelectedLevel] = useState<string>("All");
@@ -352,32 +420,51 @@ export const CourseLibraryScreen: React.FC<CourseLibraryScreenProps> = ({
                 Course Lessons
               </h2>
               <div className="space-y-3">
-                {selectedCourse.lessons.map((lesson, index) => (
-                  <button
-                    key={lesson.id}
-                    onClick={() => setSelectedLesson(lesson)}
-                    className="w-full text-left p-4 rounded-lg border border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-all flex items-center justify-between group"
-                  >
-                    <div className="flex items-center gap-4 flex-1">
-                      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 font-medium">
-                        {index + 1}
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          {getLessonIcon(lesson.type)}
-                          <h3 className="font-semibold text-slate-900 group-hover:text-slate-700">
-                            {lesson.title}
-                          </h3>
+                {selectedCourse.lessons.map((lesson, index) => {
+                  const progress = courseProgress[selectedCourse.id];
+                  const isCompleted =
+                    progress?.completedLessons.includes(lesson.id) || false;
+
+                  return (
+                    <button
+                      key={lesson.id}
+                      onClick={() => handleLessonSelect(lesson, selectedCourse)}
+                      className="w-full text-left p-4 rounded-lg border border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-all flex items-center justify-between group"
+                    >
+                      <div className="flex items-center gap-4 flex-1">
+                        <div
+                          className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-medium ${
+                            isCompleted
+                              ? "bg-green-100 text-green-700"
+                              : "bg-slate-100 text-slate-600"
+                          }`}
+                        >
+                          {isCompleted ? (
+                            <Check className="w-4 h-4" />
+                          ) : (
+                            index + 1
+                          )}
                         </div>
-                        <div className="flex items-center gap-2 text-sm text-slate-500">
-                          <Clock className="w-3 h-3" />
-                          {lesson.duration}
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            {getLessonIcon(lesson.type)}
+                            <h3 className="font-semibold text-slate-900 group-hover:text-slate-700">
+                              {lesson.title}
+                            </h3>
+                            {isCompleted && (
+                              <CheckCircle2 className="w-4 h-4 text-green-600" />
+                            )}
+                          </div>
+                          <div className="flex items-center gap-2 text-sm text-slate-500">
+                            <Clock className="w-3 h-3" />
+                            {lesson.duration}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-slate-600 transition-colors" />
-                  </button>
-                ))}
+                      <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-slate-600 transition-colors" />
+                    </button>
+                  );
+                })}
               </div>
             </div>
           </div>

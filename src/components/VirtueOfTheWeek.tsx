@@ -17,7 +17,7 @@ export const VirtueOfTheWeek: React.FC<VirtueOfTheWeekProps> = ({
   return (
     <div
       onClick={handleClick}
-      className={`bg-slate-50 object-cover p-4 text-[#0f172a] border border-slate-100 ${
+      className={`bg-slate-50 p-4 md:p-6 border border-slate-100 rounded-xl text-[#0f172a] ${
         onNavigateToCourse
           ? "cursor-pointer hover:bg-slate-100 hover:border-slate-300 transition-all"
           : ""
