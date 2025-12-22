@@ -1,15 +1,25 @@
 import React from "react";
-import { CheckCircle, TrendingUp, Target, BarChart3 } from "lucide-react";
+import { CheckCircle, TrendingUp, Target, BarChart3, X } from "lucide-react";
 
 interface OnboardingDashboardScreenProps {
   onComplete: () => void;
+  onSkip?: () => void;
 }
 
 export const OnboardingDashboardScreen: React.FC<
   OnboardingDashboardScreenProps
-> = ({ onComplete }) => {
+> = ({ onComplete, onSkip }) => {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-warm-white px-4 py-8">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-warm-white px-4 py-8 relative">
+      {onSkip && (
+        <button
+          onClick={onSkip}
+          className="absolute top-4 right-4 text-slate-500 hover:text-slate-700 transition-colors p-2"
+          title="Skip onboarding"
+        >
+          <X className="w-6 h-6" />
+        </button>
+      )}
       <div className="max-w-3xl w-full">
         <div className="text-center mb-8">
           <CheckCircle className="w-16 h-16 text-green-600 mx-auto mb-4" />
@@ -75,13 +85,21 @@ export const OnboardingDashboardScreen: React.FC<
           </div>
         </div>
 
-        <div className="text-center">
+        <div className="text-center flex flex-col md:flex-row items-center justify-center gap-4">
           <button
             onClick={onComplete}
-            className="px-8 py-4 bg-slate-900 hover:bg-slate-800 text-white rounded-lg transition-all duration-200 font-medium shadow-lg hover:shadow-xl text-lg"
+            className="w-full md:w-auto px-8 py-4 bg-slate-900 hover:bg-slate-800 text-white rounded-lg transition-all duration-200 font-medium shadow-lg hover:shadow-xl text-lg"
           >
             Go to Dashboard
           </button>
+          {onSkip && (
+            <button
+              onClick={onSkip}
+              className="w-full md:w-auto px-8 py-4 bg-white hover:bg-slate-100 text-slate-700 border-2 border-slate-300 rounded-lg transition-all duration-200 font-medium text-lg"
+            >
+              Skip
+            </button>
+          )}
         </div>
       </div>
     </div>

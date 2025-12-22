@@ -113,7 +113,7 @@ class DatabaseAdapter:
                 user_id TEXT NOT NULL,
                 title TEXT NOT NULL,
                 description TEXT,
-                virtue_id TEXT,
+                learningStyleId TEXT,
                 sdg_ids TEXT DEFAULT '[]',
                 progress INTEGER DEFAULT 0,
                 completed BOOLEAN DEFAULT FALSE,
@@ -269,14 +269,14 @@ class DatabaseAdapter:
             goal_id = goal.get("id", str(uuid.uuid4()))
             cursor = self.conn.cursor()
             cursor.execute("""
-                INSERT INTO goals (id, user_id, title, description, virtue_id, sdg_ids, progress, completed, target)
+                INSERT INTO goals (id, user_id, title, description, learningStyleId, sdg_ids, progress, completed, target)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, (
                 goal_id,
                 goal["user_id"],
                 goal.get("title", ""),
                 goal.get("description", ""),
-                goal.get("virtue_id"),
+                goal.get("learningStyleId"),
                 json.dumps(goal.get("sdg_ids", [])),
                 goal.get("progress", 0),
                 goal.get("completed", False),

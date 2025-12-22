@@ -1,5 +1,4 @@
 import React from "react";
-import { Sparkles } from "lucide-react";
 
 interface FeaturedCourseProps {
   onNavigateToCourse?: (courseId: string) => void;
@@ -17,19 +16,15 @@ export const FeaturedCourse: React.FC<FeaturedCourseProps> = ({
   return (
     <div
       onClick={handleClick}
-      className={`bg-slate-50 p-4 md:p-6 border border-slate-100 rounded-xl text-[#0f172a] ${
-        onNavigateToCourse
+      className={`bg-slate-50 p-4 md:p-6 border border-slate-100 rounded-xl text-[#0f172a] ${onNavigateToCourse
           ? "cursor-pointer hover:bg-slate-100 hover:border-slate-300 transition-all"
           : ""
-      }`}
+        }`}
       style={{ minHeight: "200px" }}
     >
       <div className="flex items-center justify-between">
         <div className="flex-1">
-          <div className="flex items-center mb-3">
-            <span className="mr-2">
-              <Sparkles className="h-5 w-5 text-blue-500" />
-            </span>
+          <div className="mb-3">
             <h3 className="text-xl font-semibold text-slate-900">
               Featured Course
             </h3>

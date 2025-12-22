@@ -3,7 +3,7 @@ User profile management routes
 """
 from fastapi import APIRouter, HTTPException, status, Depends
 from pydantic import BaseModel
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
 from app.core.dependencies import get_current_user
 from app.database.database_adapter import db
 
@@ -114,15 +114,18 @@ async def get_user_goals(
             detail=f"Error fetching goals: {str(e)}"
         )
 
+class UserGoalsUpdate(BaseModel):
+    goals: List[Dict[str, Any]]
+
 @router.put("/me/goals")
 async def update_user_goals(
-    goals: list,
+    goals_update: UserGoalsUpdate,
     current_user: dict = Depends(get_current_user)
 ):
     """Update user's goals"""
     try:
         updated_user = db.update_user(current_user["id"], {
-            "goals": goals
+            "goals": goals_update.goals
         })
         if not updated_user:
             raise HTTPException(

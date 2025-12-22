@@ -1,15 +1,25 @@
 import React from "react";
-import { BookOpen, ArrowRight } from "lucide-react";
+import { BookOpen, ArrowRight, X } from "lucide-react";
 
 interface OnboardingWelcomeScreenProps {
   onNext: () => void;
+  onSkip?: () => void;
 }
 
 export const OnboardingWelcomeScreen: React.FC<
   OnboardingWelcomeScreenProps
-> = ({ onNext }) => {
+> = ({ onNext, onSkip }) => {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-warm-white px-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-warm-white px-4 relative">
+      {onSkip && (
+        <button
+          onClick={onSkip}
+          className="absolute top-4 right-4 text-slate-500 hover:text-slate-700 transition-colors p-2"
+          title="Skip onboarding"
+        >
+          <X className="w-6 h-6" />
+        </button>
+      )}
       <div className="max-w-2xl w-full text-center">
         <div className="mb-8">
           <BookOpen className="w-16 h-16 text-slate-900 mx-auto mb-4" />
@@ -46,13 +56,23 @@ export const OnboardingWelcomeScreen: React.FC<
           </ul>
         </div>
 
-        <button
-          onClick={onNext}
-          className="w-full md:w-auto px-8 py-4 bg-slate-900 hover:bg-slate-800 text-white rounded-lg transition-all duration-200 font-medium shadow-lg hover:shadow-xl text-lg flex items-center justify-center gap-2 mx-auto"
-        >
-          Get Started
-          <ArrowRight className="w-5 h-5" />
-        </button>
+        <div className="flex flex-col md:flex-row items-center justify-center gap-4">
+          <button
+            onClick={onNext}
+            className="w-full md:w-auto px-8 py-4 bg-slate-900 hover:bg-slate-800 text-white rounded-lg transition-all duration-200 font-medium shadow-lg hover:shadow-xl text-lg flex items-center justify-center gap-2"
+          >
+            Get Started
+            <ArrowRight className="w-5 h-5" />
+          </button>
+          {onSkip && (
+            <button
+              onClick={onSkip}
+              className="w-full md:w-auto px-8 py-4 bg-white hover:bg-slate-100 text-slate-700 border-2 border-slate-300 rounded-lg transition-all duration-200 font-medium text-lg"
+            >
+              Skip for now
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

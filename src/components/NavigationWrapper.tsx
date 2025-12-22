@@ -2,8 +2,8 @@ import { Navigation } from "./Navigation";
 import { UserState } from "../types";
 
 interface NavigationWrapperProps {
-  currentScreen: number;
-  navigateToScreen: (screen: number) => void;
+  currentScreen: string;
+  navigateToScreen: (path: string) => void;
   setShowAuthModal: (show: boolean) => void;
   setShowProfileModal: (show: boolean) => void;
   getUserState: () => Promise<UserState>;

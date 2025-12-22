@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { ChevronDown, ChevronUp, Database } from "lucide-react";
-import { Goal, Virtue, CompletedAction } from "../types";
+import { Goal, LearningStyle, CompletedAction } from "../types";
 
 interface ActionCardProps {
   goal: Goal;
-  virtue: Virtue;
+  learningStyle: LearningStyle;
   isCompleted?: boolean;
   onEdit?: (_goal: Goal) => void;
   onDelete?: (_goal: Goal) => void;
@@ -15,7 +15,7 @@ interface ActionCardProps {
 
 export const ActionCard: React.FC<ActionCardProps> = ({
   goal,
-  virtue,
+  learningStyle,
   isCompleted = false,
   onEdit,
   onDelete,
@@ -24,7 +24,7 @@ export const ActionCard: React.FC<ActionCardProps> = ({
   className = "",
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const IconComponent = virtue.icon;
+  const IconComponent = learningStyle.icon;
 
   const getStatusBadge = () => {
     if (isCompleted) {
@@ -56,9 +56,9 @@ export const ActionCard: React.FC<ActionCardProps> = ({
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center space-x-3">
           <div
-            className={`w-10 h-10 ${virtue.color} rounded-full overflow-hidden flex items-center justify-center`}
+            className={`w-10 h-10 ${learningStyle.color} rounded-full overflow-hidden flex items-center justify-center`}
           >
-            <IconComponent className={`h-5 w-5 ${virtue.iconColor}`} />
+            <IconComponent className={`h-5 w-5 ${learningStyle.iconColor}`} />
           </div>
           <div>
             <h4
@@ -68,7 +68,7 @@ export const ActionCard: React.FC<ActionCardProps> = ({
             >
               {goal.title}
             </h4>
-            <p className="text-xs text-slate-600">{virtue.name}</p>
+            <p className="text-xs text-slate-600">{learningStyle.name}</p>
             <p className="text-xs text-slate-500">{getTimeEstimate()}</p>
           </div>
         </div>
@@ -141,7 +141,7 @@ export const ActionCard: React.FC<ActionCardProps> = ({
                     title: goal.title,
                     description: goal.description,
                     learningStyleId: goal.learningStyleId,
-                    learningStyleName: virtue.name,
+                    learningStyleName: learningStyle.name,
                     completedAt: new Date().toISOString(),
                     createdAt: new Date().toISOString(),
                     updatedAt: new Date().toISOString(),

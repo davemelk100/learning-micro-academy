@@ -1,11 +1,12 @@
 import { Navigation } from "../components/Navigation";
 import { UserState } from "../types";
+import { ROUTES } from "../routes";
 
 interface WelcomeScreenProps {
   onStartOnboarding?: () => void;
-  navigateToScreen: (screen: number) => void;
+  navigateToScreen: (path: string) => void;
   displayUser: { name: string; isNewUser: boolean };
-  currentScreen: number;
+  currentScreen: string;
   setShowAuthModal: (show: boolean) => void;
   setShowProfileModal: (show: boolean) => void;
   getUserState: () => Promise<UserState>;
@@ -28,7 +29,7 @@ export const WelcomeScreen = ({
         <div className="flex items-center justify-between">
           <div>
             <button
-              onClick={() => navigateToScreen(1)}
+              onClick={() => navigateToScreen(ROUTES.WELCOME)}
               className="hover:opacity-80 transition-opacity"
             >
               <span className="text-2xl font-bold text-slate-900">
@@ -71,7 +72,7 @@ export const WelcomeScreen = ({
           )}
           <button
             onClick={() => {
-              navigateToScreen(21);
+              navigateToScreen(ROUTES.COURSE_LIBRARY);
             }}
             className="w-full md:w-auto py-4 px-8 bg-white hover:bg-slate-100 text-slate-900 border-2 border-slate-900 rounded-lg transition-all duration-200 font-medium shadow-lg hover:shadow-xl text-lg"
           >

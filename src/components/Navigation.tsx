@@ -1,10 +1,12 @@
 import { User as UserIcon, LogOut, Target, BookOpen } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { UserState } from "../types";
+import { ROUTES } from "../routes";
+import { useLocation } from "react-router-dom";
 
 interface NavigationProps {
-  currentScreen: number;
-  navigateToScreen: (screen: number) => void;
+  currentScreen: string;
+  navigateToScreen: (path: string) => void;
   setShowAuthModal: (show: boolean) => void;
   setShowProfileModal: (show: boolean) => void;
   getUserState: () => Promise<UserState>;
@@ -13,7 +15,6 @@ interface NavigationProps {
 }
 
 export const Navigation = ({
-  currentScreen,
   navigateToScreen,
   setShowAuthModal,
   setShowProfileModal,
@@ -22,14 +23,20 @@ export const Navigation = ({
   onNavigateToCourseLibrary,
 }: NavigationProps) => {
   const { isAuthenticated, logout } = useAuth();
+  const location = useLocation();
 
   const navItems = [
-    { label: "Dashboard", action: () => navigateToScreen(0) },
+    {
+      label: "Dashboard",
+      path: ROUTES.DASHBOARD,
+      action: () => navigateToScreen(ROUTES.DASHBOARD),
+    },
     {
       label: "Course Library",
+      path: ROUTES.COURSE_LIBRARY,
       action: () => {
         onNavigateToCourseLibrary?.();
-        navigateToScreen(21);
+        navigateToScreen(ROUTES.COURSE_LIBRARY);
       },
     },
   ];
@@ -87,8 +94,8 @@ export const Navigation = ({
           {navItems.map((item, index) => {
             // Determine if this item is currently active
             const isActive =
-              (item.label === "Dashboard" && currentScreen === 0) ||
-              (item.label === "Course Library" && currentScreen === 21);
+              location.pathname === item.path ||
+              location.pathname.startsWith(item.path + "/");
 
             return (
               <button

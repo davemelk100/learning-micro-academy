@@ -14,7 +14,7 @@ interface SharingModalProps {
   onClose: () => void;
   actionTitle: string;
   actionDescription: string;
-  virtueName: string;
+  learningStyleName: string;
 }
 
 export const SharingModal: React.FC<SharingModalProps> = ({
@@ -22,13 +22,13 @@ export const SharingModal: React.FC<SharingModalProps> = ({
   onClose,
   actionTitle,
   actionDescription,
-  virtueName,
+  learningStyleName,
 }) => {
   const [copied, setCopied] = useState(false);
 
   if (!isOpen) return null;
 
-  const shareText = `I just completed my course "${actionTitle}" focused on ${virtueName}! ${actionDescription} Join me in learning with Learning Micro-Academy.`;
+  const shareText = `I just completed my course "${actionTitle}" focused on ${learningStyleName}! ${actionDescription} Join me in learning with Learning Micro-Academy.`;
   const shareUrl = window.location.origin;
 
   const shareToFacebook = () => {
@@ -104,7 +104,7 @@ export const SharingModal: React.FC<SharingModalProps> = ({
             <h3 className="font-semibold text-slate-900 mb-2">{actionTitle}</h3>
             <p className="text-sm text-slate-600 mb-2">{actionDescription}</p>
             <span className="inline-block px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-lg">
-              {virtueName}
+              {learningStyleName}
             </span>
           </div>
 

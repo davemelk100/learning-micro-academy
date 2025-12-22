@@ -10,9 +10,6 @@ export interface LearningStyle {
   description: string;
 }
 
-// Virtue is an alias for LearningStyle for backward compatibility
-export type Virtue = LearningStyle;
-
 export interface Goal {
   id: string;
   learningStyleId: string;
