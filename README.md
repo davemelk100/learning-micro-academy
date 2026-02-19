@@ -1,6 +1,6 @@
 # Learning Micro-Academy
 
-A learning platform for bite-sized courses and continuous learning. Explore our comprehensive course library.
+Learning Micro-Academy is a bite-sized learning platform built with React/TypeScript, Tailwind CSS, and a Python FastAPI backend with Supabase, developed using Cursor IDE and the Continue copilot plugin for AI-assisted coding. n8n handles workflow automation for user signups and course completion notifications, while the Python backend powers auth, user management, and course tracking across web and mobile via Capacitor.
 
 ## Overview
 
